@@ -73,7 +73,10 @@ export function progressoPorExercicio(
   const nomes = new Map(plano.treino.exercicios.map((e) => [e.id, e.nome]))
 
   return [...porExercicio.entries()]
-    .map(([exercicioId, dias]) => montar(exercicioId, nomes.get(exercicioId) ?? exercicioId, dias))
+    .map(([exercicioId, dias]) =>
+      /* c8 ignore next -- a invariante de integridade referencial garante o nome */
+      montar(exercicioId, nomes.get(exercicioId) ?? exercicioId, dias)
+    )
     .sort(maisRecentePrimeiro)
 }
 
@@ -121,6 +124,7 @@ function variacao(
  * "eu evoluí?" sobre o treino que está fazendo agora.
  */
 function maisRecentePrimeiro(a: ProgressoDeExercicio, b: ProgressoDeExercicio): number {
+  /* c8 ignore next -- só entra aqui quem tem sessão; o `??` é para o tipo */
   const ultima = (p: ProgressoDeExercicio) => p.sessoes[p.sessoes.length - 1]?.data ?? ''
   return ultima(b).localeCompare(ultima(a)) || a.nome.localeCompare(b.nome, 'pt-BR')
 }

@@ -993,3 +993,123 @@ body {
 .historico__valores {
   font-variant-numeric: tabular-nums;
 }
+
+/* --- Evolução -------------------------------------------------------------
+   A hierarquia da tela é a do princípio 4: a manchete é o único texto grande,
+   e tudo abaixo dela é evidência de apoio, em corpo menor. */
+
+.evolucao {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.evolucao__titulo {
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+.evolucao__manchete {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--acento);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  font-size: 1.1875rem;
+  line-height: 1.35;
+}
+
+.evolucao__aindaNao {
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.evolucao__aindaNaoTitulo {
+  margin: 0 0 0.25rem;
+  font-size: 1.0625rem;
+}
+
+.evolucao__aindaNaoDescricao {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+}
+
+.evolucao__secao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.evolucao__secaoTitulo {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-suave);
+}
+
+.evolucao__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.evolucao__exercicio,
+.evolucao__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.evolucao__exercicioNome {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.evolucao__sessoes,
+.evolucao__partida {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.variacao {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.125rem 0 0;
+}
+
+.variacao__rotulo {
+  min-width: 4.5rem;
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+}
+
+.variacao__numeros {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A queda não ganha vermelho: é informação, não erro. Só a subida se destaca. */
+.variacao__delta {
+  margin-left: auto;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--texto-suave);
+}
+
+.variacao__delta--subiu {
+  color: var(--acento);
+}

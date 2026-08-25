@@ -149,9 +149,59 @@ export const ptBR = {
     },
     seusDados: 'Seu histórico é seu e fica no seu aparelho — trocar de plano não apaga nada.',
   },
-  emConstrucao: {
-    titulo: 'Ainda não construído',
-    descricao: 'Esta tela chega num próximo ciclo.',
+  /**
+   * A tela responde a uma pergunta: **eu evoluí?** Por isso o dicionário aqui
+   * é feito de frases inteiras, e não de rótulos soltos para o aluno montar de
+   * cabeça — a evidência vem em frase, o gráfico vem depois.
+   */
+  evolucao: {
+    titulo: 'Sua evolução',
+    destaqueCarga: 'Você levantou {{percentual}}% mais na {{exercicio}} {{intervalo}}.',
+    destaqueCorpoPerdeu: 'Você perdeu {{valor}} de {{metrica}} {{intervalo}}.',
+    destaqueCorpoGanhou: 'Você ganhou {{valor}} de {{metrica}} {{intervalo}}.',
+    intervalo_one: 'em 1 semana',
+    intervalo_other: 'em {{count}} semanas',
+    /** Duas sessões na mesma semana: "em 0 semanas" seria absurdo. */
+    intervaloMesmaSemana: 'esta semana',
+    treinoTitulo: 'Exercício por exercício',
+    corpoTitulo: 'Seu corpo',
+    carga: 'Carga',
+    volume: 'Volume',
+    dePara: '{{de}} → {{para}}',
+    sessoes_one: '{{count}} sessão',
+    sessoes_other: '{{count}} sessões',
+    pontoDePartida: 'Seu ponto de partida',
+    subiu: '+{{valor}}%',
+    /** O sinal de menos já vem no número formatado em pt-BR. */
+    caiu: '{{valor}}%',
+    vazioTitulo: 'Ainda não dá para dizer',
+    vazioDescricao:
+      'Registre o mesmo exercício em dois treinos — ou duas aferições no Perfil — e a comparação aparece aqui.',
+    valorKg: '{{valor}} kg',
+    valorCm: '{{valor}} cm',
+    valorPercentual: '{{valor}}%',
+    metrica: {
+      peso: 'peso',
+      gordura: 'gordura corporal',
+      torax: 'tórax',
+      cintura: 'cintura',
+      abdomen: 'abdômen',
+      quadril: 'quadril',
+      braco: 'braço',
+      coxa: 'coxa',
+      panturrilha: 'panturrilha',
+    },
+    metricaRotulo: {
+      peso: 'Peso',
+      gordura: 'Gordura',
+      torax: 'Tórax',
+      cintura: 'Cintura',
+      abdomen: 'Abdômen',
+      quadril: 'Quadril',
+      braco: 'Braço',
+      coxa: 'Coxa',
+      panturrilha: 'Panturrilha',
+    },
   },
   plano: {
     titulo: 'Seu plano',

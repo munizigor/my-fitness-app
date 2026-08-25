@@ -114,6 +114,16 @@ describe('recordesDoDia', () => {
       expect(recordesDoDia(PLANO, historico, '2026-08-25')).toEqual([])
     })
 
+    it('não é recorde quando nenhuma sessão anterior teve carga', () => {
+      const historico = [
+        registro('2026-08-18', [serie('a1', 1, undefined)]),
+        registro('2026-08-25', [serie('a1', 1, 60)]),
+      ]
+      // Ele treinou antes, mas não há marca anterior a superar — é a primeira
+      // carga registrada, e primeira vez não é recorde.
+      expect(recordesDoDia(PLANO, historico, '2026-08-25')).toEqual([])
+    })
+
     it('carga registrada depois do dia não estraga o recorde de hoje', () => {
       // O histórico é lido inteiro, e o vault pode ter o registro de amanhã se
       // o aluno mexeu no relógio ou viajou de fuso.

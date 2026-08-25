@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import { HashRouter, NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { EmConstrucao } from './comum/EmConstrucao'
-import { EstadoSemPlano } from './comum/EstadoSemPlano'
+import { TelaEvolucao } from './evolucao/TelaEvolucao'
 import { TelaHoje } from './hoje/TelaHoje'
 import { TelaRefeicao } from './nutricao/TelaRefeicao'
 import { TelaPerfil } from './perfil/TelaPerfil'
@@ -20,12 +19,6 @@ const ROTAS = [
   { caminho: '/plano', chave: 'navegacao.plano' },
 ] as const
 
-/** Sem plano importado, toda tela que depende dele cai no mesmo estado vazio. */
-function DependeDoPlano() {
-  const arquivo = useVault((e) => e.arquivo)
-  return arquivo ? <EmConstrucao /> : <EstadoSemPlano />
-}
-
 export function App() {
   const { t } = useTranslation()
   const carregarDoVault = useVault((e) => e.carregarDoVault)
@@ -41,7 +34,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/hoje" replace />} />
             <Route path="/hoje" element={<TelaHoje />} />
-            <Route path="/evolucao" element={<DependeDoPlano />} />
+            <Route path="/evolucao" element={<TelaEvolucao />} />
             {/* Perfil não passa por `DependeDoPlano`: lê `vault/aluno/`, que
                 sobrevive à troca de plano — é a separação aluno vs plano. */}
             <Route path="/perfil" element={<TelaPerfil />} />

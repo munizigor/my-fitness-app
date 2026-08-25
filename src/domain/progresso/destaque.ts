@@ -43,13 +43,14 @@ export function destaqueDeEvolucao(
  * evolução do que +6 kg na rosca direta.
  */
 function maiorSubidaDeCarga(progresso: readonly ProgressoDeExercicio[]): Destaque | null {
-  const subiram = progresso.flatMap(({ nome, carga }) =>
+  const subiram = progresso.flatMap(({ nome, carga }) => {
     // Sem percentual (carga que saiu de zero) não há como comparar entre
     // exercícios — o fato continua na lista, só não disputa a manchete.
-    carga && carga.percentual !== null && carga.percentual > 0 ? [{ nome, carga }] : []
-  )
+    if (!carga || carga.percentual === null || carga.percentual <= 0) return []
+    return [{ nome, carga, peso: carga.percentual }]
+  })
 
-  const melhor = maiorPor(subiram, (c) => c.carga.percentual ?? 0)
+  const melhor = maiorPor(subiram, (c) => c.peso)
   return melhor ? { tipo: 'carga', nome: melhor.nome, variacao: melhor.carga } : null
 }
 
@@ -59,8 +60,13 @@ function maiorSubidaDeCarga(progresso: readonly ProgressoDeExercicio[]): Destaqu
  * braço são igualmente evolução.
  */
 function maiorMudancaDoCorpo(corporal: readonly DeltaCorporal[]): Destaque | null {
-  const mudaram = corporal.filter((d) => d.variacao.diferenca !== 0)
-  const melhor = maiorPor(mudaram, (d) => Math.abs(d.variacao.percentual ?? 0))
+  const mudaram = corporal.flatMap((d) => {
+    // Toda medida do corpo é positiva (o schema garante), então o percentual
+    // existe sempre; a checagem é do tipo, e a política é a mesma da carga.
+    const { percentual } = d.variacao
+    return percentual === null || percentual === 0 ? [] : [{ delta: d, peso: Math.abs(percentual) }]
+  })
+  const melhor = maiorPor(mudaram, (m) => m.peso)?.delta
 
   return melhor
     ? { tipo: 'corpo', metrica: melhor.metrica, unidade: melhor.unidade, variacao: melhor.variacao }

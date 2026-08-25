@@ -33,9 +33,7 @@ export function recordesDoDia(
   historico: readonly RegistroDiario[],
   data: string
 ): Recorde[] {
-  const progresso = new Map(
-    progressoPorExercicio(plano, historico).map((p) => [p.exercicioId, p])
-  )
+  const progresso = new Map(progressoPorExercicio(plano, historico).map((p) => [p.exercicioId, p]))
 
   return exerciciosNaOrdemDoDia(plano, historico, data).flatMap((exercicioId) => {
     const trajetoria = progresso.get(exercicioId)

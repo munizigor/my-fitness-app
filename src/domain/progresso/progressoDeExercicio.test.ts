@@ -72,9 +72,7 @@ function doSupino(progresso: ReturnType<typeof progressoPorExercicio>) {
 describe('progressoPorExercicio', () => {
   describe('a sessão como unidade', () => {
     it('resume cada dia treinado em carga máxima, volume e número de séries', () => {
-      const historico = [
-        registro('2026-08-04', [serie('a1', 1, 60, 12), serie('a1', 2, 60, 10)]),
-      ]
+      const historico = [registro('2026-08-04', [serie('a1', 1, 60, 12), serie('a1', 2, 60, 10)])]
 
       const [supino] = progressoPorExercicio(PLANO, historico)
 
@@ -132,6 +130,17 @@ describe('progressoPorExercicio', () => {
       // Sem carga não há volume levantado — e zero é um número honesto aqui.
       expect(prancha?.sessoes[0]?.volumeKg).toBe(0)
       expect(prancha?.sessoes[0]?.series).toBe(1)
+    })
+
+    it('carga sem repetições conta como carga, mas não como volume', () => {
+      // Acontece com quem conclui a série sem preencher as reps: a carga é
+      // verdade e vale para a trajetória; o volume, sem o outro fator, não.
+      const historico = [registro('2026-08-04', [serie('a1', 1, 60, undefined)])]
+
+      expect(doSupino(progressoPorExercicio(PLANO, historico)).sessoes[0]).toMatchObject({
+        cargaMaxKg: 60,
+        volumeKg: 0,
+      })
     })
 
     it('ignora série que aponta para um item que o plano de hoje não tem', () => {
@@ -254,6 +263,17 @@ describe('progressoPorExercicio', () => {
       expect(progressoPorExercicio(PLANO, historico).map((p) => p.exercicioId)).toEqual([
         'supino',
         'prancha',
+      ])
+    })
+
+    it('treinados no mesmo dia, saem em ordem alfabética', () => {
+      const historico = [registro('2026-09-01', [serie('a2', 1, 10, 30), serie('a1', 1, 60, 10)])]
+
+      // Empate no tempo precisa de um critério estável: sem ele, a lista
+      // trocaria de ordem entre dois renders da mesma tela.
+      expect(progressoPorExercicio(PLANO, historico).map((p) => p.nome)).toEqual([
+        'Prancha Lateral',
+        'Supino Inclinado',
       ])
     })
 

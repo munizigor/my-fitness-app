@@ -43,6 +43,16 @@ describe('destaqueDeEvolucao', () => {
       })
     })
 
+    it('não depende da ordem em que os exercícios chegam', () => {
+      // A lista chega ordenada por data de treino, não por evolução: o melhor
+      // pode ser o primeiro tanto quanto o último.
+      const melhorPrimeiro = [
+        exercicio('Remada', variacao(40, 50)),
+        exercicio('Supino', variacao(50, 55)),
+      ]
+      expect(destaqueDeEvolucao(melhorPrimeiro, [])).toMatchObject({ nome: 'Remada' })
+    })
+
     it('compara em percentual, não em quilos', () => {
       // +10 kg no agachamento pesado é menos evolução do que +6 kg na rosca.
       const progresso = [
