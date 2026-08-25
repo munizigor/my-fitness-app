@@ -7,7 +7,10 @@ import { InMemoryVaultStorage } from '../../infrastructure/armazenamento/InMemor
 import { CAMINHOS } from '../../domain/vault/caminhos'
 import planoValido from '../../test/fixtures/plano-valido.json'
 import { lerArquivoDePlano } from '../../domain/schema/arquivoDePlano'
-import { usarVault, useVault } from '../estado/vaultStore'
+import { ExportarVault } from '../../application/ExportarVault'
+import { ImportarPlano } from '../../application/ImportarPlano'
+import type { ArquivoParaSalvar } from '../../domain/ports/FileTransfer'
+import { usarTransferencia, usarVault, useVault } from '../estado/vaultStore'
 import { TelaPlano } from './TelaPlano'
 
 function arquivoJson(conteudo: unknown, nome = 'plano.fitvault.json'): File {
@@ -28,7 +31,7 @@ describe('TelaPlano', () => {
   beforeEach(() => {
     vault = new InMemoryVaultStorage()
     usarVault(vault)
-    useVault.setState({ arquivo: null, carregando: false, problemas: null })
+    useVault.setState({ arquivo: null, carregando: false, problemas: null, aviso: null })
   })
 
   it('sem plano, oferece importar como única ação', () => {
@@ -36,6 +39,55 @@ describe('TelaPlano', () => {
     expect(
       screen.getByRole('button', { name: 'Importar arquivo do profissional' })
     ).toBeInTheDocument()
+    // Exportar antes de existir plano é oferecer uma pasta vazia.
+    expect(screen.queryByRole('button', { name: 'Exportar meus dados' })).not.toBeInTheDocument()
+  })
+
+  describe('exportar', () => {
+    beforeEach(async () => {
+      await new ImportarPlano(vault).executar(JSON.stringify(planoValido))
+      useVault.setState({
+        arquivo: lerArquivoDePlano(planoValido),
+        carregando: false,
+        problemas: null,
+        aviso: null,
+      })
+    })
+
+    it('entrega o vault ao aluno e confirma que o arquivo é dele', async () => {
+      const entregues: ArquivoParaSalvar[] = []
+      usarTransferencia({
+        salvar: (arquivo) => {
+          entregues.push(arquivo)
+          return Promise.resolve('salvo')
+        },
+      })
+
+      renderizar()
+      await userEvent.click(screen.getByRole('button', { name: 'Exportar meus dados' }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('status')).toHaveTextContent('Vault exportado')
+      })
+      expect(entregues[0]?.nome).toContain('.fitvault.json')
+    })
+
+    it('traz o backup de volta pelo mesmo lugar de onde saiu', async () => {
+      usarTransferencia({ salvar: () => Promise.resolve('salvo') })
+      const exportado = await new ExportarVault(vault).executar()
+
+      renderizar()
+      await userEvent.upload(
+        screen.getByLabelText('Importar arquivo do profissional'),
+        new File([exportado!.conteudo], 'vault-2026-08-25.fitvault.json', {
+          type: 'application/json',
+        })
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('status')).toHaveTextContent('Backup restaurado')
+      })
+    })
   })
 
   it('importa o arquivo do profissional e mostra de quem veio', async () => {

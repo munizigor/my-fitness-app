@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { prescricaoCompleta } from '../../domain/plano/prescricaoCompleta'
 import { resumoDoPlano } from '../../domain/plano/resumoDoPlano'
@@ -23,8 +23,9 @@ import { TreinosPrescritos } from './TreinosPrescritos'
  */
 export function TelaPlano() {
   const { t } = useTranslation()
-  const { arquivo, carregando, problemas, importar } = useVault()
+  const { arquivo, carregando, problemas, aviso, importar, exportar } = useVault()
   const entrada = useRef<HTMLInputElement>(null)
+  const [exportando, setExportando] = useState(false)
 
   // Contar e somar é regra, não apresentação: a tela não conhece o formato do
   // arquivo, só o resumo que o domínio produz dele.
@@ -40,6 +41,17 @@ export function TelaPlano() {
     // Permite reimportar o mesmo arquivo depois de corrigido: sem isso o
     // input não dispara change para um nome de arquivo repetido.
     evento.target.value = ''
+  }
+
+  async function aoExportar() {
+    // O vault pode ter anos de histórico e o diálogo do sistema demora: o botão
+    // precisa dizer que já ouviu o toque.
+    setExportando(true)
+    try {
+      await exportar()
+    } finally {
+      setExportando(false)
+    }
   }
 
   return (
@@ -99,14 +111,35 @@ export function TelaPlano() {
         aria-label={t('plano.importar')}
         onChange={(e) => void aoEscolherArquivo(e)}
       />
-      <button
-        type="button"
-        className="botao"
-        disabled={carregando}
-        onClick={() => entrada.current?.click()}
-      >
-        {carregando ? t('plano.importando') : arquivo ? t('plano.trocar') : t('plano.importar')}
-      </button>
+      <div className="plano__arquivo">
+        <button
+          type="button"
+          className="botao"
+          disabled={carregando}
+          onClick={() => entrada.current?.click()}
+        >
+          {carregando ? t('plano.importando') : arquivo ? t('plano.trocar') : t('plano.importar')}
+        </button>
+
+        {/* Sem plano importado não há vault a levar embora: o botão apareceria
+            para entregar uma pasta vazia. */}
+        {arquivo && (
+          <button
+            type="button"
+            className="botao botao--discreto"
+            disabled={exportando}
+            onClick={() => void aoExportar()}
+          >
+            {exportando ? t('plano.exportando') : t('plano.exportar')}
+          </button>
+        )}
+      </div>
+
+      {aviso && (
+        <p className="plano__aviso" role="status">
+          {t(`plano.${aviso}`)}
+        </p>
+      )}
 
       <p className="plano__nota">{t('plano.seusDadosFicam')}</p>
     </section>

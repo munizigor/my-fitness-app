@@ -221,6 +221,17 @@ export const ptBR = {
     resumoSuplementos: '{{suplementos}} suplementos em {{formulas}} fórmulas',
     seusDadosFicam: 'Seus dados ficam no seu aparelho. Você pode exportá-los quando quiser.',
 
+    exportar: 'Exportar meus dados',
+    exportando: 'Preparando o arquivo…',
+    /**
+     * A frase diz o que o aluno ganhou, não o que o app fez. "Exportação
+     * concluída" é o app se elogiando; o que importa é que o arquivo é dele e
+     * abre em qualquer editor — que é a promessa inteira do produto.
+     */
+    exportado: 'Vault exportado. O arquivo é seu: guarde onde quiser e abra em qualquer editor.',
+    restaurado: 'Backup restaurado. Seu plano e seu histórico voltaram.',
+    nadaParaExportar: 'Ainda não há nada seu para exportar.',
+
     semanaTitulo: 'Sua semana',
     descanso: 'Descanso',
     aerobico: '{{modalidade}} · {{minutos}} min',
