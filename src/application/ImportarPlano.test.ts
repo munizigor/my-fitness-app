@@ -4,7 +4,10 @@ import { InMemoryVaultStorage } from '../infrastructure/armazenamento/InMemoryVa
 import planoValido from '../test/fixtures/plano-valido.json'
 import { lerArquivoDePlano } from '../domain/schema/arquivoDePlano'
 import { CAMINHOS } from '../domain/vault/caminhos'
+import { CarregarAluno } from './CarregarAluno'
 import { ImportarPlano } from './ImportarPlano'
+import { RegistrarMedida } from './RegistrarMedida'
+import { SalvarPerfil } from './SalvarPerfil'
 
 function texto(objeto: unknown): string {
   return JSON.stringify(objeto)
@@ -110,8 +113,16 @@ describe('ImportarPlano', () => {
 
     it('preserva o histórico de medidas ao trocar de plano — data ownership', async () => {
       await importar.executar(texto(planoValido))
-      // O aluno registrou uma aferição; depois trocou de profissional.
-      await vault.escrever(CAMINHOS.medida('2026-08-10'), '{"pesoKg":80}')
+      // O aluno se mediu duas vezes ao longo do plano; depois trocou de
+      // profissional. Passa pelos casos de uso de verdade, e não por JSON
+      // escrito à mão, para que o teste continue valendo se o formato da
+      // aferição mudar.
+      const registrarMedida = new RegistrarMedida(vault)
+      await registrarMedida.executar('2026-06-10', { pesoKg: 85 })
+      await registrarMedida.executar('2026-08-10', {
+        pesoKg: 82.4,
+        circunferenciasCm: { cintura: 84 },
+      })
 
       const novoPlano = structuredClone(planoValido) as Record<string, unknown>
       // @ts-expect-error navegação em JSON solto, só no teste
@@ -119,7 +130,9 @@ describe('ImportarPlano', () => {
       await importar.executar(texto(novoPlano))
 
       // Trocar de nutricionista não pode apagar o corpo do aluno.
-      expect(await vault.ler(CAMINHOS.medida('2026-08-10'))).toBe('{"pesoKg":80}')
+      const { medidas } = await new CarregarAluno(vault).executar()
+      expect(medidas.map((m) => m.data)).toEqual(['2026-08-10', '2026-06-10'])
+      expect(medidas[0]?.circunferenciasCm).toEqual({ cintura: 84 })
     })
 
     it('preserva os registros diários ao trocar de plano', async () => {
@@ -133,16 +146,17 @@ describe('ImportarPlano', () => {
 
     it('não sobrescreve o perfil já existente com os dados do novo arquivo', async () => {
       await importar.executar(texto(planoValido))
-      // O aluno corrigiu a própria idade dentro do app.
-      await vault.escrever(
-        CAMINHOS.perfil,
-        '{"nome":"Aluno Exemplo","idade":31,"alturaMetros":1.75}'
-      )
+      // O aluno corrigiu a própria idade dentro do app — o arquivo do
+      // profissional pode ter sido emitido meses antes.
+      await new SalvarPerfil(vault).executar({
+        nome: 'Aluno Exemplo',
+        idade: 31,
+        alturaMetros: 1.75,
+      })
 
       await importar.executar(texto(planoValido))
 
-      const perfil = JSON.parse((await vault.ler(CAMINHOS.perfil))!)
-      expect(perfil.idade).toBe(31)
+      expect((await new CarregarAluno(vault).executar()).perfil?.idade).toBe(31)
     })
   })
 })

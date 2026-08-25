@@ -110,6 +110,25 @@ O que o aluno fez num dia, um arquivo por data:
 
 Ler um registro nunca lança: devolve `null` para o que não reconhece. É deliberadamente diferente do plano — plano inválido é erro do profissional e precisa ser reportado; registro ilegível é problema nosso, e o aluno está no meio da série segurando a barra.
 
+## As medidas do aluno
+
+O corpo em série temporal, um arquivo por aferição:
+
+```
+vault/aluno/medidas/<AAAA-MM-DD>.json
+{ schemaVersion, data,
+  pesoKg?, percentualGordura?,
+  circunferenciasCm?: { torax?, cintura?, abdomen?, quadril?, braco?, coxa?, panturrilha? } }
+```
+
+**Aferição não é campo de perfil.** Na planilha o peso era uma célula, e cada nova pesagem apagava a anterior junto com a evolução que ela provava. Aqui a de agosto não encosta na de junho — o caminho é a data, e listar o histórico é listar um prefixo. Medir de novo no mesmo dia reescreve aquele arquivo: é correção, não segunda aferição.
+
+**Campo em branco some do arquivo; não vira zero.** Não medir a cintura é diferente de medir zero centímetros, e o segundo apareceria em Evolução como uma queda vertical que nunca aconteceu.
+
+**Circunferências têm vocabulário controlado**, pelo mesmo motivo dos grupos musculares: Evolução agrega por elas. Sem lado (direito/esquerdo) de propósito — quem mede em casa com fita mede um braço, não dois; separar os lados criaria campo que ninguém preenche.
+
+**Altura fica no perfil, peso na aferição.** Adulto não muda de altura entre duas medições.
+
 ## Versionamento
 
 **Plano e registro têm versões independentes.** As duas coisas mudam por motivos diferentes: o formato do plano muda quando o profissional ganha um campo novo para prescrever; o do registro, quando o aluno ganha algo novo para registrar. Compartilhar um número obrigaria todo profissional a reemitir o arquivo porque o app aprendeu a contar copos de água.
@@ -117,7 +136,12 @@ Ler um registro nunca lança: devolve `null` para o que não reconhece. É delib
 | Documento | Constante                 | Versão atual |
 | --------- | ------------------------- | ------------ |
 | Plano     | `SCHEMA_VERSION_ATUAL`    | 2            |
-| Registro  | `SCHEMA_VERSION_REGISTRO` | 3            |
+| Registro  | `SCHEMA_VERSION_REGISTRO` | 4            |
+| Medida    | `SCHEMA_VERSION_MEDIDA`   | 1            |
+
+A medida **começa em 1**, e não continuando a numeração do registro, porque nenhuma jamais foi gravada em disco: dentro de `vault/aluno/medidas/` o número 1 não tem outro significado possível. O que a numeração do registro evitava era ambiguidade no mesmo arquivo.
+
+O **perfil não tem versão**: o formato `{ nome, idade, alturaMetros }` é o mesmo desde a story 2, e a story 6 mudou quem escreve nele — o import semeia, o aluno corrige —, não o que ele guarda.
 
 A numeração do registro **continua** de onde a compartilhada parou (2 → 3) em vez de recomeçar do 1: assim nenhum número guardado em disco tem dois significados. Migrações são funções puras com teste (`domain/registro/migracoes.ts`); a de v2 preenche `aguaLitros: 0` e `refeicoes: []`, e o treino já registrado sobrevive intacto. O que a migração não reconhece — lixo, versão do futuro — ela devolve intacto: julgar validade é trabalho do schema, e remendar até "parecer legível" transformaria dado corrompido em dado aceito em silêncio.
 

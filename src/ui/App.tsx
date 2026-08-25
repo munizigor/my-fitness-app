@@ -5,6 +5,7 @@ import { EmConstrucao } from './comum/EmConstrucao'
 import { EstadoSemPlano } from './comum/EstadoSemPlano'
 import { TelaHoje } from './hoje/TelaHoje'
 import { TelaRefeicao } from './nutricao/TelaRefeicao'
+import { TelaPerfil } from './perfil/TelaPerfil'
 import { TelaPlano } from './plano/TelaPlano'
 import { ExecucaoTreino } from './treino/ExecucaoTreino'
 import { useVault } from './estado/vaultStore'
@@ -41,7 +42,9 @@ export function App() {
             <Route path="/" element={<Navigate to="/hoje" replace />} />
             <Route path="/hoje" element={<TelaHoje />} />
             <Route path="/evolucao" element={<DependeDoPlano />} />
-            <Route path="/perfil" element={<DependeDoPlano />} />
+            {/* Perfil não passa por `DependeDoPlano`: lê `vault/aluno/`, que
+                sobrevive à troca de plano — é a separação aluno vs plano. */}
+            <Route path="/perfil" element={<TelaPerfil />} />
             <Route path="/treino" element={<ExecucaoTreino />} />
             <Route path="/refeicao/:refeicaoId" element={<TelaRefeicao />} />
             <Route path="/plano" element={<TelaPlano />} />
