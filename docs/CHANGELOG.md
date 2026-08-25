@@ -2,6 +2,37 @@
 
 ## [Não lançado]
 
+### Story 9 — Exportar vault
+
+Data ownership deixa de ser posicionamento e vira arquivo: o aluno leva o vault
+embora e o traz de volta.
+
+- **O que sai reentra.** Um `.fitvault.json` com o vault inteiro — plano,
+  registros, perfil e histórico de medidas — reimporta em instalação limpa e
+  reproduz o mesmo estado. É o aceite da story, e tem teste ponta a ponta em
+  Chromium: download de verdade, OPFS de verdade, aparelho limpo no meio
+- **O caminho é a chave, o documento é JSON.** O envelope é a pasta do vault
+  com uma capa; documento escapado como texto falharia no critério do ADR 0003
+  (abrir num editor qualquer e entender) já na primeira linha
+- **Um botão de importar, não dois.** Prescrição do profissional e backup do
+  próprio vault entram pelo mesmo lugar: o arquivo diz o que é, pelo campo
+  `formato`. O aluno tem um arquivo na mão, não uma taxonomia
+- **Restaurar escreve, nunca apaga.** Só os caminhos que vieram no envelope são
+  gravados: um backup de junho não pode levar embora a aferição de agosto
+- **`../` não sai da pasta.** Um envelope é conteúdo de fora, e restaurar é
+  escrever caminhos que alguém pode ter editado à mão. `ehCaminhoDoVault` mora
+  junto dos caminhos que descreve, e vale na entrada e na saída
+- **Validar antes de escrever**, como no import do plano: um arquivo pela metade
+  não deixa o vault pela metade. E um backup corrompido falha como backup, com
+  os problemas apontando os documentos — não como culpa do profissional
+- **Nada é calculado na saída** (ADR 0006): quem recebe o arquivo recebe fatos,
+  e tira as próprias conclusões — que é o trabalho dele
+- **Onde o navegador deixa, o aluno escolhe a pasta** (File System Access);
+  onde não deixa, baixa. Desistir do diálogo do sistema é decisão dele, não erro
+- Novidades de código: `domain/ports/FileTransfer`, `domain/schema/arquivoDeVault`,
+  `application/ExportarVault`, `application/RestaurarVault`,
+  `infrastructure/arquivo/SalvarArquivo`
+
 ### Story 8 — Consultar o plano completo
 
 A prescrição inteira, read-only, na aba que já era dela.

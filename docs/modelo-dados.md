@@ -133,11 +133,14 @@ vault/aluno/medidas/<AAAA-MM-DD>.json
 
 **Plano e registro têm versões independentes.** As duas coisas mudam por motivos diferentes: o formato do plano muda quando o profissional ganha um campo novo para prescrever; o do registro, quando o aluno ganha algo novo para registrar. Compartilhar um número obrigaria todo profissional a reemitir o arquivo porque o app aprendeu a contar copos de água.
 
-| Documento | Constante                 | Versão atual |
-| --------- | ------------------------- | ------------ |
-| Plano     | `SCHEMA_VERSION_ATUAL`    | 2            |
-| Registro  | `SCHEMA_VERSION_REGISTRO` | 4            |
-| Medida    | `SCHEMA_VERSION_MEDIDA`   | 1            |
+| Documento          | Constante                 | Versão atual |
+| ------------------ | ------------------------- | ------------ |
+| Plano              | `SCHEMA_VERSION_ATUAL`    | 2            |
+| Registro           | `SCHEMA_VERSION_REGISTRO` | 4            |
+| Medida             | `SCHEMA_VERSION_MEDIDA`   | 1            |
+| Envelope de export | `SCHEMA_VERSION_EXPORT`   | 1            |
+
+O **envelope** tem versão própria pelo mesmo motivo dos outros: o que muda nele é a forma de embrulhar, não o conteúdo embrulhado — e cada documento continua carregando a própria versão dentro.
 
 A medida **começa em 1**, e não continuando a numeração do registro, porque nenhuma jamais foi gravada em disco: dentro de `vault/aluno/medidas/` o número 1 não tem outro significado possível. O que a numeração do registro evitava era ambiguidade no mesmo arquivo.
 
@@ -150,6 +153,31 @@ A numeração do registro **continua** de onde a compartilhada parou (2 → 3) e
 ## Formato de intercâmbio
 
 Export gera um `.fitvault.json`: envelope com manifest e documentos, JSON indentado, legível em qualquer editor. Quando o navegador oferece a File System Access API, escreve numa pasta real; senão, baixa.
+
+```json
+{
+  "formato": "fitvault-export",
+  "schemaVersion": 1,
+  "exportadoEm": "2026-08-25T10:00:00.000Z",
+  "documentos": {
+    "vault/manifest.json": { "schemaVersion": 2, "criadoEm": "…", "atualizadoEm": "…" },
+    "vault/aluno/perfil.json": { "nome": "…", "idade": 34, "alturaMetros": 1.78 },
+    "vault/aluno/medidas/2026-06-01.json": {
+      "schemaVersion": 1,
+      "data": "2026-06-01",
+      "pesoKg": 82.4
+    },
+    "vault/planos/atual.json": { "formato": "fitvault-plano", "…": "…" },
+    "vault/registros/2026-08-24.json": { "schemaVersion": 4, "data": "2026-08-24", "…": "…" }
+  }
+}
+```
+
+**O caminho é a chave, e o documento viaja como JSON, não como texto escapado.** O envelope é a pasta do vault com uma capa: quem abre o arquivo num editor vê a mesma estrutura que o app vê, e `"{\n \"nome\": …}"` falharia no critério de aceitação do ADR 0003 já na primeira linha. Nada é reagrupado nem calculado na saída (ADR 0006): quem recebe o arquivo recebe fatos.
+
+**Restaurar escreve, nunca apaga.** Só os caminhos que vieram no envelope são gravados; o que já estava no vault e não veio no backup continua onde está. Um backup de junho não pode levar embora a aferição de agosto — perder dado do aluno seria o oposto do que o export existe para provar. Em instalação limpa, que é o caso do aceite, isso reproduz o estado inteiro.
+
+**Só caminho conhecido entra.** `ehCaminhoDoVault` decide, na entrada e na saída: `../` num nome de documento não escreve fora da pasta, e um arquivo estranho encontrado no vault não vai para um envelope que o próprio app recusaria ao restaurar.
 
 O import grava **o documento do profissional, não a leitura que fizemos dele** — o que está no disco é exatamente o que ele emitiu.
 

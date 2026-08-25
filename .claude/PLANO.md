@@ -47,8 +47,9 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
       _Aceite:_ suplementos agrupados por fórmula como o profissional prescreveu; import e export vivem aqui.
       _O export é a story 9, e nasce nesta mesma aba._
 
-- [ ] **9. Exportar vault** — data ownership na prática.
+- [x] **9. Exportar vault** — data ownership na prática.
       _Aceite:_ o arquivo gerado reimporta em instalação limpa e reproduz o mesmo estado, histórico de medidas incluído (round-trip).
+      _O mesmo input de import recebe os dois arquivos: o `formato` decide, não o aluno._
 
 - [ ] **10. Instalar e usar offline** — PWA de verdade.
       _Aceite:_ Playwright com rede desligada abre o app e registra uma série.
@@ -62,6 +63,12 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - Mecânica de sequência (streak) mais elaborada
 
 ## Dívida técnica assumida
+
+- **O E2E offline de `plano.spec.ts` falha de vez em quando com muitos workers**
+  (`ERR_INTERNET_DISCONNECTED` ao recarregar): o service worker ainda não
+  assumiu a página quando o teste desliga a rede. Passa sozinho e passa em CI,
+  que roda com um worker. A espera explícita pelo controle do service worker
+  entra com a story 10, que é onde o offline é o assunto.
 
 - **Actions em Node 20.** `actions/checkout@v4`, `configure-pages@v5`, `deploy-pages@v4`,
   `setup-node@v4` e `upload-artifact@v4` declaram Node 20, que o GitHub depreciou e já
@@ -86,6 +93,12 @@ story 4 e a 5:
 - [x] Registro do aluno com versão própria, separada da do plano
 
 ## Decisões pendentes
+
+- **Restaurar não apaga o que o backup não traz.** Escrever só os caminhos do
+  envelope é o certo em instalação limpa (o aceite) e é o conservador num vault
+  com dado — mas deixa órfão o documento que existe aqui e não existe no
+  backup. Uma restauração que substitui o vault inteiro precisaria de confirmação
+  explícita do aluno, e não há caso de uso pedindo isso ainda.
 
 - **Onde o treino cai na linha do tempo.** O plano diz em que _dia_ o aluno
   treina, nunca a que _horas_. `montarDia` recebe isso como preferência

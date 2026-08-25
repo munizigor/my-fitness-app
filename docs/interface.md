@@ -188,6 +188,9 @@ A quarta aba. Prescrição inteira: agenda semanal, treinos A–F, protocolo ali
 - **O suplemento diz quando tomar pelo nome da refeição**, não pelo número. O artigo concorda com "refeição" e não com o nome que o profissional deu a ela: "Depois da refeição 3 · Ceia" está certo em qualquer plano, e "Depois do Ceia" estaria errado na metade deles.
 - **É o único lugar do app onde a fórmula aparece.** No dia, o suplemento é dissolvido dentro da refeição a que pertence, porque de manhã o que importa é o que tomar agora; aqui o agrupamento é o raciocínio clínico de quem prescreveu.
 - **Nada é editável** (princípio 5). Em Hoje, tocar numa alternativa registra o consumo, e por isso ela é um botão. Aqui a mesma alternativa é texto: consultar o plano não é comer.
+- **Importar e exportar ficam lado a lado**, no rodapé da aba, porque são as duas metades da mesma promessa: o arquivo entra por aqui e sai por aqui. Exportar só aparece com plano importado — antes disso o botão ofereceria uma pasta vazia.
+- **Um botão de importar, não dois.** O aluno tem um arquivo na mão e nem sempre sabe se é a prescrição que o profissional mandou ou o backup que ele mesmo exportou. Quem sabe é o arquivo, que traz o próprio `formato`; obrigá-lo a escolher entre dois botões parecidos seria transferir a dúvida do app para ele.
+- **A confirmação diz o que o aluno ganhou**, não o que o app fez: "o arquivo é seu: guarde onde quiser e abra em qualquer editor". "Exportação concluída" seria o app se elogiando.
 
 ## Decisões visuais
 
