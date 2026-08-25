@@ -1,17 +1,22 @@
 import { ErroDeDominio } from './ErroDeDominio'
 
 export interface ProblemaNoArquivo {
-  /** Caminho do campo, como `plano.treino.sessoes.0.exercicios.2.prescricao`. */
-  readonly campo: string
+  /** Onde no plano, em termos de negócio: "Treino A · Prancha Lateral (Lado direito)". */
+  readonly onde: string
+  /** Qual campo, no vocabulário de quem monta o plano: "Séries", "Carga alvo". */
+  readonly oQue: string
+  /** O que está errado, em frase de gente: "não foi preenchido". */
   readonly mensagem: string
+  /** Caminho no JSON. Para quem depura o app, não para quem usa. */
+  readonly caminhoTecnico: string
 }
 
 /**
  * O arquivo enviado pelo profissional não pôde ser lido.
  *
- * Carrega **todos** os problemas de uma vez, e cada um com o caminho do campo:
- * quem vai corrigir o arquivo é o profissional, e devolvê-lo um erro por vez
- * significaria fazer a viagem de ida e volta cinco vezes.
+ * Carrega **todos** os problemas de uma vez: quem corrige o arquivo é o
+ * profissional, e devolvê-lo um erro por vez faria a viagem de ida e volta
+ * cinco vezes.
  */
 export class ArquivoInvalidoError extends ErroDeDominio {
   readonly codigo = 'ARQUIVO_INVALIDO'
@@ -19,7 +24,7 @@ export class ArquivoInvalidoError extends ErroDeDominio {
   constructor(readonly problemas: readonly ProblemaNoArquivo[]) {
     super(
       `Arquivo de plano inválido (${problemas.length} problema(s)): ` +
-        problemas.map((p) => `${p.campo || '(raiz)'} — ${p.mensagem}`).join('; ')
+        problemas.map((p) => `${p.onde} — ${p.oQue}: ${p.mensagem}`).join('; ')
     )
   }
 }

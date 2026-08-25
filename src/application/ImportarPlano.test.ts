@@ -30,7 +30,7 @@ describe('ImportarPlano', () => {
     it('grava o manifest com a versão do schema', async () => {
       await importar.executar(texto(planoValido))
       const manifest = JSON.parse((await vault.ler(CAMINHOS.manifest))!)
-      expect(manifest).toMatchObject({ schemaVersion: 1, criadoEm: '2026-08-25T10:00:00.000Z' })
+      expect(manifest).toMatchObject({ schemaVersion: 2, criadoEm: '2026-08-25T10:00:00.000Z' })
     })
 
     it('cria o perfil do aluno a partir do arquivo', async () => {
@@ -50,9 +50,9 @@ describe('ImportarPlano', () => {
     })
 
     it('grava algo que o próprio schema consegue reler', async () => {
-      // O schema interpreta a prescrição ("4x10a12" vira objeto). Gravar o
-      // resultado transformado tornaria o vault ilegível para o próprio
-      // schema, e o plano sumiria no primeiro recarregamento da página.
+      // Gravar qualquer coisa diferente do documento recebido arrisca tornar o
+      // vault ilegível para o próprio schema — e o plano sumiria no primeiro
+      // recarregamento da página, que foi exatamente o bug que originou este teste.
       await importar.executar(texto(planoValido))
       const gravado = JSON.parse((await vault.ler(CAMINHOS.planoAtual))!)
       expect(() => lerArquivoDePlano(gravado)).not.toThrow()
@@ -102,7 +102,7 @@ describe('ImportarPlano', () => {
 
       const ruim = structuredClone(planoValido) as Record<string, unknown>
       // @ts-expect-error navegação em JSON solto, só no teste
-      ruim.plano.treino.sessoes[0].exercicios[0].prescricao = 'abc'
+      delete ruim.plano.treino.sessoes[0].itens[0].series
       await expect(importar.executar(texto(ruim))).rejects.toBeInstanceOf(ArquivoInvalidoError)
 
       expect(await vault.ler(CAMINHOS.planoAtual)).toBe(antes)

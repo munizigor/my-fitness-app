@@ -228,3 +228,51 @@ body {
 .erro__mensagem {
   color: var(--texto-suave);
 }
+
+/* --- Erro de importação: legível para o aluno e para o profissional -------- */
+
+.botao--discreto {
+  background: transparent;
+  border: 1px solid var(--borda);
+  color: var(--texto);
+  font-weight: 500;
+}
+
+.erro__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: 0.9375rem;
+}
+
+/* O "onde" é o que o profissional procura primeiro ao abrir a planilha para
+   corrigir: precisa saltar antes da mensagem. */
+.erro__onde {
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.erro__tecnico {
+  margin-top: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.erro__tecnico summary {
+  cursor: pointer;
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.erro__tecnico code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+/* O botão de copiar não pode encostar na lista de problemas: são duas coisas
+   diferentes — o diagnóstico e a ação de passá-lo adiante. */
+.erro .botao--discreto {
+  margin-top: 1rem;
+  width: 100%;
+}

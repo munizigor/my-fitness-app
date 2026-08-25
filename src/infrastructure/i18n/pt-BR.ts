@@ -28,17 +28,19 @@ export const ptBR = {
     importando: 'Lendo o arquivo…',
     prescritoPor: 'Prescrito por {{nome}}',
     emitidoEm: 'Emitido em {{data}}',
-    resumoTreino: '{{sessoes}} treinos · descanso de {{min}} a {{max}} s entre séries',
+    resumoTreino:
+      '{{sessoes}} treinos · {{exercicios}} exercícios · descanso de {{min}} a {{max}} s',
     resumoNutricao: '{{refeicoes}} refeições por dia · {{litros}} L de água',
-    resumoSuplementos: '{{formulas}} fórmulas de suplementação',
+    resumoSuplementos: '{{suplementos}} suplementos em {{formulas}} fórmulas',
     seusDadosFicam: 'Seus dados ficam no seu aparelho. Você pode exportá-los quando quiser.',
   },
   erroImport: {
     titulo: 'Não consegui ler este arquivo',
-    explicacao:
-      'Nada foi alterado no seu aparelho. Envie estes pontos para quem montou o plano e peça um arquivo corrigido.',
-    noCampo: 'Campo {{campo}}',
-    noArquivo: 'No arquivo',
+    tranquilizacao:
+      'Nada mudou no seu aparelho — o que você já tinha continua aqui. Envie os pontos abaixo para quem montou o plano e peça um arquivo corrigido.',
+    copiar: 'Copiar para enviar ao profissional',
+    copiado: 'Copiado',
+    detalhesTecnicos: 'Detalhes técnicos',
   },
   rodape: {
     seusDados: 'Seus dados ficam no seu aparelho e são seus.',

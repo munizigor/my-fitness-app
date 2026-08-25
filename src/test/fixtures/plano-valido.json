@@ -1,6 +1,6 @@
 {
   "formato": "fitvault-plano",
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "emitidoEm": "2026-08-24",
   "profissional": {
     "nome": "Ana Ribeiro",
@@ -13,99 +13,173 @@
   },
   "plano": {
     "treino": {
-      "intervaloEntreSeriesSegundos": { "min": 60, "max": 70 },
+      "descansoEntreSeries": { "minSegundos": 60, "maxSegundos": 70 },
+      "exercicios": [
+        {
+          "id": "puxada-frontal-pronada",
+          "nome": "Puxada Frontal Pronada",
+          "gruposMusculares": ["costas", "biceps"]
+        },
+        {
+          "id": "remada-cavalinho",
+          "nome": "Remada Cavalinho com Triângulo",
+          "gruposMusculares": ["costas"]
+        },
+        { "id": "prancha-lateral", "nome": "Prancha Lateral", "gruposMusculares": ["abdomen"] },
+        {
+          "id": "agachamento-livre",
+          "nome": "Agachamento Livre",
+          "gruposMusculares": ["quadriceps", "gluteos"]
+        },
+        { "id": "mesa-flexora", "nome": "Mesa Flexora", "gruposMusculares": ["posteriores"] }
+      ],
       "sessoes": [
         {
           "id": "A",
           "rotulo": "Treino A",
-          "foco": "superior",
-          "exercicios": [
-            { "id": "a1", "nome": "Puxada Frontal Pronada", "prescricao": "4x10a12" },
+          "foco": "Superior",
+          "itens": [
+            {
+              "id": "a1",
+              "exercicioId": "puxada-frontal-pronada",
+              "series": 4,
+              "execucao": { "tipo": "repeticoes", "min": 10, "max": 12 }
+            },
             {
               "id": "a2",
-              "nome": "Remada Cavalinho com Triângulo",
-              "prescricao": "4x10a12",
-              "tecnicaAvancada": "Corpo totalmente em 90 graus"
+              "exercicioId": "remada-cavalinho",
+              "series": 4,
+              "execucao": { "tipo": "repeticoes", "min": 10, "max": 12 },
+              "cargaAlvoKg": 30,
+              "observacao": "Corpo totalmente em 90 graus"
             },
-            { "id": "a3", "nome": "Prancha", "prescricao": "3x60'" }
+            {
+              "id": "a3",
+              "exercicioId": "prancha-lateral",
+              "series": 2,
+              "execucao": { "tipo": "tempo", "segundos": 60 },
+              "observacao": "Lado direito"
+            },
+            {
+              "id": "a4",
+              "exercicioId": "prancha-lateral",
+              "series": 2,
+              "execucao": { "tipo": "tempo", "segundos": 60 },
+              "observacao": "Lado esquerdo"
+            }
           ]
         },
         {
           "id": "B",
           "rotulo": "Treino B",
-          "foco": "inferior",
-          "exercicios": [
+          "foco": "Inferior",
+          "itens": [
             {
               "id": "b1",
-              "nome": "Agachamento Livre",
-              "prescricao": "4x10a12",
-              "tecnicaAvancada": "Descer até o talo"
+              "exercicioId": "agachamento-livre",
+              "series": 4,
+              "execucao": { "tipo": "repeticoes", "min": 10, "max": 12 },
+              "cargaAlvoKg": 60,
+              "observacao": "Descer até o talo"
             },
-            { "id": "b2", "nome": "Mesa Flexora", "prescricao": "4x10a12" },
             {
-              "id": "b3",
-              "nome": "Prancha Lateral",
-              "prescricao": "2x60'",
-              "tecnicaAvancada": "2 cada lado"
+              "id": "b2",
+              "exercicioId": "mesa-flexora",
+              "series": 4,
+              "execucao": { "tipo": "repeticoes", "min": 10, "max": 12 }
             }
           ]
         }
       ],
       "agendaSemanal": {
-        "seg": { "musculacao": "A", "aerobico": { "tipo": "HIIT", "minutos": 20 } },
-        "ter": { "musculacao": "B", "aerobico": { "tipo": "HIIT", "minutos": 20 } },
-        "qua": { "musculacao": "A", "aerobico": { "tipo": "HIIT", "minutos": 20 } },
-        "qui": { "musculacao": null, "aerobico": null },
-        "sex": { "musculacao": "B", "aerobico": { "tipo": "HIIT", "minutos": 20 } },
-        "sab": { "musculacao": null, "aerobico": { "tipo": "HIIT", "minutos": 20 } },
-        "dom": { "musculacao": null, "aerobico": null }
+        "seg": {
+          "sessaoId": "A",
+          "aerobico": { "modalidade": "HIIT na esteira", "duracaoMinutos": 20 }
+        },
+        "ter": {
+          "sessaoId": "B",
+          "aerobico": { "modalidade": "HIIT na esteira", "duracaoMinutos": 20 }
+        },
+        "qua": {
+          "sessaoId": "A",
+          "aerobico": { "modalidade": "HIIT na esteira", "duracaoMinutos": 20 }
+        },
+        "qui": { "sessaoId": null, "aerobico": null },
+        "sex": {
+          "sessaoId": "B",
+          "aerobico": { "modalidade": "HIIT na esteira", "duracaoMinutos": 20 }
+        },
+        "sab": {
+          "sessaoId": null,
+          "aerobico": { "modalidade": "HIIT na esteira", "duracaoMinutos": 20 }
+        },
+        "dom": { "sessaoId": null, "aerobico": null }
       }
     },
     "nutricao": {
       "macrosAlvoDiario": { "proteinaG": 170, "carboidratoG": 180, "gorduraG": 55 },
-      "hidratacaoLitros": 4,
+      "hidratacaoDiariaLitros": 4,
       "refeicoes": [
         {
           "numero": 1,
+          "nome": "Café da manhã",
           "itens": [
             {
               "id": "r1i1",
-              "alternativas": ["2 fatias de pão integral", "130 g de cuscuz", "1 pão francês"],
+              "opcoes": [
+                { "alimento": "Pão integral", "quantidade": 2, "unidade": "fatia" },
+                { "alimento": "Cuscuz", "quantidade": 130, "unidade": "g" },
+                { "alimento": "Pão francês", "quantidade": 1, "unidade": "unidade" }
+              ],
               "macros": { "proteinaG": 4, "carboidratoG": 28, "gorduraG": 2 }
             },
             {
               "id": "r1i2",
-              "alternativas": ["50 g de queijo cottage", "1 fatia de queijo branco"],
+              "opcoes": [
+                { "alimento": "Queijo cottage", "quantidade": 50, "unidade": "g" },
+                { "alimento": "Queijo branco", "quantidade": 1, "unidade": "fatia" }
+              ],
               "macros": { "proteinaG": 6, "carboidratoG": 0, "gorduraG": 6 }
             }
           ]
         },
         {
           "numero": 2,
+          "nome": "Lanche da manhã",
           "itens": [
             {
               "id": "r2i1",
-              "alternativas": ["20 g de castanha de caju", "20 g de castanha do Pará"],
+              "opcoes": [
+                { "alimento": "Castanha de caju", "quantidade": 20, "unidade": "g" },
+                { "alimento": "Castanha do Pará", "quantidade": 20, "unidade": "g" }
+              ],
               "macros": { "proteinaG": 3, "carboidratoG": 6, "gorduraG": 10 }
             }
           ]
         },
         {
           "numero": 3,
+          "nome": "Almoço",
           "itens": [
             {
               "id": "r3i1",
-              "alternativas": ["150 g de frango grelhado", "150 g de tilápia"],
+              "opcoes": [
+                { "alimento": "Filé de frango grelhado", "quantidade": 150, "unidade": "g" },
+                { "alimento": "Tilápia grelhada", "quantidade": 150, "unidade": "g" }
+              ],
               "macros": { "proteinaG": 45, "carboidratoG": 0, "gorduraG": 5 }
             },
             {
               "id": "r3i2",
-              "alternativas": ["100 g de arroz", "200 g de batata"],
+              "opcoes": [
+                { "alimento": "Arroz branco cozido", "quantidade": 100, "unidade": "g" },
+                { "alimento": "Batata cozida", "quantidade": 200, "unidade": "g" }
+              ],
               "macros": { "proteinaG": 2.5, "carboidratoG": 28, "gorduraG": 0.2 }
             },
             {
               "id": "r3i3",
-              "alternativas": ["120 g de vegetais"],
+              "opcoes": [{ "alimento": "Vegetais variados", "quantidade": 120, "unidade": "g" }],
               "macros": { "proteinaG": 2, "carboidratoG": 8, "gorduraG": 0 }
             }
           ]
@@ -121,19 +195,19 @@
             {
               "id": "s1",
               "nome": "Magnésio dimalato",
-              "dose": "200 mg",
+              "dose": { "quantidade": 200, "unidade": "mg" },
               "posologia": {
                 "ancora": { "tipo": "apos-refeicao", "refeicao": 1 },
-                "dosesPorDia": 1
+                "vezesPorDia": 1
               }
             },
             {
               "id": "s2",
               "nome": "Ômega 3",
-              "dose": "4 cápsulas",
+              "dose": { "quantidade": 4, "unidade": "capsula" },
               "posologia": {
                 "ancora": { "tipo": "apos-refeicao", "refeicao": 1 },
-                "dosesPorDia": 1
+                "vezesPorDia": 1
               }
             }
           ]
@@ -144,20 +218,20 @@
             {
               "id": "s3",
               "nome": "Creatina",
-              "dose": "5 g",
+              "dose": { "quantidade": 5, "unidade": "g" },
               "posologia": {
                 "ancora": { "tipo": "livre" },
-                "dosesPorDia": 1,
+                "vezesPorDia": 1,
                 "observacao": "Após qualquer refeição, a que for mais prática"
               }
             },
             {
               "id": "s4",
               "nome": "Pré-treino",
-              "dose": "2 scoops",
+              "dose": { "quantidade": 2, "unidade": "scoop" },
               "posologia": {
                 "ancora": { "tipo": "antes-do-treino" },
-                "dosesPorDia": 1,
+                "vezesPorDia": 1,
                 "duracaoDias": 60
               }
             }

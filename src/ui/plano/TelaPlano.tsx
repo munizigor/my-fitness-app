@@ -36,19 +36,24 @@ export function TelaPlano() {
           <p className="plano__linha">
             {t('plano.resumoTreino', {
               sessoes: arquivo.plano.treino.sessoes.length,
-              min: arquivo.plano.treino.intervaloEntreSeriesSegundos.min,
-              max: arquivo.plano.treino.intervaloEntreSeriesSegundos.max,
+              exercicios: arquivo.plano.treino.exercicios.length,
+              min: arquivo.plano.treino.descansoEntreSeries.minSegundos,
+              max: arquivo.plano.treino.descansoEntreSeries.maxSegundos,
             })}
           </p>
           <p className="plano__linha">
             {t('plano.resumoNutricao', {
               refeicoes: arquivo.plano.nutricao.refeicoes.length,
-              litros: arquivo.plano.nutricao.hidratacaoLitros,
+              litros: arquivo.plano.nutricao.hidratacaoDiariaLitros,
             })}
           </p>
           <p className="plano__linha">
             {t('plano.resumoSuplementos', {
               formulas: arquivo.plano.suplementacao.formulas.length,
+              suplementos: arquivo.plano.suplementacao.formulas.reduce(
+                (total, f) => total + f.itens.length,
+                0
+              ),
             })}
           </p>
         </div>

@@ -68,7 +68,14 @@ export class ImportarPlano {
     } catch {
       // SyntaxError cru não diz nada ao aluno. Aqui vira erro de domínio, com
       // o mesmo formato de qualquer outro problema do arquivo.
-      throw new ArquivoInvalidoError([{ campo: '', mensagem: 'o arquivo não é um JSON válido' }])
+      throw new ArquivoInvalidoError([
+        {
+          onde: 'Arquivo',
+          oQue: 'Conteúdo',
+          mensagem: 'não parece ser um arquivo de plano — o conteúdo está corrompido',
+          caminhoTecnico: '',
+        },
+      ])
     }
   }
 }

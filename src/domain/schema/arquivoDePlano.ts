@@ -1,60 +1,131 @@
 import { z } from 'zod'
-import { ArquivoInvalidoError, type ProblemaNoArquivo } from '../errors/ArquivoInvalidoError'
-import { PrescricaoInvalidaError } from '../errors/PrescricaoInvalidaError'
-import { analisarPrescricao, type Prescricao } from '../treino/prescricao'
+import { ArquivoInvalidoError } from '../errors/ArquivoInvalidoError'
+import { descreverProblema } from './descreverProblema'
 
-// Quem lê estas mensagens é o profissional que montou o plano, para saber o que
-// corrigir. Sem isto, metade do diagnóstico chega em inglês ("Invalid input")
-// dentro de um app em português — e a tela de erro deixa de cumprir sua função.
+/**
+ * O formato do plano que o profissional envia ao aluno.
+ *
+ * O princípio que orienta cada campo: **o modelo guarda significado, não a
+ * notação com que o dado é escrito numa planilha.** "4x10a12" é uma forma de
+ * escrever "4 séries de 10 a 12 repetições"; o que viaja no arquivo é o
+ * significado. A notação vira, no máximo, atalho de digitação no editor do
+ * profissional (`interpretarAtalhoDePrescricao`).
+ *
+ * O critério para decidir se um campo vira estrutura ou fica texto livre:
+ * **o app precisa calcular com isso, ou é instrução para uma pessoa ler?**
+ * Séries e quantidades viram números. "Descer até o talo" continua texto,
+ * porque é exatamente isso que é.
+ */
+
+// Mensagens que não mapeamos caem no locale do Zod; as que importam são
+// reescritas em `descreverProblema`, na linguagem de quem monta o plano.
 z.config(z.locales.pt())
 
 export const FORMATO = 'fitvault-plano'
-export const SCHEMA_VERSION_ATUAL = 1
+export const SCHEMA_VERSION_ATUAL = 2
 
 export const DIAS_DA_SEMANA = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'] as const
 export type DiaDaSemana = (typeof DIAS_DA_SEMANA)[number]
 
-const textoNaoVazio = z.string().trim().min(1)
-const inteiroPositivo = z.number().int().positive()
+/**
+ * Vocabulário controlado porque o app **agrega** por ele: é o que permite
+ * mostrar "volume de costas subiu 15% em 4 semanas", que a planilha nunca
+ * conseguiu. Texto livre aqui viraria "Costas", "costas" e "dorsais" como três
+ * grupos diferentes, e a soma perderia o sentido.
+ */
+export const GRUPOS_MUSCULARES = [
+  'peito',
+  'costas',
+  'ombros',
+  'biceps',
+  'triceps',
+  'antebraco',
+  'quadriceps',
+  'posteriores',
+  'gluteos',
+  'panturrilhas',
+  'abdomen',
+] as const
+export type GrupoMuscular = (typeof GRUPOS_MUSCULARES)[number]
+
+/** Unidades em que um profissional realmente escreve uma porção. */
+export const UNIDADES_DE_ALIMENTO = [
+  'g',
+  'ml',
+  'unidade',
+  'fatia',
+  'colher-de-sopa',
+  'colher-de-cha',
+  'xicara',
+  'concha',
+] as const
+
+/** Unidades em que um profissional realmente escreve uma dose. */
+export const UNIDADES_DE_DOSE = [
+  'mg',
+  'g',
+  'ml',
+  'capsula',
+  'comprimido',
+  'scoop',
+  'sache',
+  'gota',
+] as const
+
+const texto = z.string().trim().min(1)
+const contagem = z.number().int().positive()
+const medida = z.number().positive()
 const gramas = z.number().nonnegative()
 
+// --- Treino ----------------------------------------------------------------
+
 /**
- * A coluna SxR chega como o profissional escreveu e é interpretada **aqui**,
- * na leitura do arquivo. Falhar no import é melhor que falhar na academia:
- * o erro sai com o caminho do campo, e o profissional corrige antes de mandar.
+ * O exercício em si, independente de onde é usado. Separá-lo da prescrição é o
+ * que permite a mesma Prancha Lateral aparecer duas vezes num treino — uma por
+ * lado, distinguidas pela observação — sem virar dois exercícios diferentes no
+ * histórico de evolução.
  */
-const prescricao = textoNaoVazio.transform((texto, ctx): Prescricao => {
-  try {
-    return analisarPrescricao(texto)
-  } catch (erro) {
-    ctx.addIssue({
-      code: 'custom',
-      message: erro instanceof PrescricaoInvalidaError ? erro.motivo : 'não pôde ser interpretada',
-    })
-    return z.NEVER
-  }
+const exercicio = z.object({
+  id: texto,
+  nome: texto,
+  gruposMusculares: z.array(z.enum(GRUPOS_MUSCULARES)).min(1),
 })
 
-const exercicio = z.object({
-  id: textoNaoVazio,
-  nome: textoNaoVazio,
-  prescricao,
-  tecnicaAvancada: textoNaoVazio.optional(),
+/** O que o aluno faz em cada série: repetições numa faixa, ou tempo sustentado. */
+const execucao = z.discriminatedUnion('tipo', [
+  z
+    .object({ tipo: z.literal('repeticoes'), min: contagem, max: contagem })
+    .refine((r) => r.max >= r.min, { message: 'o mínimo não pode ser maior que o máximo' }),
+  z.object({ tipo: z.literal('tempo'), segundos: contagem }),
+])
+
+/** O uso de um exercício dentro de um treino: séries, execução, carga, observação. */
+const itemDeTreino = z.object({
+  id: texto,
+  exercicioId: texto,
+  series: contagem,
+  execucao,
+  /** Opcional: nem todo profissional prescreve carga, e o aluno registra a real. */
+  cargaAlvoKg: medida.optional(),
+  /** Texto livre do profissional: técnica, cue, lado. Instrução para gente ler. */
+  observacao: texto.optional(),
 })
 
 const sessaoTreino = z.object({
-  id: textoNaoVazio,
-  rotulo: textoNaoVazio,
-  foco: z.enum(['superior', 'inferior', 'corpo-inteiro']),
-  exercicios: z.array(exercicio).min(1),
+  id: texto,
+  rotulo: texto,
+  // Rótulo livre: cada profissional usa o seu vocabulário — Upper/Lower,
+  // Push/Pull/Legs, ABC. O app exibe, não calcula.
+  foco: texto.optional(),
+  itens: z.array(itemDeTreino).min(1),
 })
 
-const aerobico = z.object({ tipo: textoNaoVazio, minutos: inteiroPositivo })
+const aerobico = z.object({ modalidade: texto, duracaoMinutos: contagem })
 
-// Descanso é ausência, não uma sessão especial: `null` diz isso sem inventar
-// uma entidade "Descanso" que a UI teria que filtrar em todo lugar.
+// Descanso é ausência (`null`), não uma sessão especial que a UI teria que
+// filtrar em todo lugar.
 const agendaDoDia = z.object({
-  musculacao: textoNaoVazio.nullable(),
+  sessaoId: texto.nullable(),
   aerobico: aerobico.nullable(),
 })
 
@@ -65,157 +136,174 @@ const agendaSemanal = z.object(
   >
 )
 
-const intervalo = z
-  .object({ min: inteiroPositivo, max: inteiroPositivo })
-  .refine((i) => i.max >= i.min, { message: 'o intervalo está invertido (min maior que max)' })
-
 const treino = z.object({
-  intervaloEntreSeriesSegundos: intervalo,
+  descansoEntreSeries: z
+    .object({ minSegundos: contagem, maxSegundos: contagem })
+    .refine((d) => d.maxSegundos >= d.minSegundos, {
+      message: 'o descanso mínimo não pode ser maior que o máximo',
+    }),
+  exercicios: z.array(exercicio).min(1),
   sessoes: z.array(sessaoTreino).min(1),
   agendaSemanal,
 })
 
+// --- Nutrição --------------------------------------------------------------
+
 const macros = z.object({ proteinaG: gramas, carboidratoG: gramas, gorduraG: gramas })
 
+/** Uma porção concreta: alimento, quanto e em que unidade. */
+const opcaoDeItem = z.object({
+  alimento: texto,
+  quantidade: medida,
+  unidade: z.enum(UNIDADES_DE_ALIMENTO),
+})
+
 /**
- * Os macros ficam no item, não na alternativa: na prescrição real as
- * alternativas de um mesmo item são equivalentes em macro por construção
- * ("100 g de arroz OU 200 g de batata"). Escolher qual foi consumida registra
- * o que o aluno comeu para o profissional ler — não altera a soma do dia.
+ * Um item da refeição, com as opções que o aluno pode escolher entre si.
+ *
+ * Os macros ficam no item, não na opção: o profissional escolhe as quantidades
+ * justamente para que as opções sejam equivalentes ("100 g de arroz OU 200 g de
+ * batata"). Escolher qual foi consumida registra o que o aluno comeu para o
+ * profissional ler — não altera a soma do dia.
  */
 const itemDeRefeicao = z.object({
-  id: textoNaoVazio,
-  alternativas: z.array(textoNaoVazio).min(1),
+  id: texto,
+  opcoes: z.array(opcaoDeItem).min(1),
   macros,
 })
 
 const refeicao = z.object({
-  numero: inteiroPositivo,
+  numero: contagem,
+  nome: texto.optional(),
   itens: z.array(itemDeRefeicao).min(1),
 })
 
 const nutricao = z.object({
   macrosAlvoDiario: macros,
-  hidratacaoLitros: z.number().positive(),
+  hidratacaoDiariaLitros: medida,
   refeicoes: z.array(refeicao).min(1),
-  vegetaisSugeridos: z.array(textoNaoVazio),
+  vegetaisSugeridos: z.array(texto),
 })
 
+// --- Suplementação ---------------------------------------------------------
+
 /**
- * Posologia é âncora temporal, não rótulo. É o que permite dissolver a lista de
- * suplementos dentro da linha do tempo do dia, em vez de virar uma aba que o
- * aluno nunca abre no momento em que deveria tomar.
+ * Quando tomar é âncora temporal, não rótulo. É o que permite dissolver a lista
+ * de suplementos dentro da linha do tempo do dia, em vez de virar uma aba que o
+ * aluno nunca abre na hora em que deveria tomar.
  */
 const ancora = z.discriminatedUnion('tipo', [
-  z.object({ tipo: z.literal('apos-refeicao'), refeicao: inteiroPositivo }),
+  z.object({ tipo: z.literal('apos-refeicao'), refeicao: contagem }),
   z.object({ tipo: z.literal('antes-do-treino') }),
   z.object({ tipo: z.literal('livre') }),
 ])
 
 const suplemento = z.object({
-  id: textoNaoVazio,
-  nome: textoNaoVazio,
-  dose: textoNaoVazio,
+  id: texto,
+  nome: texto,
+  dose: z.object({ quantidade: medida, unidade: z.enum(UNIDADES_DE_DOSE) }),
   posologia: z.object({
     ancora,
-    dosesPorDia: inteiroPositivo,
-    duracaoDias: inteiroPositivo.optional(),
-    observacao: textoNaoVazio.optional(),
+    vezesPorDia: contagem,
+    duracaoDias: contagem.optional(),
+    observacao: texto.optional(),
   }),
 })
 
-const formula = z.object({ nome: textoNaoVazio, itens: z.array(suplemento).min(1) })
+const formula = z.object({ nome: texto, itens: z.array(suplemento).min(1) })
 
 const suplementacao = z.object({ formulas: z.array(formula) })
+
+// --- Arquivo ---------------------------------------------------------------
 
 const arquivoDePlano = z
   .object({
     formato: z.literal(FORMATO),
     schemaVersion: z.literal(SCHEMA_VERSION_ATUAL),
     emitidoEm: z.iso.date(),
-    profissional: z.object({ nome: textoNaoVazio, registro: textoNaoVazio.optional() }),
-    aluno: z.object({
-      nome: textoNaoVazio,
-      idade: inteiroPositivo,
-      alturaMetros: z.number().positive(),
-    }),
+    profissional: z.object({ nome: texto, registro: texto.optional() }),
+    aluno: z.object({ nome: texto, idade: contagem, alturaMetros: medida }),
     plano: z.object({ treino, nutricao, suplementacao }),
   })
   .superRefine(conferirIntegridadeReferencial)
 
 export type ArquivoDePlano = z.infer<typeof arquivoDePlano>
+export type Exercicio = z.infer<typeof exercicio>
+export type ItemDeTreino = z.infer<typeof itemDeTreino>
+export type Execucao = z.infer<typeof execucao>
 export type SessaoTreino = z.infer<typeof sessaoTreino>
-export type ExercicioPrescrito = z.infer<typeof exercicio>
 export type Refeicao = z.infer<typeof refeicao>
 export type ItemDeRefeicao = z.infer<typeof itemDeRefeicao>
+export type OpcaoDeItem = z.infer<typeof opcaoDeItem>
 export type Suplemento = z.infer<typeof suplemento>
 export type AgendaDoDia = z.infer<typeof agendaDoDia>
 export type Macros = z.infer<typeof macros>
 
 /**
- * Zod valida cada campo isoladamente; estas são as regras que só existem entre
- * campos. Um plano que aponta para um treino inexistente passa em toda validação
- * de tipo e ainda assim quebra na tela do aluno numa terça-feira.
+ * As regras que só existem **entre** campos, e que a validação de tipo nunca
+ * pegaria. Um plano que aponta para um treino inexistente passa em toda checagem
+ * de formato e mesmo assim quebra na tela do aluno numa terça-feira.
  */
 function conferirIntegridadeReferencial(
-  arquivo: {
-    plano: {
-      treino: {
-        sessoes: { id: string }[]
-        agendaSemanal: Record<string, { musculacao: string | null }>
-      }
-      nutricao: { refeicoes: { numero: number }[] }
-      suplementacao: {
-        formulas: { itens: { posologia: { ancora: { tipo: string; refeicao?: number } } }[] }[]
-      }
-    }
-  },
+  arquivo: z.infer<typeof arquivoDePlano>,
   ctx: z.RefinementCtx
 ): void {
-  const { treino, nutricao, suplementacao } = arquivo.plano
+  const { treino: t, nutricao: n, suplementacao: s } = arquivo.plano
 
-  const vistos = new Set<string>()
-  treino.sessoes.forEach((sessao, i) => {
-    if (vistos.has(sessao.id)) {
+  const exercicios = new Set<string>()
+  t.exercicios.forEach((e, i) => {
+    if (exercicios.has(e.id)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['plano', 'treino', 'exercicios', i, 'id'],
+        message: 'está repetido: dois exercícios não podem ter o mesmo identificador',
+      })
+    }
+    exercicios.add(e.id)
+  })
+
+  const sessoes = new Set<string>()
+  t.sessoes.forEach((sessao, i) => {
+    if (sessoes.has(sessao.id)) {
       ctx.addIssue({
         code: 'custom',
         path: ['plano', 'treino', 'sessoes', i, 'id'],
-        message: `identificador de sessão repetido: ${sessao.id}`,
+        message: 'está repetido: dois treinos não podem ter o mesmo identificador',
       })
     }
-    vistos.add(sessao.id)
+    sessoes.add(sessao.id)
+
+    sessao.itens.forEach((item, j) => {
+      if (!exercicios.has(item.exercicioId)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['plano', 'treino', 'sessoes', i, 'itens', j, 'exercicioId'],
+          message: 'aponta para um exercício que não está na lista de exercícios do plano',
+        })
+      }
+    })
   })
 
   for (const dia of DIAS_DA_SEMANA) {
-    const id = treino.agendaSemanal[dia]?.musculacao
-    if (id !== null && id !== undefined && !vistos.has(id)) {
+    const id = arquivo.plano.treino.agendaSemanal[dia].sessaoId
+    if (id !== null && !sessoes.has(id)) {
       ctx.addIssue({
         code: 'custom',
-        path: ['plano', 'treino', 'agendaSemanal', dia, 'musculacao'],
-        message: `aponta para a sessão "${id}", que o plano não tem`,
+        path: ['plano', 'treino', 'agendaSemanal', dia, 'sessaoId'],
+        message: 'marca um treino que não existe no plano',
       })
     }
   }
 
-  const refeicoes = new Set(nutricao.refeicoes.map((r) => r.numero))
-  suplementacao.formulas.forEach((f, fi) => {
+  const refeicoes = new Set(n.refeicoes.map((r) => r.numero))
+  s.formulas.forEach((f, fi) => {
     f.itens.forEach((item, ii) => {
       const { ancora: a } = item.posologia
-      if (a.tipo === 'apos-refeicao' && a.refeicao !== undefined && !refeicoes.has(a.refeicao)) {
+      if (a.tipo === 'apos-refeicao' && !refeicoes.has(a.refeicao)) {
         ctx.addIssue({
           code: 'custom',
-          path: [
-            'plano',
-            'suplementacao',
-            'formulas',
-            fi,
-            'itens',
-            ii,
-            'posologia',
-            'ancora',
-            'refeicao',
-          ],
-          message: `ancorado na refeição ${a.refeicao}, que o plano não tem`,
+          path: ['plano', 'suplementacao', 'formulas', fi, 'itens', ii, 'posologia', 'ancora'],
+          message: `manda tomar após a refeição ${a.refeicao}, que o plano alimentar não tem`,
         })
       }
     })
@@ -224,15 +312,13 @@ function conferirIntegridadeReferencial(
 
 /**
  * Lê o arquivo que o profissional enviou. Falha com todos os problemas de uma
- * vez, cada um com o caminho do campo — nunca em silêncio, nunca adivinhando.
+ * vez, cada um localizado em linguagem de negócio — nunca em silêncio.
  */
 export function lerArquivoDePlano(entrada: unknown): ArquivoDePlano {
   const resultado = arquivoDePlano.safeParse(entrada)
   if (resultado.success) return resultado.data
 
-  const problemas: ProblemaNoArquivo[] = resultado.error.issues.map((issue) => ({
-    campo: issue.path.join('.'),
-    mensagem: issue.message,
-  }))
-  throw new ArquivoInvalidoError(problemas)
+  throw new ArquivoInvalidoError(
+    resultado.error.issues.map((issue) => descreverProblema(issue, entrada))
+  )
 }

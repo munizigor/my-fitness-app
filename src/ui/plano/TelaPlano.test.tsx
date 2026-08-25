@@ -47,7 +47,7 @@ describe('TelaPlano', () => {
     await waitFor(() => {
       expect(screen.getByText('Prescrito por Ana Ribeiro')).toBeInTheDocument()
     })
-    expect(screen.getByText(/2 treinos · descanso de 60 a 70 s/)).toBeInTheDocument()
+    expect(screen.getByText(/2 treinos · 5 exercícios · descanso de 60 a 70 s/)).toBeInTheDocument()
     expect(screen.getByText(/3 refeições por dia · 4 L de água/)).toBeInTheDocument()
   })
 
@@ -67,7 +67,7 @@ describe('TelaPlano', () => {
     it('aponta o campo errado, para o profissional poder corrigir', async () => {
       const ruim = structuredClone(planoValido) as Record<string, unknown>
       // @ts-expect-error navegação em JSON solto, só no teste
-      ruim.plano.treino.sessoes[0].exercicios[0].prescricao = 'abc'
+      delete ruim.plano.treino.sessoes[0].itens[0].series
 
       renderizar()
       await userEvent.upload(
@@ -77,7 +77,10 @@ describe('TelaPlano', () => {
 
       const alerta = await screen.findByRole('alert')
       expect(alerta).toHaveTextContent('Não consegui ler este arquivo')
-      expect(alerta).toHaveTextContent('plano.treino.sessoes.0.exercicios.0.prescricao')
+      // Localizado em linguagem de negócio, não por caminho de JSON.
+      expect(alerta).toHaveTextContent('Treino A · Puxada Frontal Pronada')
+      expect(alerta).toHaveTextContent('Séries')
+      expect(alerta).toHaveTextContent('não foi preenchido')
     })
 
     it('tranquiliza o aluno: nada mudou no aparelho dele', async () => {
@@ -88,7 +91,7 @@ describe('TelaPlano', () => {
       )
 
       const alerta = await screen.findByRole('alert')
-      expect(alerta).toHaveTextContent('Nada foi alterado no seu aparelho')
+      expect(alerta).toHaveTextContent('Nada mudou no seu aparelho')
     })
 
     it('não apaga o plano que já estava carregado', async () => {

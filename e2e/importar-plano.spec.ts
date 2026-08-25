@@ -27,7 +27,7 @@ test.describe('importar o plano do profissional', () => {
     await page.getByLabel('Importar arquivo do profissional').setInputFiles(FIXTURE)
 
     await expect(page.getByText('Prescrito por Ana Ribeiro')).toBeVisible()
-    await expect(page.getByText(/2 treinos · descanso de 60 a 70 s/)).toBeVisible()
+    await expect(page.getByText(/2 treinos · 5 exercícios · descanso de 60 a 70 s/)).toBeVisible()
   })
 
   test('o plano sobrevive a recarregar a página — está em OPFS, não na memória', async ({
@@ -74,9 +74,9 @@ test.describe('importar o plano do profissional', () => {
     await expect(page.getByText('Prescrito por Ana Ribeiro')).toBeVisible()
 
     const corrompido = JSON.parse(readFileSync(FIXTURE, 'utf8')) as {
-      plano: { treino: { sessoes: { exercicios: { prescricao: string }[] }[] } }
+      plano: { treino: { sessoes: { itens: { series?: number }[] }[] } }
     }
-    corrompido.plano.treino.sessoes[0]!.exercicios[0]!.prescricao = 'abc'
+    delete corrompido.plano.treino.sessoes[0]!.itens[0]!.series
 
     await page.getByLabel('Importar arquivo do profissional').setInputFiles({
       name: 'corrompido.fitvault.json',
@@ -84,9 +84,24 @@ test.describe('importar o plano do profissional', () => {
       buffer: Buffer.from(JSON.stringify(corrompido)),
     })
 
+    // O que o profissional lê está em termos que ele reconhece na própria
+    // prescrição: qual treino, qual exercício, qual campo.
     const alerta = page.getByRole('alert')
     await expect(alerta).toContainText('Não consegui ler este arquivo')
-    await expect(alerta).toContainText('plano.treino.sessoes.0.exercicios.0.prescricao')
+    await expect(alerta.getByRole('listitem').first()).toContainText(
+      'Treino A · Puxada Frontal Pronada'
+    )
+    await expect(alerta.getByRole('listitem').first()).toContainText('Séries')
+    await expect(alerta.getByRole('listitem').first()).toContainText('não foi preenchido')
+
+    // O caminho técnico existe para quem depura o app, mas fica recolhido:
+    // ninguém precisa vê-lo para entender o que fazer.
+    const caminhoTecnico = alerta.locator('details code')
+    await expect(caminhoTecnico).toHaveText('plano.treino.sessoes.0.itens.0.series')
+    await expect(caminhoTecnico).not.toBeVisible()
+
+    await alerta.locator('details summary').click()
+    await expect(caminhoTecnico).toBeVisible()
 
     // O plano bom continua no lugar, inclusive depois de recarregar.
     await page.reload()
