@@ -13,7 +13,10 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - [x] `docs/` — arquitetura, modelo de dados, interface, processo de negócio, ADRs
 - [x] Bootstrap da stack travada (Vite, TS strict, ESLint/Prettier, Vitest, Playwright, PWA)
 - [x] `.github/workflows/deploy.yml` — pipeline para GitHub Pages
-- [ ] Primeiro deploy verde publicando o app shell — prova o pipeline antes de existir produto
+- [x] Primeiro deploy verde publicando o app shell — prova o pipeline antes de existir produto
+      → no ar em https://munizigor.github.io/my-fitness-app/ (run #4, commit `e9850b6`)
+
+**Etapa 0 concluída.** Os três jobs verdes em `main`: verificação, E2E em Chromium e publicação.
 
 ### Stories
 
@@ -58,7 +61,10 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 
 ## Dívida técnica assumida
 
-- Nenhuma até o momento.
+- **Actions em Node 20.** `actions/checkout@v4`, `configure-pages@v5`, `deploy-pages@v4`,
+  `setup-node@v4` e `upload-artifact@v4` declaram Node 20, que o GitHub depreciou e já
+  força para Node 24. Hoje é aviso; vira falha quando a compatibilidade for removida.
+  Subir as versões quando as `@v5`/`@v6` correspondentes estabilizarem.
 
 ## Decisões pendentes
 
