@@ -17,7 +17,7 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 
 ### Stories
 
-- [ ] **1. Parser de prescrição** — o app entende `3x10a12`, `2x60'`, `2 cada lado`.
+- [x] **1. Parser de prescrição** — o app entende `3x10a12` (faixa de repetições) e `2x60'` (tempo sob tensão).
       _Aceite:_ casos reais da planilha parseados; entrada desconhecida falha com erro tipado, nunca em silêncio.
       _Puro `domain`, TDD sem infraestrutura. Primeira story do projeto._
 

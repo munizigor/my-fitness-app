@@ -36,11 +36,12 @@ Da aba de assessoria esportiva.
 | `4x10a12`         | 4 séries de 10 a 12 repetições      |
 | `2x60'`           | 2 séries de 60 segundos (isometria) |
 | `3x60'`           | 3 séries de 60 segundos             |
-| `2 cada lado`     | qualificador: repetir por lado      |
+
+São duas formas: **faixa de repetições** e **tempo sob tensão**. O apóstrofo marca segundos, não minutos — `2x60'` é prancha lateral por um minuto, não por uma hora.
 
 Isso pede um parser puro em `domain/treino`. Entrada desconhecida falha com erro tipado, nunca em silêncio.
 
-`Técnica Avançada` é texto livre do profissional (`DESCER ATÉ O TALO`, `BARRA TOCAR NO CHÃO EM TODAS REPS`, `REMAR CORPO TOTALMENTE 90 GRAUS`) e fica sempre visível junto ao exercício durante a execução.
+`Técnica Avançada` é texto livre do profissional e fica sempre visível junto ao exercício durante a execução. Na planilha real aparecem `DESCER ATÉ O TALO`, `BARRA TOCAR NO CHÃO EM TODAS REPS`, `REMAR CORPO TOTALMENTE 90 GRAUS` e também `2 cada lado` — que **é qualificador de execução, não prescrição**: ocupa a coluna de técnica, não a de `SxR`, e por isso não passa pelo parser.
 
 ## Origem: nutrição
 

@@ -2,6 +2,20 @@
 
 ## [Não lançado]
 
+### Story 1 — Parser de prescrição
+
+- `analisarPrescricao` em `domain/treino` entende as duas formas da coluna `SxR`:
+  faixa de repetições (`3x10a12`) e tempo sob tensão (`2x60'`)
+- Tolera o que um humano varia sem querer numa planilha — espaços, caixa e o
+  apóstrofo tipográfico — e nada além disso
+- Falha com `PrescricaoInvalidaError`, que carrega o texto ofensivo para o import
+  poder apontar o campo errado do arquivo do profissional
+- `ErroDeDominio` como base de erro de negócio, distinguindo "o dado está errado"
+  de "o app quebrou"
+- **Correção de modelo:** `2 cada lado` estava documentado como forma de `SxR`.
+  A extração da planilha mostra que ocupa a coluna de Técnica Avançada — é
+  qualificador de execução, não prescrição, e não passa pelo parser
+
 ### Etapa 0 — Fundação
 
 - Documentos de método: `CLAUDE.md`, `.claude/PROBLEMA.md`, `.claude/PLANO.md`, `.claude/settings.json`
