@@ -46,7 +46,7 @@ export function progressoPorExercicio(
   plano: ArquivoDePlano['plano'],
   historico: readonly RegistroDiario[]
 ): ProgressoDeExercicio[] {
-  const exercicioDoItem = indexarItens(plano)
+  const exercicioDoItem = exercicioPorItem(plano)
   const porExercicio = new Map<string, Map<string, SessaoEmConstrucao>>()
 
   for (const registro of historico) {
@@ -132,7 +132,7 @@ function maisRecentePrimeiro(a: ProgressoDeExercicio, b: ProgressoDeExercicio): 
  * lados da prancha na hora de sugerir carga). Reconstruir o caminho de volta é
  * o que permite somar as duas prescrições numa trajetória só.
  */
-function indexarItens(plano: ArquivoDePlano['plano']): Map<string, string> {
+export function exercicioPorItem(plano: ArquivoDePlano['plano']): Map<string, string> {
   const porItem = new Map<string, string>()
   for (const sessao of plano.treino.sessoes) {
     for (const item of sessao.itens) porItem.set(item.id, item.exercicioId)
