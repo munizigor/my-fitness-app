@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { ArquivoInvalidoError } from '../errors/ArquivoInvalidoError'
 import { descreverProblema } from './descreverProblema'
+import { conferirInvariantes } from './invariantes'
 
 /**
  * O formato do plano que o profissional envia ao aluno.
@@ -225,7 +226,15 @@ const arquivoDePlano = z
     aluno: z.object({ nome: texto, idade: contagem, alturaMetros: medida }),
     plano: z.object({ treino, nutricao, suplementacao }),
   })
-  .superRefine(conferirIntegridadeReferencial)
+  .superRefine((arquivo, ctx) => {
+    // As regras de negócio moram em `invariantes/`, desacopladas do Zod. Aqui
+    // só acontece a adaptação para o formato de erro da biblioteca — num lugar
+    // só, para que acrescentar uma invariante não seja acrescentar código de
+    // validação.
+    for (const { caminho, mensagem } of conferirInvariantes(arquivo)) {
+      ctx.addIssue({ code: 'custom', path: [...caminho], message: mensagem })
+    }
+  })
 
 export type ArquivoDePlano = z.infer<typeof arquivoDePlano>
 export type Exercicio = z.infer<typeof exercicio>
@@ -239,77 +248,6 @@ export type Suplemento = z.infer<typeof suplemento>
 export type AgendaDoDia = z.infer<typeof agendaDoDia>
 export type Aerobico = z.infer<typeof aerobico>
 export type Macros = z.infer<typeof macros>
-
-/**
- * As regras que só existem **entre** campos, e que a validação de tipo nunca
- * pegaria. Um plano que aponta para um treino inexistente passa em toda checagem
- * de formato e mesmo assim quebra na tela do aluno numa terça-feira.
- */
-function conferirIntegridadeReferencial(
-  arquivo: z.infer<typeof arquivoDePlano>,
-  ctx: z.RefinementCtx
-): void {
-  const { treino: t, nutricao: n, suplementacao: s } = arquivo.plano
-
-  const exercicios = new Set<string>()
-  t.exercicios.forEach((e, i) => {
-    if (exercicios.has(e.id)) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['plano', 'treino', 'exercicios', i, 'id'],
-        message: 'está repetido: dois exercícios não podem ter o mesmo identificador',
-      })
-    }
-    exercicios.add(e.id)
-  })
-
-  const sessoes = new Set<string>()
-  t.sessoes.forEach((sessao, i) => {
-    if (sessoes.has(sessao.id)) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['plano', 'treino', 'sessoes', i, 'id'],
-        message: 'está repetido: dois treinos não podem ter o mesmo identificador',
-      })
-    }
-    sessoes.add(sessao.id)
-
-    sessao.itens.forEach((item, j) => {
-      if (!exercicios.has(item.exercicioId)) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['plano', 'treino', 'sessoes', i, 'itens', j, 'exercicioId'],
-          message: 'aponta para um exercício que não está na lista de exercícios do plano',
-        })
-      }
-    })
-  })
-
-  for (const dia of DIAS_DA_SEMANA) {
-    const id = arquivo.plano.treino.agendaSemanal[dia].sessaoId
-    if (id !== null && !sessoes.has(id)) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['plano', 'treino', 'agendaSemanal', dia, 'sessaoId'],
-        message: 'marca um treino que não existe no plano',
-      })
-    }
-  }
-
-  const refeicoes = new Set(n.refeicoes.map((r) => r.numero))
-  s.formulas.forEach((f, fi) => {
-    f.itens.forEach((item, ii) => {
-      const { ancora: a } = item.posologia
-      if (a.tipo === 'apos-refeicao' && !refeicoes.has(a.refeicao)) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['plano', 'suplementacao', 'formulas', fi, 'itens', ii, 'posologia', 'ancora'],
-          message: `manda tomar após a refeição ${a.refeicao}, que o plano alimentar não tem`,
-        })
-      }
-    })
-  })
-}
 
 /**
  * Lê o arquivo que o profissional enviou. Falha com todos os problemas de uma
