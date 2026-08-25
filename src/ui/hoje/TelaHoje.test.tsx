@@ -20,6 +20,7 @@ function renderizar(hoje: string) {
 
 const SEGUNDA = '2026-08-24'
 const QUINTA = '2026-08-27'
+const SABADO = '2026-08-29'
 
 function comPlano() {
   useVault.setState({
@@ -56,15 +57,28 @@ describe('TelaHoje', () => {
       expect(screen.getByRole('heading', { name: 'Segunda-feira' })).toBeInTheDocument()
     })
 
-    it('põe cada suplemento junto do momento a que pertence', () => {
+    it('põe o suplemento dentro da refeição, não como cartão ao lado', () => {
       renderizar(SEGUNDA)
-      const ordem = ordemVisivel()
 
       // Este é o produto: na planilha o aluno teria que cruzar a aba de
       // suplementos com a de nutrição para saber o que tomar depois do café.
-      expect(ordem[0]).toBe('Café da manhã')
-      expect(ordem[1]).toBe('Suplementos · depois da refeição 1')
-      expect(ordem).toContain('Suplementos · antes do treino')
+      // E tomar o magnésio é parte de tomar café, não um compromisso à parte.
+      const cafe = screen.getByText('Café da manhã').closest('li')!
+      expect(within(cafe).getByText('Magnésio dimalato')).toBeInTheDocument()
+      expect(within(cafe).getByText('Ômega 3')).toBeInTheDocument()
+
+      expect(ordemVisivel()).toEqual([
+        'Café da manhã',
+        'Treino A · Superior',
+        'Lanche da manhã',
+        'Almoço',
+      ])
+    })
+
+    it('põe o pré-treino dentro do bloco de treino', () => {
+      renderizar(SEGUNDA)
+      const treino = screen.getByText('Treino A').closest('li')!
+      expect(within(treino).getByText('Pré-treino')).toBeInTheDocument()
     })
 
     it('mostra o treino de hoje, com exercícios e prescrição legível', () => {
@@ -102,8 +116,15 @@ describe('TelaHoje', () => {
       expect(screen.getByText('5 g')).toBeInTheDocument()
     })
 
-    it('mostra o aeróbico com modalidade e duração', () => {
+    it('mostra o aeróbico dentro do treino — é a mesma ida à academia', () => {
       renderizar(SEGUNDA)
+      const treino = screen.getByText('Treino A').closest('li')!
+      expect(within(treino).getByText(/HIIT na esteira · 20 min/)).toBeInTheDocument()
+    })
+
+    it('mas o aeróbico sozinho ganha cartão próprio — senão sumiria do dia', () => {
+      renderizar(SABADO)
+      expect(ordemVisivel()).toContain('Aeróbico')
       const aerobico = screen.getByText('Aeróbico').closest('li')!
       expect(within(aerobico).getByText(/HIIT na esteira · 20 min/)).toBeInTheDocument()
     })

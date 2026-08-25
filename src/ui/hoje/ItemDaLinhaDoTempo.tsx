@@ -1,13 +1,17 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import type { ItemDoDia, MomentoDeSuplemento } from '../../domain/dia/montarDia'
+import type { ItemDoDia, SuplementoNoDia } from '../../domain/dia/montarDia'
 import type { Execucao } from '../../domain/schema/arquivoDePlano'
 import { formatarMedida } from '../comum/formatarMedida'
 
 /**
  * Um momento do dia, como cartão.
  *
- * Cada tipo mostra só o suficiente para o aluno decidir se é a hora de agir.
+ * Cada cartão é **um momento inteiro**, não uma linha de planilha: tomar o café
+ * inclui os suplementos ancorados nele; ir treinar inclui o pré-treino e o
+ * aeróbico. O aluno não deveria ter que perceber que três cartões seguidos são,
+ * na verdade, a mesma ida à academia.
+ *
  * O detalhe fica na tela que executa aquele momento — princípio 1: um momento
  * por vez, nunca o documento inteiro.
  */
@@ -24,26 +28,7 @@ export function ItemDaLinhaDoTempo({ item }: { item: ItemDoDia }) {
           <span className="linha__detalhe">
             {t('hoje.refeicaoItens', { count: item.refeicao.itens.length })}
           </span>
-        </li>
-      )
-
-    case 'suplementos':
-      return (
-        <li className="linha__item linha__item--suplementos">
-          <span className="linha__titulo">{tituloDoMomento(item.momento, t)}</span>
-          <ul className="suplementos">
-            {item.suplementos.map(({ suplemento }) => (
-              <li key={suplemento.id} className="suplementos__item">
-                <span className="suplementos__nome">{suplemento.nome}</span>{' '}
-                <span className="suplementos__dose">
-                  {formatarMedida(suplemento.dose.quantidade, suplemento.dose.unidade, t)}
-                </span>
-                {suplemento.posologia.observacao && (
-                  <span className="suplementos__observacao">{suplemento.posologia.observacao}</span>
-                )}
-              </li>
-            ))}
-          </ul>
+          <ListaDeSuplementos suplementos={item.suplementos} />
         </li>
       )
 
@@ -61,6 +46,9 @@ export function ItemDaLinhaDoTempo({ item }: { item: ItemDoDia }) {
               max: item.descansoEntreSeries.maxSegundos,
             })}
           </span>
+
+          <ListaDeSuplementos suplementos={item.suplementos} rotulo={t('hoje.antesDeTreinar')} />
+
           <ul className="exercicios">
             {item.exercicios.map(({ prescrito, exercicio }) => (
               <li key={prescrito.id} className="exercicios__item">
@@ -76,6 +64,17 @@ export function ItemDaLinhaDoTempo({ item }: { item: ItemDoDia }) {
               </li>
             ))}
           </ul>
+
+          {/* Faz parte da mesma ida à academia: entra no cartão do treino, não
+              como um compromisso separado depois dele. */}
+          {item.aerobico && (
+            <p className="linha__aerobico">
+              <span className="linha__aerobicoRotulo">{t('hoje.aerobico')}</span>{' '}
+              {item.aerobico.modalidade} ·{' '}
+              {t('hoje.aerobicoDuracao', { minutos: item.aerobico.duracaoMinutos })}
+            </p>
+          )}
+
           <Link to="/treino" className="botao linha__acao">
             {t('hoje.comecarTreino')}
           </Link>
@@ -95,18 +94,43 @@ export function ItemDaLinhaDoTempo({ item }: { item: ItemDoDia }) {
   }
 }
 
-type Traduzir = ReturnType<typeof useTranslation>['t']
+/**
+ * Os suplementos daquele momento, dentro do cartão dele.
+ *
+ * Some quando não há nenhum — que é o caso da maioria das refeições. Uma seção
+ * "Suplementos" vazia em quatro dos cinco cartões seria ruído puro.
+ */
+function ListaDeSuplementos({
+  suplementos,
+  rotulo,
+}: {
+  suplementos: readonly SuplementoNoDia[]
+  rotulo?: string
+}) {
+  const { t } = useTranslation()
+  if (suplementos.length === 0) return null
 
-function tituloDoMomento(momento: MomentoDeSuplemento, t: Traduzir): string {
-  switch (momento.tipo) {
-    case 'apos-refeicao':
-      return t('hoje.suplementosAposRefeicao', { numero: momento.refeicao })
-    case 'antes-do-treino':
-      return t('hoje.suplementosAntesDoTreino')
-    case 'livre':
-      return t('hoje.suplementosLivre')
-  }
+  return (
+    <div className="suplementos">
+      <span className="suplementos__rotulo">{rotulo ?? t('hoje.suplementos')}</span>
+      <ul className="suplementos__lista">
+        {suplementos.map(({ suplemento }) => (
+          <li key={suplemento.id} className="suplementos__item">
+            <span className="suplementos__nome">{suplemento.nome}</span>{' '}
+            <span className="suplementos__dose">
+              {formatarMedida(suplemento.dose.quantidade, suplemento.dose.unidade, t)}
+            </span>
+            {suplemento.posologia.observacao && (
+              <span className="suplementos__observacao">{suplemento.posologia.observacao}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }
+
+type Traduzir = ReturnType<typeof useTranslation>['t']
 
 /** `4 × 10–12` ou `2 × 60''`. A leitura que o aluno faz de relance na academia. */
 function formatarExecucao(series: number, execucao: Execucao, t: Traduzir): string {

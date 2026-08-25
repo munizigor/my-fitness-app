@@ -16,16 +16,17 @@ import { diaDaSemanaDe } from './dataLocal'
  *
  * É aqui que o app deixa de ser a planilha com CSS melhor. A planilha tem três
  * abas — treino, nutrição, suplementos — e cabe ao aluno cruzá-las de cabeça
- * para saber o que fazer às sete da manhã. Esta função faz esse cruzamento:
- * a agenda semanal escolhe o treino do dia, e a **posologia de cada suplemento
- * o coloca junto da refeição ou do treino a que pertence**.
+ * para saber o que fazer às sete da manhã. Esta função faz esse cruzamento.
+ *
+ * O dia tem **poucos blocos grandes**, não muitos cartões pequenos. Suplemento
+ * não é compromisso próprio: é parte de tomar o café da manhã. Aeróbico não é
+ * uma segunda ida à academia: é parte de ir treinar. Por isso ambos moram
+ * *dentro* do momento a que pertencem, e não como itens irmãos que o aluno
+ * teria que reconhecer como sendo o mesmo momento.
  *
  * Função pura, sem I/O e sem relógio: o dia é derivado de plano + data, nunca
  * persistido (ADR 0006). Testável sem browser e sem montar tela.
  */
-
-export type MomentoDeSuplemento =
-  { tipo: 'apos-refeicao'; refeicao: number } | { tipo: 'antes-do-treino' } | { tipo: 'livre' }
 
 export interface SuplementoNoDia {
   readonly suplemento: Suplemento
@@ -39,11 +40,11 @@ export interface ExercicioNoDia {
 }
 
 export type ItemDoDia =
-  | { readonly tipo: 'refeicao'; readonly id: string; readonly refeicao: Refeicao }
   | {
-      readonly tipo: 'suplementos'
+      readonly tipo: 'refeicao'
       readonly id: string
-      readonly momento: MomentoDeSuplemento
+      readonly refeicao: Refeicao
+      /** Os que a posologia ancorou nesta refeição. Vazio é o caso comum. */
       readonly suplementos: readonly SuplementoNoDia[]
     }
   | {
@@ -52,7 +53,12 @@ export type ItemDoDia =
       readonly sessao: SessaoTreino
       readonly exercicios: readonly ExercicioNoDia[]
       readonly descansoEntreSeries: { readonly minSegundos: number; readonly maxSegundos: number }
+      /** Faz parte da mesma ida à academia; `null` quando a agenda não marca. */
+      readonly aerobico: Aerobico | null
+      /** Os de tomar antes de treinar. */
+      readonly suplementos: readonly SuplementoNoDia[]
     }
+  /** Só nos dias em que existe aeróbico sem musculação — senão ele sumiria do dia. */
   | { readonly tipo: 'aerobico'; readonly id: string; readonly aerobico: Aerobico }
 
 export interface Dia {
@@ -67,7 +73,7 @@ export interface Dia {
 
 export interface PreferenciasDoDia {
   /**
-   * Depois de qual refeição o treino entra na linha do tempo.
+   * Depois de qual refeição o bloco de treino entra na linha do tempo.
    *
    * O plano do profissional diz em que **dia** o aluno treina, nunca a que
    * horas — quem sabe isso é o aluno. Por isso a posição é preferência dele, e
@@ -91,42 +97,31 @@ export function montarDia(
     : undefined
 
   const suplementos = agruparPorMomento(plano.suplementacao.formulas, { temTreino: !!sessao })
+  const bloco = blocoDeTreino(plano, sessao, agenda.aerobico, suplementos.antesDoTreino)
   const itens: ItemDoDia[] = []
 
-  for (const refeicao of [...plano.nutricao.refeicoes].sort((a, b) => a.numero - b.numero)) {
-    itens.push({ tipo: 'refeicao', id: `refeicao-${refeicao.numero}`, refeicao })
+  const refeicoes = [...plano.nutricao.refeicoes].sort((a, b) => a.numero - b.numero)
+  const primeira = refeicoes[0]?.numero
 
-    const aposEsta = suplementos.aposRefeicao.get(refeicao.numero)
-    if (aposEsta?.length) {
-      itens.push({
-        tipo: 'suplementos',
-        id: `suplementos-refeicao-${refeicao.numero}`,
-        momento: { tipo: 'apos-refeicao', refeicao: refeicao.numero },
-        suplementos: aposEsta,
-      })
-    }
-
+  for (const refeicao of refeicoes) {
+    const daRefeicao = suplementos.aposRefeicao.get(refeicao.numero) ?? []
     // Os de horário livre encostam na primeira refeição: é onde o aluno tem
     // mais chance de agir, e a observação do profissional explica a folga.
-    if (refeicao.numero === primeiraRefeicao(plano) && suplementos.livres.length) {
-      itens.push({
-        tipo: 'suplementos',
-        id: 'suplementos-livres',
-        momento: { tipo: 'livre' },
-        suplementos: suplementos.livres,
-      })
-    }
+    const livres = refeicao.numero === primeira ? suplementos.livres : []
 
-    if (refeicao.numero === preferencias.treinoDepoisDaRefeicao) {
-      itens.push(...blocoDeTreino(plano, sessao, agenda.aerobico, suplementos.antesDoTreino))
-    }
+    itens.push({
+      tipo: 'refeicao',
+      id: `refeicao-${refeicao.numero}`,
+      refeicao,
+      suplementos: [...daRefeicao, ...livres],
+    })
+
+    if (refeicao.numero === preferencias.treinoDepoisDaRefeicao && bloco) itens.push(bloco)
   }
 
   // Preferência apontando para uma refeição que o plano não tem não pode fazer
   // o treino sumir do dia.
-  if (!itens.some((i) => i.tipo === 'treino' || i.tipo === 'aerobico')) {
-    itens.push(...blocoDeTreino(plano, sessao, agenda.aerobico, suplementos.antesDoTreino))
-  }
+  if (bloco && !itens.includes(bloco)) itens.push(bloco)
 
   return {
     data,
@@ -138,37 +133,31 @@ export function montarDia(
   }
 }
 
+/**
+ * Uma ida à academia é um bloco só: pré-treino, musculação e aeróbico.
+ *
+ * Sem musculação, o aeróbico ainda precisa aparecer — é o dia de sábado do
+ * fixture, e some se ficar escondido dentro de um treino que não existe.
+ */
 function blocoDeTreino(
   plano: ArquivoDePlano['plano'],
   sessao: SessaoTreino | undefined,
   aerobico: Aerobico | null,
   antesDoTreino: readonly SuplementoNoDia[]
-): ItemDoDia[] {
-  const bloco: ItemDoDia[] = []
-
+): ItemDoDia | null {
   if (sessao) {
-    if (antesDoTreino.length) {
-      bloco.push({
-        tipo: 'suplementos',
-        id: 'suplementos-antes-do-treino',
-        momento: { tipo: 'antes-do-treino' },
-        suplementos: antesDoTreino,
-      })
-    }
-    bloco.push({
+    return {
       tipo: 'treino',
       id: `treino-${sessao.id}`,
       sessao,
       exercicios: resolverExercicios(plano, sessao),
       descansoEntreSeries: plano.treino.descansoEntreSeries,
-    })
+      aerobico,
+      suplementos: antesDoTreino,
+    }
   }
 
-  if (aerobico) {
-    bloco.push({ tipo: 'aerobico', id: 'aerobico', aerobico })
-  }
-
-  return bloco
+  return aerobico ? { tipo: 'aerobico', id: 'aerobico', aerobico } : null
 }
 
 /**
@@ -215,8 +204,4 @@ function agruparPorMomento(
   }
 
   return { aposRefeicao, antesDoTreino, livres }
-}
-
-function primeiraRefeicao(plano: ArquivoDePlano['plano']): number {
-  return Math.min(...plano.nutricao.refeicoes.map((r) => r.numero))
 }

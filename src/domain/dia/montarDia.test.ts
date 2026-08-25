@@ -26,12 +26,16 @@ function acharTreino(data: string, prefs?: Parameters<typeof montarDia>[2]) {
   return item
 }
 
-function acharSuplementos(data: string, momento: string) {
+function acharRefeicao(data: string, numero: number) {
   const item = montarDia(PLANO, data).itens.find(
-    (i) => i.tipo === 'suplementos' && i.momento.tipo === momento
+    (i) => i.tipo === 'refeicao' && i.refeicao.numero === numero
   )
-  if (item !== undefined && item.tipo !== 'suplementos') throw new Error('tipo inesperado')
+  if (item?.tipo !== 'refeicao') throw new Error(`sem refeição ${numero} em ${data}`)
   return item
+}
+
+function nomes(suplementos: readonly { suplemento: { nome: string } }[]) {
+  return suplementos.map((s) => s.suplemento.nome)
 }
 
 describe('montarDia', () => {
@@ -62,62 +66,64 @@ describe('montarDia', () => {
     })
   })
 
-  describe('suplementos se dissolvem no dia pela âncora', () => {
-    it('coloca o suplemento logo depois da refeição a que pertence', () => {
-      const { itens } = montarDia(PLANO, SEGUNDA)
-      const indiceRefeicao1 = itens.findIndex(
-        (i) => i.tipo === 'refeicao' && i.refeicao.numero === 1
-      )
-      const indiceSuplementos = itens.findIndex(
-        (i) => i.tipo === 'suplementos' && i.momento.tipo === 'apos-refeicao'
-      )
-      expect(indiceSuplementos).toBe(indiceRefeicao1 + 1)
+  /**
+   * O dia tem **poucos blocos grandes**, não muitos cartões pequenos. Suplemento
+   * não é compromisso próprio: é parte de tomar café da manhã, ou parte de ir
+   * treinar. Separá-lo em cartão irmão obriga o aluno a entender que dois itens
+   * consecutivos da lista são, na verdade, o mesmo momento.
+   */
+  describe('suplementos moram dentro do momento a que pertencem', () => {
+    it('põe o suplemento dentro da refeição, não como item ao lado dela', () => {
+      expect(nomes(acharRefeicao(SEGUNDA, 1).suplementos)).toContain('Magnésio dimalato')
+      expect(tipos(SEGUNDA)).not.toContain('suplementos')
     })
 
-    it('agrupa num bloco só os suplementos do mesmo momento', () => {
-      const bloco = acharSuplementos(SEGUNDA, 'apos-refeicao')
-      // Magnésio e Ômega 3, ambos após a refeição 1: um toque, não dois cartões.
-      expect(bloco?.suplementos.map((s) => s.suplemento.nome)).toEqual([
+    it('agrupa na mesma refeição todos os do mesmo momento', () => {
+      // Magnésio e Ômega 3, ambos após a refeição 1: um bloco, não dois cartões.
+      expect(nomes(acharRefeicao(SEGUNDA, 1).suplementos).slice(0, 2)).toEqual([
         'Magnésio dimalato',
         'Ômega 3',
       ])
     })
 
-    it('põe o pré-treino imediatamente antes do treino', () => {
-      const { itens } = montarDia(PLANO, SEGUNDA)
-      const indiceTreino = itens.findIndex((i) => i.tipo === 'treino')
-      const anterior = itens[indiceTreino - 1]!
-      expect(anterior.tipo).toBe('suplementos')
-      expect(anterior.tipo === 'suplementos' && anterior.momento.tipo).toBe('antes-do-treino')
+    it('não põe na refeição o que pertence a outra', () => {
+      expect(nomes(acharRefeicao(SEGUNDA, 2).suplementos)).not.toContain('Magnésio dimalato')
+    })
+
+    it('põe o pré-treino dentro do bloco de treino', () => {
+      expect(nomes(acharTreino(SEGUNDA).suplementos)).toEqual(['Pré-treino'])
     })
 
     it('não mostra o pré-treino em dia sem treino', () => {
       const { itens } = montarDia(PLANO, QUINTA)
-      expect(
-        itens.some((i) => i.tipo === 'suplementos' && i.momento.tipo === 'antes-do-treino')
-      ).toBe(false)
+      const todos = itens.flatMap((i) => (i.tipo === 'aerobico' ? [] : nomes(i.suplementos)))
+      expect(todos).not.toContain('Pré-treino')
     })
 
     it('ancora o suplemento livre na primeira refeição, com a observação do profissional', () => {
-      const livre = acharSuplementos(SEGUNDA, 'livre')
-      expect(livre?.suplementos[0]!.suplemento.nome).toBe('Creatina')
-      expect(livre?.suplementos[0]!.suplemento.posologia.observacao).toContain('mais prática')
+      const livre = acharRefeicao(SEGUNDA, 1).suplementos.find(
+        (s) => s.suplemento.posologia.ancora.tipo === 'livre'
+      )
+      expect(livre?.suplemento.nome).toBe('Creatina')
+      expect(livre?.suplemento.posologia.observacao).toContain('mais prática')
     })
 
     it('guarda de qual fórmula o suplemento veio, sem organizar o dia por fórmula', () => {
-      const bloco = acharSuplementos(SEGUNDA, 'apos-refeicao')
-      expect(bloco?.suplementos[0]!.formula).toBe('Bem-estar geral')
+      expect(acharRefeicao(SEGUNDA, 1).suplementos[0]!.formula).toBe('Bem-estar geral')
     })
   })
 
+  /**
+   * Aeróbico é parte de ir à academia, não uma segunda ida. Quem faz esteira
+   * depois do treino não sai e volta — o bloco é um só.
+   */
   describe('aeróbico', () => {
-    it('entra logo depois do treino nos dias que têm os dois', () => {
-      const { itens } = montarDia(PLANO, SEGUNDA)
-      const indiceTreino = itens.findIndex((i) => i.tipo === 'treino')
-      expect(itens[indiceTreino + 1]!.tipo).toBe('aerobico')
+    it('vem dentro do bloco de treino nos dias que têm os dois', () => {
+      expect(acharTreino(SEGUNDA).aerobico?.duracaoMinutos).toBe(20)
+      expect(tipos(SEGUNDA)).not.toContain('aerobico')
     })
 
-    it('aparece sozinho nos dias em que só ele existe', () => {
+    it('aparece sozinho nos dias em que só ele existe — senão sumiria do dia', () => {
       const { itens } = montarDia(PLANO, SABADO)
       expect(itens.some((i) => i.tipo === 'treino')).toBe(false)
       const aerobico = itens.find((i) => i.tipo === 'aerobico')
@@ -157,6 +163,11 @@ describe('montarDia', () => {
       expect(new Set(ids).size).toBe(ids.length)
       expect(montarDia(PLANO, SEGUNDA).itens.map((i) => i.id)).toEqual(ids)
     })
+
+    it('o dia inteiro cabe em poucos blocos', () => {
+      // 3 refeições + 1 treino. Antes eram 7 cartões para o mesmo dia.
+      expect(montarDia(PLANO, SEGUNDA).itens).toHaveLength(4)
+    })
   })
 
   describe('onde o treino cai no dia é preferência, não dado do plano', () => {
@@ -183,8 +194,16 @@ describe('montarDia', () => {
 
     it('preferência apontando para refeição inexistente joga o treino para o fim', () => {
       const { itens } = montarDia(PLANO, SEGUNDA, { treinoDepoisDaRefeicao: 99 })
-      expect(itens[itens.length - 1]!.tipo).toBe('aerobico')
-      expect(itens.some((i) => i.tipo === 'treino')).toBe(true)
+      expect(itens[itens.length - 1]!.tipo).toBe('treino')
+    })
+
+    it('o aeróbico avulso também obedece à preferência', () => {
+      const { itens } = montarDia(PLANO, SABADO, { treinoDepoisDaRefeicao: 3 })
+      const indiceAerobico = itens.findIndex((i) => i.tipo === 'aerobico')
+      const indiceRefeicao3 = itens.findIndex(
+        (i) => i.tipo === 'refeicao' && i.refeicao.numero === 3
+      )
+      expect(indiceAerobico).toBeGreaterThan(indiceRefeicao3)
     })
   })
 
