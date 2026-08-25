@@ -7,7 +7,7 @@ import { CAMINHOS } from '../../domain/vault/caminhos'
 import { lerArquivoDePlano } from '../../domain/schema/arquivoDePlano'
 import { InMemoryVaultStorage } from '../../infrastructure/armazenamento/InMemoryVaultStorage'
 import planoValido from '../../test/fixtures/plano-valido.json'
-import { useTreino } from '../estado/treinoStore'
+import { useRegistro } from '../estado/registroStore'
 import { usarVault, useVault } from '../estado/vaultStore'
 import { ExecucaoTreino } from './ExecucaoTreino'
 
@@ -26,7 +26,7 @@ function renderizar(hoje = SEGUNDA) {
 }
 
 async function esperarCarregar() {
-  await waitFor(() => expect(useTreino.getState().carregando).toBe(false))
+  await waitFor(() => expect(useRegistro.getState().carregando).toBe(false))
 }
 
 function serieDe(indice: number) {
@@ -42,7 +42,7 @@ describe('ExecucaoTreino', () => {
       carregando: false,
       problemas: null,
     })
-    useTreino.setState({ historico: [], hoje: null, carregando: true })
+    useRegistro.setState({ historico: [], hoje: null, carregando: true })
   })
 
   afterEach(() => {
@@ -224,7 +224,7 @@ describe('ExecucaoTreino', () => {
       const usuario = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
       renderizar()
-      await waitFor(() => expect(useTreino.getState().carregando).toBe(false))
+      await waitFor(() => expect(useRegistro.getState().carregando).toBe(false))
       await usuario.click(screen.getByRole('button', { name: 'Concluir série 1' }))
       await screen.findByRole('timer')
 

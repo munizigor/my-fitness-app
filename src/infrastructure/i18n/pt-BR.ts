@@ -63,6 +63,7 @@ export const ptBR = {
     agua: 'Água',
     aguaContador: '{{consumido}} de {{alvo}} L',
     aguaAdicionar: 'Registrar mais um copo de água',
+    aguaRemover: 'Tirar um copo de água',
     refeicao: 'Refeição {{numero}}',
     refeicaoItens_one: '{{count}} item',
     refeicaoItens_other: '{{count}} itens',

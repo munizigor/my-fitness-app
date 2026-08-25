@@ -300,19 +300,40 @@ body {
 
 /* Água acompanha o dia inteiro, então mora no cabeçalho e não numa posição da
    lista: beber água não acontece num momento, acontece o tempo todo. */
-.agua__botao {
-  display: grid;
-  gap: 0.375rem;
-  width: 100%;
-  min-height: var(--toque-minimo);
-  padding: 0.75rem 1rem;
+.agua {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding: 0.75rem 0.75rem;
   border: 1px solid var(--borda);
   border-radius: var(--raio);
   background: var(--superficie);
+}
+
+.agua__leitura {
+  display: grid;
+  gap: 0.375rem;
+  flex: 1;
+  align-content: center;
+}
+
+/* Quadrado grande dos dois lados: o polegar acerta sem mirar, e tirar um copo
+   custa o mesmo que pôr. */
+.agua__passo {
+  flex: 0 0 var(--toque-minimo);
+  min-inline-size: var(--toque-minimo);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: transparent;
   color: inherit;
-  font: inherit;
-  text-align: start;
+  font-size: 1.5rem;
+  line-height: 1;
   cursor: pointer;
+}
+
+.agua__passo:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .agua__rotulo {

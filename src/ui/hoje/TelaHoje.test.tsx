@@ -4,8 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import '../../infrastructure/i18n'
 import { lerArquivoDePlano } from '../../domain/schema/arquivoDePlano'
+import { CAMINHOS } from '../../domain/vault/caminhos'
 import { InMemoryVaultStorage } from '../../infrastructure/armazenamento/InMemoryVaultStorage'
 import planoValido from '../../test/fixtures/plano-valido.json'
+import { useRegistro } from '../estado/registroStore'
 import { usarVault, useVault } from '../estado/vaultStore'
 import { TelaHoje } from './TelaHoje'
 
@@ -39,9 +41,13 @@ function ordemVisivel() {
 }
 
 describe('TelaHoje', () => {
+  let vault: InMemoryVaultStorage
+
   beforeEach(() => {
-    usarVault(new InMemoryVaultStorage())
+    vault = new InMemoryVaultStorage()
+    usarVault(vault)
     useVault.setState({ arquivo: null, carregando: false, problemas: null })
+    useRegistro.setState({ historico: [], hoje: null, carregando: true })
   })
 
   it('sem plano, convida a importar em vez de mostrar um dia vazio', () => {
@@ -153,34 +159,68 @@ describe('TelaHoje', () => {
   describe('contador de água', () => {
     beforeEach(comPlano)
 
-    it('mostra o alvo que o profissional prescreveu', () => {
+    const mais = () => screen.getByRole('button', { name: 'Registrar mais um copo de água' })
+    const menos = () => screen.getByRole('button', { name: 'Tirar um copo de água' })
+
+    it('mostra o alvo que o profissional prescreveu', async () => {
       renderizar(SEGUNDA)
-      expect(screen.getByText('0 de 4 L')).toBeInTheDocument()
+      expect(await screen.findByText('0 de 4 L')).toBeInTheDocument()
     })
 
     it('conta um copo por toque', async () => {
       renderizar(SEGUNDA)
-      const botao = screen.getByRole('button', { name: 'Registrar mais um copo de água' })
 
-      await userEvent.click(botao)
-      expect(screen.getByText('0,25 de 4 L')).toBeInTheDocument()
+      await userEvent.click(mais())
+      expect(await screen.findByText('0,25 de 4 L')).toBeInTheDocument()
 
-      await userEvent.click(botao)
-      expect(screen.getByText('0,5 de 4 L')).toBeInTheDocument()
+      await userEvent.click(mais())
+      expect(await screen.findByText('0,5 de 4 L')).toBeInTheDocument()
     })
 
-    it('não passa do alvo — encher além não é progresso', async () => {
+    it('tira um copo por toque — dá para corrigir para menos', async () => {
       renderizar(SEGUNDA)
-      const botao = screen.getByRole('button', { name: 'Registrar mais um copo de água' })
-      for (let i = 0; i < 20; i++) await userEvent.click(botao)
-      expect(screen.getByText('4 de 4 L')).toBeInTheDocument()
+      await userEvent.click(mais())
+      await userEvent.click(mais())
+      expect(await screen.findByText('0,5 de 4 L')).toBeInTheDocument()
+
+      await userEvent.click(menos())
+      expect(await screen.findByText('0,25 de 4 L')).toBeInTheDocument()
     })
 
-    it('expõe o progresso para leitor de tela', () => {
+    it('não desce abaixo de zero — não existe beber água negativa', async () => {
       renderizar(SEGUNDA)
-      const barra = screen.getByRole('progressbar')
+      expect(await screen.findByText('0 de 4 L')).toBeInTheDocument()
+      expect(menos()).toBeDisabled()
+    })
+
+    it('deixa passar do alvo, mas a barra enche só até 100%', async () => {
+      renderizar(SEGUNDA)
+      for (let i = 0; i < 18; i++) await userEvent.click(mais())
+
+      // Registrar 4 L quando o aluno bebeu 4,5 seria mentir no arquivo que o
+      // profissional vai ler. E agora dá para corrigir, então travar no alvo
+      // deixou de proteger de qualquer coisa.
+      expect(await screen.findByText('4,5 de 4 L')).toBeInTheDocument()
+      expect(screen.getByRole('progressbar').querySelector('.agua__preenchida')).toHaveStyle({
+        inlineSize: '100%',
+      })
+    })
+
+    it('expõe o progresso para leitor de tela', async () => {
+      renderizar(SEGUNDA)
+      const barra = await screen.findByRole('progressbar')
       expect(barra).toHaveAttribute('aria-valuemax', '4')
       expect(barra).toHaveAttribute('aria-valuenow', '0')
+    })
+
+    it('grava no vault — o copo não some ao recarregar', async () => {
+      renderizar(SEGUNDA)
+      await userEvent.click(mais())
+      expect(await screen.findByText('0,25 de 4 L')).toBeInTheDocument()
+
+      // Estava só em `useState`: sair da tela apagava o dia inteiro de água.
+      const bruto = await vault.ler(CAMINHOS.registro(SEGUNDA))
+      expect(JSON.parse(bruto!)).toMatchObject({ aguaLitros: 0.25 })
     })
   })
 
