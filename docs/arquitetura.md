@@ -11,7 +11,9 @@ PWA estático, servido pelo GitHub Pages, sem backend. Todo o estado do aluno vi
 ├────────────────────────────────────────────────────────┤
 │  application/ casos de uso: ImportarPlano,              │
 │               RegistrarSerie, RegistrarAgua,            │
-│               RegistrarConsumo, CarregarHistorico, …    │
+│               RegistrarConsumo, RegistrarMedida,        │
+│               SalvarPerfil, CarregarHistorico,          │
+│               CarregarAluno, …                          │
 ├────────────────────────────────────────────────────────┤
 │  domain/      regras puras + portas (interfaces)        │
 └────────────────────────────────────────────────────────┘
@@ -33,6 +35,10 @@ Dependências apontam para dentro: `ui → application → domain`. `domain` nã
 **`application/`** — casos de uso que orquestram domínio e portas. Um caso de uso por intenção do aluno. Testado com `InMemoryVaultStorage`. Meta: 90%.
 
 Três deles escrevem no **mesmo arquivo do dia** — séries, água e refeições — e por isso compartilham `registroDoDia.ts`: carregar o que já existe antes de mexer, ou registrar água apagaria o treino da manhã. Do lado da UI, o mesmo motivo faz existir um `registroStore` só: dois stores sobre o mesmo arquivo se sobrescreveriam.
+
+Os documentos do aluno — perfil e medidas — têm caso de uso e store próprios (`CarregarAluno`, `RegistrarMedida`, `SalvarPerfil`, `alunoStore`). A separação em memória espelha a do disco (`vault/aluno/` vs `vault/planos/`) e é a mesma que faz o histórico do corpo sobreviver à troca de profissional. Também é por isso que a aba Perfil não passa pelo estado "sem plano" das demais: ela não lê o plano.
+
+`CarregarAluno` lê o histórico **inteiro**, sem a janela de 90 dias de `CarregarHistorico`: aquela alimenta a sugestão de carga da próxima série, esta é a evidência de longo prazo — e são poucos arquivos por ano.
 
 **`infrastructure/`** — as implementações concretas: OPFS, File System Access API, i18n, service worker. Verificada por Playwright em Chromium real, porque OPFS não existe em jsdom.
 

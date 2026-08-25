@@ -2,6 +2,34 @@
 
 ## [Não lançado]
 
+### Story 6 — Perfil e medidas
+
+O corpo do aluno deixa de ser uma célula que se sobrescreve.
+
+- **Cada aferição é um arquivo datado** (`vault/aluno/medidas/<data>.json`): a de
+  agosto não encosta na de junho. Era exatamente isso que a planilha perdia — o
+  peso novo apagava a prova do progresso junto com o número velho
+- Medir de novo no mesmo dia reescreve aquele ponto: é correção, não segunda
+  aferição
+- **A aferição vem pré-preenchida com a última** — princípio 2, o mesmo da carga
+  na academia: o aluno confirma, não digita de novo
+- Peso, percentual de gordura e sete circunferências de vocabulário controlado,
+  porque Evolução vai agregar por elas. A fita métrica fica atrás de um toque, já
+  aberta para quem mediu da última vez
+- **Campo em branco some do arquivo; não vira zero.** Não medir a cintura é
+  diferente de medir zero centímetros, e o segundo apareceria em Evolução como
+  uma queda vertical que nunca aconteceu
+- A identificação abre em uma linha e vira formulário só quando o aluno pede:
+  altura e idade mudam uma vez por ano
+- **Perfil é a única aba que não depende do plano.** Lê `vault/aluno/`, que
+  sobrevive à troca de profissional — a separação do disco, visível na tela
+- O aceite da story roda de ponta a ponta em Chromium: o histórico atravessa um
+  recarregamento e a importação do plano de outro profissional, no OPFS de
+  verdade. Em jsdom isso seria asserção sobre um `Map`
+- `formatarData` evita, do lado da UI, a armadilha que `dataLocal` evita do lado
+  do domínio: `new Date('2026-06-10')` é meia-noite UTC, e o histórico inteiro
+  apareceria um dia atrasado a oeste de Greenwich
+
 ### Story 5 — Refeição com alternativas
 
 A dieta deixa de ser um número de itens e passa a ser uma escolha.

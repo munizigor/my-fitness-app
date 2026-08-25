@@ -846,3 +846,150 @@ body {
   margin: 0;
   font-variant-numeric: tabular-nums;
 }
+
+/* --- Perfil e aferições --------------------------------------------------- */
+
+.perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.perfil__identificacao,
+.perfil__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.perfil__titulo {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.perfil__pessoa {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.perfil__acoes {
+  display: flex;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.perfil__recusa {
+  margin: 0;
+  color: #f2a3a3;
+  font-size: 0.9375rem;
+}
+
+.perfil__nota {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.afericao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.afericao__titulo {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+/* Duas colunas no celular: peso e gordura lado a lado, a fita métrica em
+   pares. Mais que isso deixaria o campo estreito demais para o polegar. */
+.afericao__campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+  width: 100%;
+}
+
+.campo {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.campo__rotulo {
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+
+.campo__entrada {
+  width: 100%;
+  min-height: var(--toque-minimo);
+  padding: 0.5rem;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--fundo);
+  color: var(--texto);
+  font: inherit;
+  font-size: 1.125rem;
+}
+
+.perfil__form .campo {
+  width: 100%;
+}
+
+.historico {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.historico__titulo {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-suave);
+}
+
+.historico__vazio {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.historico__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.historico__ponto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.75rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.historico__data {
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.historico__valores {
+  font-variant-numeric: tabular-nums;
+}

@@ -119,6 +119,28 @@ Não é painel de gráficos. Responde a uma pergunta: **eu evoluí?**
 
 Identificação, altura, e o histórico de aferições como série temporal: cada medição é ponto datado que nunca sobrescreve o anterior. Não é destino diário — é consulta e marco periódico.
 
+```
+ Perfil
+ Aluno Exemplo · 30 anos · 1,75 m
+ [ Corrigir meus dados ]
+
+ ┃ Como você está hoje
+ ┃  Peso (kg) [ 82,4 ]   Gordura (%) [    ]
+ ┃  [ Fita métrica ]                              ← 7 campos atrás de um toque
+ ┃  [ Registrar aferição ]
+
+ HISTÓRICO DE AFERIÇÕES
+ 10/06/2026   85 kg · Cintura 88 cm
+```
+
+Três decisões desta tela:
+
+- **A aferição vem pré-preenchida com a última** — princípio 2, o mesmo da carga na academia. Quem se pesa de novo confirma ou ajusta um número que já está na tela, em vez de ter que lembrar o anterior.
+- **A identificação abre em uma linha, não em formulário.** Altura e idade mudam uma vez por ano; três campos abertos competiriam por atenção com o que o aluno veio ver (princípio 1). O formulário aparece quando ele pede.
+- **A fita métrica fica atrás de um toque**, já aberta para quem mediu da última vez: o peso é o número de toda aferição, as circunferências são de quem tem fita na gaveta.
+
+Aqui não há gráfico. A frase de evidência ("você perdeu 3 cm de cintura desde junho") é a tela de Evolução; esta mostra os pontos datados que a alimentam — e é o único lugar do app onde a prescrição não aparece, porque nada disto é do profissional.
+
 ### Consultar o plano completo
 
 Acessível a partir de Hoje e do Perfil. Prescrição inteira read-only: treinos A–F, protocolo alimentar completo, fórmulas de suplemento **agrupadas como o profissional as pensou** (Colesterol, Sono, Testosterona), agenda semanal. É o único lugar onde a estrutura da planilha é a estrutura certa, porque aqui o aluno está em modo reflexivo, consultando. Import e export do vault vivem aqui.

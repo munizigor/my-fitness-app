@@ -37,7 +37,7 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
       _Aceite:_ um slot por item, escolha única; macros do dia somam conforme a escolha; sobrevive a recarregar e offline.
       _Escolher a alternativa é registrar o consumo: um toque, não dois._
 
-- [ ] **6. Perfil e medidas** — aba própria, histórico como série temporal.
+- [x] **6. Perfil e medidas** — aba própria, histórico como série temporal.
       _Aceite:_ cada aferição é ponto datado que não sobrescreve o anterior; trocar o plano importado preserva todo o histórico (teste explícito).
 
 - [ ] **7. Evolução** — a story que ataca a causa-raiz.
@@ -67,7 +67,8 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
   força para Node 24. Hoje é aviso; vira falha quando a compatibilidade for removida.
   Subir as versões quando as `@v5`/`@v6` correspondentes estabilizarem.
 
-- **Separador decimal no campo de carga.** `<input type="number">` exibe `82.5`
+- **Separador decimal nos campos numéricos** (carga, e agora peso e
+  circunferências). `<input type="number">` exibe `82.5`
   e não `82,5`, porque o valor de um input numérico é independente de idioma.
   Trocar por campo de texto daria a vírgula, mas custaria o teclado numérico no
   celular — que importa mais para quem digita com uma mão na academia. Revisitar
