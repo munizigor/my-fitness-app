@@ -2,6 +2,27 @@
 
 ## [Não lançado]
 
+### Story 3 — Hoje
+
+A tela inicial deixa de ser o convite a importar e passa a ser o dia.
+
+- `montarDia` (`domain/dia`) cruza as três abas do plano numa linha do tempo:
+  a agenda semanal escolhe o treino, e **a posologia de cada suplemento o coloca
+  junto da refeição ou do treino a que pertence**. Função pura, derivada, nunca
+  persistida (ADR 0006)
+- `dataLocal` resolve a armadilha de fuso: `new Date('2026-08-25')` é meia-noite
+  **UTC**, o que em São Paulo é 21h do dia anterior — um aluno que abrisse o app
+  à noite veria o treino de ontem. Testado de UTC+14 a UTC−11
+- Dia de descanso tem estado próprio; as refeições continuam, e o pré-treino
+  some — lembrar de tomá-lo num dia sem treino é ruído
+- Contador de água fixo no cabeçalho: hidratação acompanha o dia inteiro, não
+  acontece num momento da lista
+- `formatarMedida` traduz o código da unidade para o rótulo que uma pessoa lê —
+  "4 cápsulas", não "4 capsula"
+- **Onde o treino cai no dia virou parâmetro explícito.** O plano diz o dia,
+  nunca a hora; a posição é do aluno. Fica em `PreferenciasDoDia` em vez de ser
+  adivinhada dentro da função
+
 ### Remodelagem: significado em vez de notação (schemaVersion 2)
 
 O modelo anterior fossilizava a **notação** da planilha: guardava `"4x10a12"` e

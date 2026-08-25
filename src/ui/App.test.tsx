@@ -39,7 +39,7 @@ describe('casca do app', () => {
     ).toBeInTheDocument()
   })
 
-  it('com plano no vault, carrega ao abrir e para de dizer que não há plano', async () => {
+  it('com plano no vault, abre direto no dia de hoje', async () => {
     // Testa o caminho real: o App lê o vault ao montar. Semear só o estado da
     // store afirmaria sobre algo que o próprio efeito sobrescreveria em
     // seguida — o teste passaria por acidente de ordem.
@@ -47,8 +47,12 @@ describe('casca do app', () => {
 
     render(<App />)
 
+    // Qualquer dia da semana serve: o que importa é que a tela inicial passou a
+    // ser o dia, e não mais o convite a importar.
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: 'Ainda não construído' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: 'Registrar mais um copo de água' })
+      ).toBeInTheDocument()
     })
     expect(screen.queryByRole('heading', { name: 'Nenhum plano ainda' })).not.toBeInTheDocument()
   })

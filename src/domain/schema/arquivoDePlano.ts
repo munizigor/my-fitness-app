@@ -237,6 +237,7 @@ export type ItemDeRefeicao = z.infer<typeof itemDeRefeicao>
 export type OpcaoDeItem = z.infer<typeof opcaoDeItem>
 export type Suplemento = z.infer<typeof suplemento>
 export type AgendaDoDia = z.infer<typeof agendaDoDia>
+export type Aerobico = z.infer<typeof aerobico>
 export type Macros = z.infer<typeof macros>
 
 /**
