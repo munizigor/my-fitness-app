@@ -101,69 +101,156 @@ export function descreverProblema(issue: $ZodIssue, documento: unknown): Problem
   }
 }
 
+/**
+ * As rotas que traduzem um caminho de campo em "onde no plano".
+ *
+ * Uma tabela, e não uma cadeia de `if` sobre posições fixas do caminho. A
+ * diferença aparece quando o formato do arquivo muda: acrescentar uma seção
+ * vira uma linha aqui, em vez de um `if` aninhado no meio de outro; e o
+ * comportamento "caiu numa seção que não sei detalhar" vira uma entrada
+ * explícita ao fim de cada grupo, em vez de um `return` implícito.
+ *
+ * `:n` casa um índice de lista; `:s`, uma chave de texto. **A ordem importa:**
+ * casa a primeira rota cujo padrão é prefixo do caminho, então a mais
+ * específica de cada grupo vem antes da mais genérica.
+ */
+type Curinga = ':n' | ':s'
+type Padrao = readonly (string | Curinga)[]
+type Capturas = readonly (string | number)[]
+
+interface Rota {
+  readonly padrao: Padrao
+  readonly rotulo: (capturas: Capturas, doc: unknown) => string
+}
+
+const ROTAS: readonly Rota[] = [
+  { padrao: ['aluno'], rotulo: () => 'Dados do aluno' },
+  { padrao: ['profissional'], rotulo: () => 'Dados do profissional' },
+
+  {
+    padrao: ['plano', 'treino', 'exercicios', ':n'],
+    rotulo: (c, doc) => {
+      const i = indice(c, 0)
+      const nome = texto(navegar(doc, ['plano', 'treino', 'exercicios', i, 'nome']))
+      return `Lista de exercícios · ${nome ?? `exercício ${i + 1}`}`
+    },
+  },
+  {
+    padrao: ['plano', 'treino', 'sessoes', ':n', 'itens', ':n'],
+    rotulo: (c, doc) => {
+      const [s, j] = [indice(c, 0), indice(c, 1)]
+      const item = navegar(doc, ['plano', 'treino', 'sessoes', s, 'itens', j])
+      return `${nomeDaSessao(s, doc)} · ${descreverItemDeTreino(item, j, doc)}`
+    },
+  },
+  {
+    padrao: ['plano', 'treino', 'sessoes', ':n'],
+    rotulo: (c, doc) => nomeDaSessao(indice(c, 0), doc),
+  },
+  {
+    padrao: ['plano', 'treino', 'agendaSemanal', ':s'],
+    rotulo: (c) => {
+      const dia = chave(c, 0)
+      return `Agenda da semana · ${DIAS[dia] ?? dia}`
+    },
+  },
+  { padrao: ['plano', 'treino'], rotulo: () => 'Plano de treino' },
+
+  {
+    padrao: ['plano', 'nutricao', 'refeicoes', ':n', 'itens', ':n', 'opcoes', ':n'],
+    rotulo: (c, doc) =>
+      `${nomeDaRefeicao(indice(c, 0), doc)} · item ${indice(c, 1) + 1} · opção ${indice(c, 2) + 1}`,
+  },
+  {
+    padrao: ['plano', 'nutricao', 'refeicoes', ':n', 'itens', ':n'],
+    rotulo: (c, doc) => `${nomeDaRefeicao(indice(c, 0), doc)} · item ${indice(c, 1) + 1}`,
+  },
+  {
+    padrao: ['plano', 'nutricao', 'refeicoes', ':n'],
+    rotulo: (c, doc) => nomeDaRefeicao(indice(c, 0), doc),
+  },
+  { padrao: ['plano', 'nutricao'], rotulo: () => 'Plano alimentar' },
+
+  {
+    padrao: ['plano', 'suplementacao', 'formulas', ':n', 'itens', ':n'],
+    rotulo: (c, doc) => {
+      const [f, i] = [indice(c, 0), indice(c, 1)]
+      const nome =
+        texto(navegar(doc, ['plano', 'suplementacao', 'formulas', f, 'itens', i, 'nome'])) ??
+        `item ${i + 1}`
+      return `Suplementos · ${nomeDaFormula(f, doc)} · ${nome}`
+    },
+  },
+  {
+    padrao: ['plano', 'suplementacao', 'formulas', ':n'],
+    rotulo: (c, doc) => `Suplementos · ${nomeDaFormula(indice(c, 0), doc)}`,
+  },
+  { padrao: ['plano', 'suplementacao'], rotulo: () => 'Suplementos' },
+]
+
 /** Onde no plano, em termos que o profissional reconhece ao bater o olho. */
 function localizar(caminho: Caminho, doc: unknown): string {
-  const em = (...partes: Caminho) => navegar(doc, partes)
-
-  if (caminho[0] === 'aluno') return 'Dados do aluno'
-  if (caminho[0] === 'profissional') return 'Dados do profissional'
-
-  if (caminho[1] === 'treino') {
-    if (caminho[2] === 'exercicios' && typeof caminho[3] === 'number') {
-      const nome = texto(em('plano', 'treino', 'exercicios', caminho[3], 'nome'))
-      return `Lista de exercícios · ${nome ?? `exercício ${caminho[3] + 1}`}`
-    }
-
-    if (caminho[2] === 'sessoes' && typeof caminho[3] === 'number') {
-      const sessao = `${texto(em('plano', 'treino', 'sessoes', caminho[3], 'rotulo')) ?? `Treino ${caminho[3] + 1}`}`
-      if (caminho[4] === 'itens' && typeof caminho[5] === 'number') {
-        const item = em('plano', 'treino', 'sessoes', caminho[3], 'itens', caminho[5])
-        return `${sessao} · ${descreverItemDeTreino(item, caminho[5], doc)}`
-      }
-      return sessao
-    }
-
-    if (caminho[2] === 'agendaSemanal' && typeof caminho[3] === 'string') {
-      return `Agenda da semana · ${DIAS[caminho[3]] ?? caminho[3]}`
-    }
-
-    return 'Plano de treino'
+  for (const rota of ROTAS) {
+    const capturas = casar(rota.padrao, caminho)
+    if (capturas) return rota.rotulo(capturas, doc)
   }
-
-  if (caminho[1] === 'nutricao') {
-    if (caminho[2] === 'refeicoes' && typeof caminho[3] === 'number') {
-      const numero = em('plano', 'nutricao', 'refeicoes', caminho[3], 'numero')
-      const nome = texto(em('plano', 'nutricao', 'refeicoes', caminho[3], 'nome'))
-      const refeicao = nome ?? `Refeição ${typeof numero === 'number' ? numero : caminho[3] + 1}`
-      if (caminho[4] === 'itens' && typeof caminho[5] === 'number') {
-        const alvo = `${refeicao} · item ${caminho[5] + 1}`
-        return caminho[6] === 'opcoes' && typeof caminho[7] === 'number'
-          ? `${alvo} · opção ${caminho[7] + 1}`
-          : alvo
-      }
-      return refeicao
-    }
-    return 'Plano alimentar'
-  }
-
-  if (caminho[1] === 'suplementacao') {
-    if (caminho[2] === 'formulas' && typeof caminho[3] === 'number') {
-      const formula =
-        texto(em('plano', 'suplementacao', 'formulas', caminho[3], 'nome')) ??
-        `fórmula ${caminho[3] + 1}`
-      if (caminho[4] === 'itens' && typeof caminho[5] === 'number') {
-        const item =
-          texto(
-            em('plano', 'suplementacao', 'formulas', caminho[3], 'itens', caminho[5], 'nome')
-          ) ?? `item ${caminho[5] + 1}`
-        return `Suplementos · ${formula} · ${item}`
-      }
-      return `Suplementos · ${formula}`
-    }
-    return 'Suplementos'
-  }
-
   return 'Arquivo'
+}
+
+/** Casa por prefixo: o padrão precisa cobrir o começo do caminho, não o todo. */
+function casar(padrao: Padrao, caminho: Caminho): Capturas | null {
+  if (caminho.length < padrao.length) return null
+
+  const capturas: (string | number)[] = []
+  for (let i = 0; i < padrao.length; i++) {
+    const esperado = padrao[i]
+    const parte = caminho[i]
+
+    if (esperado === ':n') {
+      if (typeof parte !== 'number') return null
+      capturas.push(parte)
+    } else if (esperado === ':s') {
+      if (typeof parte !== 'string') return null
+      capturas.push(parte)
+    } else if (parte !== esperado) {
+      return null
+    }
+  }
+  return capturas
+}
+
+function indice(capturas: Capturas, posicao: number): number {
+  const valor = capturas[posicao]
+  return typeof valor === 'number' ? valor : 0
+}
+
+function chave(capturas: Capturas, posicao: number): string {
+  const valor = capturas[posicao]
+  return typeof valor === 'string' ? valor : ''
+}
+
+function nomeDaSessao(indiceDaSessao: number, doc: unknown): string {
+  return (
+    texto(navegar(doc, ['plano', 'treino', 'sessoes', indiceDaSessao, 'rotulo'])) ??
+    `Treino ${indiceDaSessao + 1}`
+  )
+}
+
+function nomeDaRefeicao(indiceDaRefeicao: number, doc: unknown): string {
+  const nome = texto(navegar(doc, ['plano', 'nutricao', 'refeicoes', indiceDaRefeicao, 'nome']))
+  if (nome) return nome
+
+  // Sem nome, o número que o profissional escreveu identifica melhor que a
+  // posição no array — e ele pode não bater com ela.
+  const numero = navegar(doc, ['plano', 'nutricao', 'refeicoes', indiceDaRefeicao, 'numero'])
+  return `Refeição ${typeof numero === 'number' ? numero : indiceDaRefeicao + 1}`
+}
+
+function nomeDaFormula(indiceDaFormula: number, doc: unknown): string {
+  return (
+    texto(navegar(doc, ['plano', 'suplementacao', 'formulas', indiceDaFormula, 'nome'])) ??
+    `fórmula ${indiceDaFormula + 1}`
+  )
 }
 
 /**

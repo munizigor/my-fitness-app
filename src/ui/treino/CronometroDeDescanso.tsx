@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-
-export interface Descanso {
-  readonly minSegundos: number
-  readonly maxSegundos: number
-}
+import type { Descanso } from '../../domain/dia/montarDia'
 
 /**
  * O cronômetro que dispara sozinho ao concluir a série.

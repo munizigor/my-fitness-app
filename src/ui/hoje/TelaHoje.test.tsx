@@ -104,7 +104,7 @@ describe('TelaHoje', () => {
           series: [],
           refeicoes: [
             {
-              numero: 1,
+              refeicaoId: '1',
               itens: [{ itemDeRefeicaoId: 'r1i1', alimento: 'Cuscuz' }],
               registradaEm: '2026-08-24T08:00:00.000Z',
             },

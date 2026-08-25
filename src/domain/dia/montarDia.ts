@@ -2,6 +2,7 @@ import type {
   Aerobico,
   ArquivoDePlano,
   DiaDaSemana,
+  Execucao,
   Exercicio,
   ItemDeTreino,
   Macros,
@@ -28,11 +29,34 @@ import { diaDaSemanaDe } from './dataLocal'
  * persistido (ADR 0006). Testável sem browser e sem montar tela.
  */
 
+/**
+ * A janela de descanso entre séries.
+ *
+ * Mora aqui, e não na UI, porque é o domínio que decide qual descanso vale para
+ * cada exercício. O cronômetro só conta — redeclarar a forma lá dentro deixaria
+ * as duas dessincronizarem em silêncio, compilando.
+ */
+export interface Descanso {
+  readonly minSegundos: number
+  readonly maxSegundos: number
+}
+
 export interface SuplementoNoDia {
   readonly suplemento: Suplemento
   /** De qual fórmula veio. O dia não é organizado por fórmula, mas a origem importa. */
   readonly formula: string
 }
+
+/**
+ * Como a série é executada, na forma em que a **tela** precisa dela.
+ *
+ * Tem nome próprio, separado do `Execucao` do schema, porque montarDia é o
+ * adaptador entre o arquivo e a UI: o formato do arquivo pode mudar sem que
+ * cada componente saiba disso. Hoje as duas formas coincidem, e por isso isto
+ * é um apelido em vez de uma cópia — duplicar a estrutura agora só criaria
+ * duas coisas para manter sincronizadas.
+ */
+export type ExecucaoNoDia = Execucao
 
 export interface ExercicioNoDia {
   readonly prescrito: ItemDeTreino
@@ -42,7 +66,14 @@ export interface ExercicioNoDia {
 export type ItemDoDia =
   | {
       readonly tipo: 'refeicao'
+      /** Identificador do item na linha do tempo — chave de render, não de dado. */
       readonly id: string
+      /**
+       * Identificador da refeição no plano, que é por onde o registro do aluno
+       * e a rota se referem a ela. Separado do `id` acima de propósito: um é da
+       * tela, o outro é do dado.
+       */
+      readonly refeicaoId: string
       readonly refeicao: Refeicao
       /** Os que a posologia ancorou nesta refeição. Vazio é o caso comum. */
       readonly suplementos: readonly SuplementoNoDia[]
@@ -52,7 +83,7 @@ export type ItemDoDia =
       readonly id: string
       readonly sessao: SessaoTreino
       readonly exercicios: readonly ExercicioNoDia[]
-      readonly descansoEntreSeries: { readonly minSegundos: number; readonly maxSegundos: number }
+      readonly descansoEntreSeries: Descanso
       /** Faz parte da mesma ida à academia; `null` quando a agenda não marca. */
       readonly aerobico: Aerobico | null
       /** Os de tomar antes de treinar. */
@@ -112,6 +143,7 @@ export function montarDia(
     itens.push({
       tipo: 'refeicao',
       id: `refeicao-${refeicao.numero}`,
+      refeicaoId: String(refeicao.numero),
       refeicao,
       suplementos: [...daRefeicao, ...livres],
     })

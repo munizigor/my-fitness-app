@@ -17,7 +17,7 @@ const VALIDO = {
   ],
   refeicoes: [
     {
-      numero: 1,
+      refeicaoId: '1',
       itens: [{ itemDeRefeicaoId: 'r1i1', alimento: 'Arroz' }],
       registradaEm: '2026-08-24T08:00:00.000Z',
     },
@@ -46,7 +46,7 @@ describe('lerRegistroDiario', () => {
 
   it('lê a refeição consumida com a alternativa que o aluno escolheu', () => {
     const refeicao = lerRegistroDiario(VALIDO)?.refeicoes[0]
-    expect(refeicao?.numero).toBe(1)
+    expect(refeicao?.refeicaoId).toBe('1')
     // Pelo nome do alimento, e não pelo índice da opção: o profissional pode
     // reordenar as alternativas no próximo plano, e o que o aluno comeu
     // ontem não pode mudar de significado por causa disso. Também é o que

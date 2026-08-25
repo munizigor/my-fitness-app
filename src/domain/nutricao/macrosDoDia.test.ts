@@ -43,7 +43,7 @@ describe('macrosDoDia', () => {
       DIA,
       registro([
         {
-          numero: 1,
+          refeicaoId: '1',
           itens: [{ itemDeRefeicaoId: ITEM_1.id, alimento: ITEM_1.opcoes[0]!.alimento }],
           registradaEm: '2026-08-24T08:00:00.000Z',
         },
@@ -63,7 +63,7 @@ describe('macrosDoDia', () => {
         DIA,
         registro([
           {
-            numero: 1,
+            refeicaoId: '1',
             itens: [{ itemDeRefeicaoId: ITEM_1.id, alimento: ITEM_1.opcoes[indice]!.alimento }],
             registradaEm: '2026-08-24T08:00:00.000Z',
           },
@@ -78,7 +78,7 @@ describe('macrosDoDia', () => {
       DIA,
       registro([
         {
-          numero: 1,
+          refeicaoId: '1',
           itens: [{ itemDeRefeicaoId: ITEM_1.id, alimento: ITEM_1.opcoes[0]!.alimento }],
           registradaEm: '2026-08-24T08:00:00.000Z',
         },
@@ -96,7 +96,7 @@ describe('macrosDoDia', () => {
       DIA,
       registro([
         {
-          numero: 1,
+          refeicaoId: '1',
           itens: [{ itemDeRefeicaoId: 'fantasma', alimento: 'Sopa' }],
           registradaEm: '2026-08-24T08:00:00.000Z',
         },
@@ -112,7 +112,7 @@ describe('macrosDoDia', () => {
       DIA,
       registro([
         {
-          numero: 1,
+          refeicaoId: '1',
           itens: primeiraRefeicao.itens.map((i) => ({
             itemDeRefeicaoId: i.id,
             alimento: i.opcoes[0]!.alimento,

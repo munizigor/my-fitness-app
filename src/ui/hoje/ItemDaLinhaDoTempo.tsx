@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import type { ItemDoDia, SuplementoNoDia } from '../../domain/dia/montarDia'
-import type { Execucao } from '../../domain/schema/arquivoDePlano'
+import { formatarExecucao } from '../comum/formatarExecucao'
 import { formatarMedida } from '../comum/formatarMedida'
 
 /**
@@ -31,7 +31,7 @@ export function ItemDaLinhaDoTempo({
         <li className="linha__item linha__item--refeicao">
           {/* O cartão inteiro é o alvo de toque: mirar num "ver mais" de 12 px
               com uma mão só é o tipo de atrito que faz o aluno não abrir. */}
-          <Link to={`/refeicao/${item.refeicao.numero}`} className="linha__alvo">
+          <Link to={`/refeicao/${item.refeicaoId}`} className="linha__alvo">
             <span className="linha__titulo">
               {item.refeicao.nome ?? t('hoje.refeicao', { numero: item.refeicao.numero })}
             </span>
@@ -144,16 +144,4 @@ function ListaDeSuplementos({
       </ul>
     </div>
   )
-}
-
-type Traduzir = ReturnType<typeof useTranslation>['t']
-
-/** `4 × 10–12` ou `2 × 60''`. A leitura que o aluno faz de relance na academia. */
-function formatarExecucao(series: number, execucao: Execucao, t: Traduzir): string {
-  if (execucao.tipo === 'tempo') {
-    return t('hoje.serieTempo', { series, segundos: execucao.segundos })
-  }
-  return execucao.min === execucao.max
-    ? t('hoje.serieRepeticoesFixas', { series, repeticoes: execucao.min })
-    : t('hoje.serieRepeticoes', { series, min: execucao.min, max: execucao.max })
 }

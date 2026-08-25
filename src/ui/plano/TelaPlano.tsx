@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { resumoDoPlano } from '../../domain/plano/resumoDoPlano'
 import { useVault } from '../estado/vaultStore'
 import { ErroDeImport } from './ErroDeImport'
 
@@ -14,6 +15,10 @@ export function TelaPlano() {
   const { arquivo, carregando, problemas, importar } = useVault()
   const entrada = useRef<HTMLInputElement>(null)
 
+  // Contar e somar é regra, não apresentação: a tela não conhece o formato do
+  // arquivo, só o resumo que o domínio produz dele.
+  const resumo = arquivo ? resumoDoPlano(arquivo) : null
+
   async function aoEscolherArquivo(evento: React.ChangeEvent<HTMLInputElement>) {
     const escolhido = evento.target.files?.[0]
     if (!escolhido) return
@@ -27,33 +32,30 @@ export function TelaPlano() {
     <section className="plano">
       <h1 className="plano__titulo">{t('plano.titulo')}</h1>
 
-      {arquivo && (
+      {resumo && (
         <div className="plano__resumo">
           <p className="plano__prescritor">
-            {t('plano.prescritoPor', { nome: arquivo.profissional.nome })}
+            {t('plano.prescritoPor', { nome: resumo.prescritoPor.join(' · ') })}
           </p>
-          <p className="plano__linha">{t('plano.emitidoEm', { data: arquivo.emitidoEm })}</p>
+          <p className="plano__linha">{t('plano.emitidoEm', { data: resumo.emitidoEm })}</p>
           <p className="plano__linha">
             {t('plano.resumoTreino', {
-              sessoes: arquivo.plano.treino.sessoes.length,
-              exercicios: arquivo.plano.treino.exercicios.length,
-              min: arquivo.plano.treino.descansoEntreSeries.minSegundos,
-              max: arquivo.plano.treino.descansoEntreSeries.maxSegundos,
+              sessoes: resumo.sessoes,
+              exercicios: resumo.exercicios,
+              min: resumo.descansoPadrao.minSegundos,
+              max: resumo.descansoPadrao.maxSegundos,
             })}
           </p>
           <p className="plano__linha">
             {t('plano.resumoNutricao', {
-              refeicoes: arquivo.plano.nutricao.refeicoes.length,
-              litros: arquivo.plano.nutricao.hidratacaoDiariaLitros,
+              refeicoes: resumo.refeicoes,
+              litros: resumo.hidratacaoAlvoLitros,
             })}
           </p>
           <p className="plano__linha">
             {t('plano.resumoSuplementos', {
-              formulas: arquivo.plano.suplementacao.formulas.length,
-              suplementos: arquivo.plano.suplementacao.formulas.reduce(
-                (total, f) => total + f.itens.length,
-                0
-              ),
+              suplementos: resumo.suplementos,
+              formulas: resumo.formulas,
             })}
           </p>
         </div>
