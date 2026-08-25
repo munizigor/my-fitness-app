@@ -40,7 +40,7 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - [x] **6. Perfil e medidas** — aba própria, histórico como série temporal.
       _Aceite:_ cada aferição é ponto datado que não sobrescreve o anterior; trocar o plano importado preserva todo o histórico (teste explícito).
 
-- [ ] **7. Evolução** — a story que ataca a causa-raiz.
+- [x] **7. Evolução** — a story que ataca a causa-raiz.
       _Aceite:_ frase em linguagem natural antes de qualquer gráfico; com ≥2 sessões do mesmo exercício mostra variação de carga e volume; com ≥2 aferições mostra delta corporal; recorde pessoal aparece em Hoje no momento em que acontece, sem o aluno visitar a aba.
 
 - [ ] **8. Consultar o plano completo** — prescrição inteira read-only.
@@ -92,4 +92,6 @@ story 4 e a 5:
   aluno ajustar. Entra quando houver preferências de UI em `localStorage`.
 - **Modalidade do aeróbico** é rótulo livre (`"HIIT na esteira"`). Cruzar
   aeróbico com evolução ("80 minutos de HIIT esta semana") exigiria separar
-  modalidade de método. Confirmar com o Thiago antes da story 7.
+  modalidade de método. A story 7 saiu sem esse cruzamento — a evidência de
+  progresso vem da barra e do corpo, que é onde o aluno já registra. A decisão
+  continua aberta e só custa alguma coisa quando alguém pedir a agregação.
