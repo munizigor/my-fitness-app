@@ -2,6 +2,109 @@
 
 ## [Não lançado]
 
+### Story 9 — Exportar vault
+
+Data ownership deixa de ser posicionamento e vira arquivo: o aluno leva o vault
+embora e o traz de volta.
+
+- **O que sai reentra.** Um `.fitvault.json` com o vault inteiro — plano,
+  registros, perfil e histórico de medidas — reimporta em instalação limpa e
+  reproduz o mesmo estado. É o aceite da story, e tem teste ponta a ponta em
+  Chromium: download de verdade, OPFS de verdade, aparelho limpo no meio
+- **O caminho é a chave, o documento é JSON.** O envelope é a pasta do vault
+  com uma capa; documento escapado como texto falharia no critério do ADR 0003
+  (abrir num editor qualquer e entender) já na primeira linha
+- **Um botão de importar, não dois.** Prescrição do profissional e backup do
+  próprio vault entram pelo mesmo lugar: o arquivo diz o que é, pelo campo
+  `formato`. O aluno tem um arquivo na mão, não uma taxonomia
+- **Restaurar escreve, nunca apaga.** Só os caminhos que vieram no envelope são
+  gravados: um backup de junho não pode levar embora a aferição de agosto
+- **`../` não sai da pasta.** Um envelope é conteúdo de fora, e restaurar é
+  escrever caminhos que alguém pode ter editado à mão. `ehCaminhoDoVault` mora
+  junto dos caminhos que descreve, e vale na entrada e na saída
+- **Validar antes de escrever**, como no import do plano: um arquivo pela metade
+  não deixa o vault pela metade. E um backup corrompido falha como backup, com
+  os problemas apontando os documentos — não como culpa do profissional
+- **Nada é calculado na saída** (ADR 0006): quem recebe o arquivo recebe fatos,
+  e tira as próprias conclusões — que é o trabalho dele
+- **Onde o navegador deixa, o aluno escolhe a pasta** (File System Access);
+  onde não deixa, baixa. Desistir do diálogo do sistema é decisão dele, não erro
+- Novidades de código: `domain/ports/FileTransfer`, `domain/schema/arquivoDeVault`,
+  `application/ExportarVault`, `application/RestaurarVault`,
+  `infrastructure/arquivo/SalvarArquivo`
+
+### Story 8 — Consultar o plano completo
+
+A prescrição inteira, read-only, na aba que já era dela.
+
+- **A exceção deliberada ao princípio 1**, e a exceção é ver o plano todo, não
+  ter que rolar por ele: a semana fica à vista, porque é o mapa e cabe na
+  primeira dobra; cada treino e cada refeição ficam atrás de um toque. Seis
+  treinos de dez exercícios abertos de uma vez são a planilha rolando na tela —
+  o artefato que o app existe para substituir
+- **O dia sem nada diz "Descanso".** Linha vazia se lê como informação que
+  faltou. E sábado, que tem aeróbico sem musculação, não é descanso: chamá-lo
+  assim mandaria o aluno para casa num dia de trabalho
+- **Cada treino aparece uma vez, com os dias em que cai** ("Cai em Segunda-feira
+  e Quarta-feira"). O arquivo diz "segunda tem o treino A"; quem consulta
+  pergunta "quando eu faço o treino A?". Repetir a lista de exercícios por dia
+  seria a planilha de volta
+- **Treino escrito e não agendado continua na lista.** É comum em plano de
+  semana A/B — o profissional deixa o treino C pronto para quando o aluno puder
+  ir três vezes — e omiti-lo seria esconder prescrição do aluno
+- **O suplemento diz quando tomar pelo nome da refeição.** O artigo concorda com
+  "refeição" e não com o nome que o profissional deu a ela: "Depois da refeição
+  3 · Ceia" está certo em qualquer plano, "Depois do Ceia" estaria errado na
+  metade deles
+- **É o único lugar do app onde a fórmula aparece.** No dia, o suplemento é
+  dissolvido dentro da refeição a que pertence, porque de manhã o que importa é
+  o que tomar agora; aqui o agrupamento é o raciocínio clínico de quem prescreveu
+- **A observação do profissional viaja junto.** É ela que distingue os dois usos
+  da Prancha Lateral no mesmo treino; sem ela o aluno faria um lado e acharia
+  que terminou
+- **Nada é editável** (princípio 5). Em Hoje, tocar numa alternativa registra o
+  consumo, e por isso ela é um botão. Aqui a mesma alternativa é texto —
+  consultar o plano não é comer, e há um teste ponta a ponta que fica vermelho
+  se um botão aparecer nesta tela
+- Nada disto vai ao disco (ADR 0006): é o mesmo arquivo do profissional lido de
+  outro ângulo, com as referências por id resolvidas em `prescricaoCompleta` —
+  a contrapartida de `montarDia`
+- O export do vault, que também mora nesta aba, é a story 9
+
+### Story 7 — Evolução
+
+A tela que ataca a causa-raiz: o aluno abandona porque **não sente evolução**.
+
+- **Primeiro a frase, o gráfico depois** (princípio 4). A aba abre com uma
+  manchete em português — "Você levantou 20% mais na Remada Cavalinho em 4
+  semanas" — e só abaixo dela vem a evidência que a sustenta
+- A manchete é **o melhor fato verdadeiro**, nunca um inventado: a maior subida
+  de carga em percentual (mais 10 kg no agachamento é menos evolução que mais
+  6 kg na rosca) e, quando nada subiu na barra, a maior mudança do corpo. Se
+  nada mudou, a manchete some — "+0%" em letra grande é o oposto de evidência
+- **Carga e volume por exercício**, com duas ou mais sessões registradas. A
+  unidade é a sessão, não a série: comparar séries soltas mediria fadiga dentro
+  do treino, não evolução entre treinos
+- **A queda aparece como é.** Esconder seria mentir para quem está voltando de
+  uma lesão. Só a subida ganha cor; a queda é informação, não erro
+- **Delta corporal** entre a primeira e a última aferição de cada medida, cada
+  uma como série independente: quem pesou três vezes e mediu a cintura uma tem
+  trajetória de peso e não tem de cintura
+- **O recorde pessoal aparece em Hoje, no dia em que acontece** (princípio 3).
+  O eu afetivo não vai abrir a aba Evolução para procurar prova de progresso; a
+  prova tem que chegar até ele. Empatar não é recorde, a primeira vez não é
+  recorde, e a comparação é com a melhor marca de todas — marco que acontece
+  toda semana deixa de ser marco
+- Exercício com uma sessão só aparece como **ponto de partida**, não some: ver
+  onde se começou já é mais do que a planilha mostrava
+- Nada disso vai ao disco (ADR 0006): trajetória, delta, manchete e recorde são
+  funções puras sobre os registros e as aferições que já estavam no vault
+- O aceite roda de ponta a ponta em Chromium, com passado gravado no OPFS: o
+  aluno treina por cima de uma sessão de quatro semanas atrás, vê o recorde em
+  Hoje e a frase na Evolução, e tudo sobrevive a recarregar
+- A tela provisória `EmConstrucao` sai do app: os quatro destinos da
+  arquitetura de informação existem de verdade
+
 ### Story 6 — Perfil e medidas
 
 O corpo do aluno deixa de ser uma célula que se sobrescreve.

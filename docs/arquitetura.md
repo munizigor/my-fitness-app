@@ -30,7 +30,9 @@ Dependências apontam para dentro: `ui → application → domain`. `domain` nã
 
 **`domain/`** — puro, sem I/O. Entidades, regras e cálculos derivados. Aqui vive o parser de prescrição (`3x10a12`, `2x60'`), a montagem da linha do tempo do dia, e todo o cálculo de progresso. Testável sem browser, sem mock, sem setup. Meta de cobertura: 95%.
 
-**`domain/ports/`** — interfaces que o domínio precisa mas não implementa: `VaultStorage`, `FileTransfer`. É a inversão que permite testar `application` sem tocar em OPFS.
+**`domain/ports/`** — interfaces que o domínio precisa mas não implementa: `VaultStorage`, que guarda dentro, e `FileTransfer`, que entrega para fora. É a inversão que permite testar `application` sem tocar em OPFS nem abrir diálogo de sistema.
+
+As duas portas são deliberadamente burras — texto em caminhos, texto num arquivo com nome. É o que garante que o conteúdo no disco seja **exatamente** o que o aluno recebe ao exportar: um motor que traduzisse para colunas próprias quebraria "arquivo acima do app".
 
 **`application/`** — casos de uso que orquestram domínio e portas. Um caso de uso por intenção do aluno. Testado com `InMemoryVaultStorage`. Meta: 90%.
 
@@ -40,7 +42,19 @@ Os documentos do aluno — perfil e medidas — têm caso de uso e store própri
 
 `CarregarAluno` lê o histórico **inteiro**, sem a janela de 90 dias de `CarregarHistorico`: aquela alimenta a sugestão de carga da próxima série, esta é a evidência de longo prazo — e são poucos arquivos por ano.
 
+**`domain/progresso/`** não tem caso de uso próprio, e é de propósito: tudo ali é função pura sobre o que os outros já carregaram. A tela de Evolução e o recorde em Hoje leem `historico` e `medidas` dos stores que já existem, e derivam trajetória, delta e marco em memória. Um `CarregarProgresso` só acrescentaria uma leitura de disco para calcular o que já estava na mão.
+
+Duas agregações convivem ali, com critérios opostos e ambos corretos: `sugerirCarga` casa pelo **item prescrito** (os dois lados da Prancha Lateral não podem se contaminar, porque a sugestão vai para o campo de um lado só), e `progressoPorExercicio` agrega pelo **exercício** (o supino do Treino A e o do Treino B são a mesma trajetória). É o motivo de o registro guardar o item, e não o exercício: dá para ir de um ao outro, mas não de volta.
+
+**Importar, exportar e restaurar** são três casos de uso e um só caminho de entrada. `ExportarVault` lê o vault inteiro e o embrulha; `RestaurarVault` desembrulha de volta; `ImportarPlano` continua sendo o que aceita o arquivo do profissional. Quem decide qual dos dois roda é o campo `formato` do arquivo escolhido, e não o aluno: ele tem um arquivo na mão e um lugar para carregá-lo. O que os três compartilham é a garantia de validar o documento inteiro antes de escrever o primeiro byte — um arquivo pela metade não deixa o vault pela metade.
+
+`ehCaminhoDoVault` (em `domain/vault/caminhos.ts`) é o que torna restaurar seguro: um envelope é conteúdo de fora, e um documento chamado `../../outra-coisa.json` sairia da pasta do aluno. A regra mora junto dos caminhos que descreve, e não em quem restaura.
+
+**`domain/plano/`** também não tem caso de uso: `resumoDoPlano` e `prescricaoCompleta` são dois ângulos do arquivo que o `vaultStore` já carregou. `prescricaoCompleta` é a contrapartida de `montarDia` — lá o plano é fatiado no momento de agir, aqui é apresentado por inteiro para quem veio consultar — e é onde **todo join por id acontece**: agenda→treino, item→exercício, posologia→refeição. Se o JSX fizesse essas buscas, o formato do arquivo estaria espalhado por quatro componentes, e mudá-lo custaria quatro lugares para lembrar.
+
 **`infrastructure/`** — as implementações concretas: OPFS, File System Access API, i18n, service worker. Verificada por Playwright em Chromium real, porque OPFS não existe em jsdom.
+
+`SalvarArquivo` tem dois caminhos, na ordem que o ADR 0003 decidiu: pasta escolhida pelo aluno onde o navegador oferece File System Access, download em todo o resto. O primeiro não tem como ser exercitado por automação — nenhum driver responde ao diálogo do sistema —, então ele é o mais curto possível, e o E2E do round-trip remove a API na inicialização da página para rodar pelo segundo, que é o mesmo caminho do Firefox e do iOS.
 
 **`ui/`** — React. Não contém regra de negócio: chama caso de uso e renderiza. Toda string sai do dicionário `pt-BR`.
 

@@ -78,6 +78,8 @@ const CAMPOS: Record<string, string> = {
   refeicao: 'Refeição de referência',
   formulas: 'Fórmulas',
   tipo: 'Tipo',
+  exportadoEm: 'Data da exportação',
+  documentos: 'Documentos do vault',
 }
 
 const TIPOS: Record<string, string> = {
@@ -124,6 +126,10 @@ interface Rota {
 }
 
 const ROTAS: readonly Rota[] = [
+  // O export do vault (ADR 0003) não tem seções: cada problema mora num
+  // caminho de documento, e o caminho é o nome que a pessoa vê no editor.
+  { padrao: ['documentos', ':s'], rotulo: (c) => `Backup · ${chave(c, 0)}` },
+
   { padrao: ['aluno'], rotulo: () => 'Dados do aluno' },
   { padrao: ['profissional'], rotulo: () => 'Dados do profissional' },
 
@@ -314,6 +320,11 @@ function humanizar(issue: $ZodIssue, valor: unknown): string {
 
     case 'invalid_union':
       return 'não está em nenhum dos formatos aceitos'
+
+    // A chave de um mapa — no export, o caminho do documento. O Zod embrulha o
+    // problema real numa mensagem genérica; a nossa está um nível abaixo.
+    case 'invalid_key':
+      return issue.issues[0]?.message ?? issue.message
 
     // As mensagens `custom` são escritas por nós, já em linguagem de gente.
     default:

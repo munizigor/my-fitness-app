@@ -254,6 +254,57 @@ describe('TelaHoje', () => {
     })
   })
 
+  describe('o recorde vai até o aluno', () => {
+    beforeEach(comPlano)
+
+    /** `a2` é a Remada Cavalinho do Treino A no plano de exemplo. */
+    function comCargas(porDia: Record<string, number>) {
+      useRegistro.setState({
+        carregando: false,
+        historico: Object.entries(porDia).map(([data, cargaKg]) => ({
+          schemaVersion: SCHEMA_VERSION_REGISTRO,
+          data,
+          aguaLitros: 0,
+          refeicoes: [],
+          series: [
+            {
+              itemDeTreinoId: 'a2',
+              indice: 1,
+              cargaKg,
+              repeticoes: 10,
+              concluidaEm: `${data}T10:00:00.000Z`,
+            },
+          ],
+        })),
+      })
+    }
+
+    it('anuncia em Hoje a marca que acabou de cair, sem o aluno abrir a Evolução', () => {
+      comCargas({ '2026-08-17': 30, [SEGUNDA]: 36 })
+      renderizar(SEGUNDA)
+
+      // Princípio 3: o eu afetivo não vai procurar prova de progresso; a prova
+      // tem que chegar até ele, no dia em que acontece.
+      const recorde = screen.getByRole('status')
+      expect(recorde).toHaveTextContent('Remada Cavalinho com Triângulo')
+      expect(recorde).toHaveTextContent('36 kg')
+      expect(recorde).toHaveTextContent('30 kg')
+    })
+
+    it('fica calado quando o treino de hoje não superou nada', () => {
+      comCargas({ '2026-08-17': 40, [SEGUNDA]: 36 })
+      renderizar(SEGUNDA)
+
+      // Marco que aparece todo dia deixa de ser marco.
+      expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    })
+
+    it('não anuncia recorde nenhum antes de o aluno treinar', () => {
+      renderizar(SEGUNDA)
+      expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    })
+  })
+
   it('não deixa chave de tradução vazar para a tela', () => {
     comPlano()
     renderizar(SEGUNDA)

@@ -56,7 +56,7 @@ function descrever(medida: Medida, t: Traduzir): string {
     if (valor === undefined) continue
     partes.push(
       t('perfil.circunferenciaValor', {
-        parte: t(`perfil.partes.${parte as Circunferencia}`),
+        parte: t(`corpo.${parte as Circunferencia}`),
         valor: valor.toLocaleString('pt-BR'),
       })
     )

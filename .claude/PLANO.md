@@ -40,14 +40,16 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - [x] **6. Perfil e medidas** — aba própria, histórico como série temporal.
       _Aceite:_ cada aferição é ponto datado que não sobrescreve o anterior; trocar o plano importado preserva todo o histórico (teste explícito).
 
-- [ ] **7. Evolução** — a story que ataca a causa-raiz.
+- [x] **7. Evolução** — a story que ataca a causa-raiz.
       _Aceite:_ frase em linguagem natural antes de qualquer gráfico; com ≥2 sessões do mesmo exercício mostra variação de carga e volume; com ≥2 aferições mostra delta corporal; recorde pessoal aparece em Hoje no momento em que acontece, sem o aluno visitar a aba.
 
-- [ ] **8. Consultar o plano completo** — prescrição inteira read-only.
+- [x] **8. Consultar o plano completo** — prescrição inteira read-only.
       _Aceite:_ suplementos agrupados por fórmula como o profissional prescreveu; import e export vivem aqui.
+      _O export é a story 9, e nasce nesta mesma aba._
 
-- [ ] **9. Exportar vault** — data ownership na prática.
+- [x] **9. Exportar vault** — data ownership na prática.
       _Aceite:_ o arquivo gerado reimporta em instalação limpa e reproduz o mesmo estado, histórico de medidas incluído (round-trip).
+      _O mesmo input de import recebe os dois arquivos: o `formato` decide, não o aluno._
 
 - [ ] **10. Instalar e usar offline** — PWA de verdade.
       _Aceite:_ Playwright com rede desligada abre o app e registra uma série.
@@ -61,6 +63,12 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - Mecânica de sequência (streak) mais elaborada
 
 ## Dívida técnica assumida
+
+- **O E2E offline de `plano.spec.ts` falha de vez em quando com muitos workers**
+  (`ERR_INTERNET_DISCONNECTED` ao recarregar): o service worker ainda não
+  assumiu a página quando o teste desliga a rede. Passa sozinho e passa em CI,
+  que roda com um worker. A espera explícita pelo controle do service worker
+  entra com a story 10, que é onde o offline é o assunto.
 
 - **Actions em Node 20.** `actions/checkout@v4`, `configure-pages@v5`, `deploy-pages@v4`,
   `setup-node@v4` e `upload-artifact@v4` declaram Node 20, que o GitHub depreciou e já
@@ -86,10 +94,18 @@ story 4 e a 5:
 
 ## Decisões pendentes
 
+- **Restaurar não apaga o que o backup não traz.** Escrever só os caminhos do
+  envelope é o certo em instalação limpa (o aceite) e é o conservador num vault
+  com dado — mas deixa órfão o documento que existe aqui e não existe no
+  backup. Uma restauração que substitui o vault inteiro precisaria de confirmação
+  explícita do aluno, e não há caso de uso pedindo isso ainda.
+
 - **Onde o treino cai na linha do tempo.** O plano diz em que _dia_ o aluno
   treina, nunca a que _horas_. `montarDia` recebe isso como preferência
   (`treinoDepoisDaRefeicao`, padrão 1), mas ainda não há controle na tela para o
   aluno ajustar. Entra quando houver preferências de UI em `localStorage`.
 - **Modalidade do aeróbico** é rótulo livre (`"HIIT na esteira"`). Cruzar
   aeróbico com evolução ("80 minutos de HIIT esta semana") exigiria separar
-  modalidade de método. Confirmar com o Thiago antes da story 7.
+  modalidade de método. A story 7 saiu sem esse cruzamento — a evidência de
+  progresso vem da barra e do corpo, que é onde o aluno já registra. A decisão
+  continua aberta e só custa alguma coisa quando alguém pedir a agregação.

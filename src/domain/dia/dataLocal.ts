@@ -33,6 +33,30 @@ export function diaDaSemanaDe(data: string): DiaDaSemana {
   return encontrado
 }
 
+/**
+ * Quantos dias separam duas datas de domínio.
+ *
+ * É o que transforma dois pontos em uma frase: "+12% de carga **em 4 semanas**"
+ * — sem o intervalo, a variação não diz se o aluno evoluiu rápido ou passou o
+ * semestre parado.
+ *
+ * A conta é feita em UTC de propósito, mesmo tratando de datas locais. Onde há
+ * horário de verão, um dos dias do intervalo tem 23 ou 25 horas, e a divisão
+ * por 86.400.000 sobre datas locais devolveria 27,96 — que arredondaria "4
+ * semanas" para 3.
+ */
+export function diferencaEmDias(de: string, ate: string): number {
+  return Math.round((emUtc(ate) - emUtc(de)) / MILISSEGUNDOS_POR_DIA)
+}
+
+const MILISSEGUNDOS_POR_DIA = 86_400_000
+
+function emUtc(data: string): number {
+  const partes = partesDe(data)
+  if (!partes) throw new DataInvalidaError(data)
+  return Date.UTC(partes.ano, partes.mes - 1, partes.dia)
+}
+
 /** Hoje no calendário do aluno. O instante é injetável para o teste não depender do relógio. */
 export function hojeLocal(instante: Date = new Date()): string {
   const ano = instante.getFullYear()

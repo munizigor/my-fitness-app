@@ -48,16 +48,23 @@ export const ptBR = {
     gota_one: '{{quantidade}} gota',
     gota_other: '{{quantidade}} gotas',
   },
+  /**
+   * Os dias da semana têm um dono só, fora de qualquer tela.
+   *
+   * Moravam dentro de `hoje`, e a consulta ao plano precisa dos mesmos nomes —
+   * copiá-los para lá deixaria duas listas de sete palavras para manter em
+   * sincronia, que é como um dia vira "Sábado" numa tela e "sábado" na outra.
+   */
+  diaDaSemana: {
+    seg: 'Segunda-feira',
+    ter: 'Terça-feira',
+    qua: 'Quarta-feira',
+    qui: 'Quinta-feira',
+    sex: 'Sexta-feira',
+    sab: 'Sábado',
+    dom: 'Domingo',
+  },
   hoje: {
-    diaDaSemana: {
-      seg: 'Segunda-feira',
-      ter: 'Terça-feira',
-      qua: 'Quarta-feira',
-      qui: 'Quinta-feira',
-      sex: 'Sexta-feira',
-      sab: 'Sábado',
-      dom: 'Domingo',
-    },
     descansoTitulo: 'Hoje é dia de descanso',
     descansoDescricao: 'Sem treino nem aeróbico. As refeições continuam.',
     agua: 'Água',
@@ -75,6 +82,8 @@ export const ptBR = {
     aerobico: 'Aeróbico',
     aerobicoDuracao: '{{minutos}} min',
     comecarTreino: 'Começar treino',
+    recordeTitulo: 'Recorde pessoal',
+    recorde: '{{exercicio}}: {{carga}} kg. Sua melhor marca era {{anterior}} kg.',
     serieRepeticoes: '{{series}} × {{min}}–{{max}}',
     serieRepeticoesFixas: '{{series}} × {{repeticoes}}',
     serieTempo: "{{series}} × {{segundos}}''",
@@ -116,6 +125,22 @@ export const ptBR = {
     dispensarDescanso: 'Dispensar',
     carregando: 'Carregando seu histórico…',
   },
+  /**
+   * Os rótulos do corpo, de uma vez só: o Perfil pede a medida e a Evolução
+   * mostra o delta dela. Duas listas dariam "Abdômen" numa tela e "Abdome" na
+   * outra no dia em que alguém corrigisse uma delas.
+   */
+  corpo: {
+    peso: 'Peso',
+    gordura: 'Gordura',
+    torax: 'Tórax',
+    cintura: 'Cintura',
+    abdomen: 'Abdômen',
+    quadril: 'Quadril',
+    braco: 'Braço',
+    coxa: 'Coxa',
+    panturrilha: 'Panturrilha',
+  },
   perfil: {
     titulo: 'Perfil',
     identificacao: '{{nome}} · {{idade}} anos · {{altura}} m',
@@ -138,20 +163,50 @@ export const ptBR = {
     pesoValor: '{{valor}} kg',
     gorduraValor: '{{valor}}% de gordura',
     circunferenciaValor: '{{parte}} {{valor}} cm',
-    partes: {
-      torax: 'Tórax',
-      cintura: 'Cintura',
-      abdomen: 'Abdômen',
-      quadril: 'Quadril',
-      braco: 'Braço',
-      coxa: 'Coxa',
-      panturrilha: 'Panturrilha',
-    },
     seusDados: 'Seu histórico é seu e fica no seu aparelho — trocar de plano não apaga nada.',
   },
-  emConstrucao: {
-    titulo: 'Ainda não construído',
-    descricao: 'Esta tela chega num próximo ciclo.',
+  /**
+   * A tela responde a uma pergunta: **eu evoluí?** Por isso o dicionário aqui
+   * é feito de frases inteiras, e não de rótulos soltos para o aluno montar de
+   * cabeça — a evidência vem em frase, o gráfico vem depois.
+   */
+  evolucao: {
+    titulo: 'Sua evolução',
+    destaqueCarga: 'Você levantou {{percentual}}% mais na {{exercicio}} {{intervalo}}.',
+    destaqueCorpoPerdeu: 'Você perdeu {{valor}} de {{metrica}} {{intervalo}}.',
+    destaqueCorpoGanhou: 'Você ganhou {{valor}} de {{metrica}} {{intervalo}}.',
+    intervalo_one: 'em 1 semana',
+    intervalo_other: 'em {{count}} semanas',
+    /** Duas sessões na mesma semana: "em 0 semanas" seria absurdo. */
+    intervaloMesmaSemana: 'esta semana',
+    treinoTitulo: 'Exercício por exercício',
+    corpoTitulo: 'Seu corpo',
+    carga: 'Carga',
+    volume: 'Volume',
+    dePara: '{{de}} → {{para}}',
+    sessoes_one: '{{count}} sessão',
+    sessoes_other: '{{count}} sessões',
+    pontoDePartida: 'Seu ponto de partida',
+    subiu: '+{{valor}}%',
+    /** O sinal de menos já vem no número formatado em pt-BR. */
+    caiu: '{{valor}}%',
+    vazioTitulo: 'Ainda não dá para dizer',
+    vazioDescricao:
+      'Registre o mesmo exercício em dois treinos — ou duas aferições no Perfil — e a comparação aparece aqui.',
+    valorKg: '{{valor}} kg',
+    valorCm: '{{valor}} cm',
+    valorPercentual: '{{valor}}%',
+    metrica: {
+      peso: 'peso',
+      gordura: 'gordura corporal',
+      torax: 'tórax',
+      cintura: 'cintura',
+      abdomen: 'abdômen',
+      quadril: 'quadril',
+      braco: 'braço',
+      coxa: 'coxa',
+      panturrilha: 'panturrilha',
+    },
   },
   plano: {
     titulo: 'Seu plano',
@@ -165,6 +220,50 @@ export const ptBR = {
     resumoNutricao: '{{refeicoes}} refeições por dia · {{litros}} L de água',
     resumoSuplementos: '{{suplementos}} suplementos em {{formulas}} fórmulas',
     seusDadosFicam: 'Seus dados ficam no seu aparelho. Você pode exportá-los quando quiser.',
+
+    exportar: 'Exportar meus dados',
+    exportando: 'Preparando o arquivo…',
+    /**
+     * A frase diz o que o aluno ganhou, não o que o app fez. "Exportação
+     * concluída" é o app se elogiando; o que importa é que o arquivo é dele e
+     * abre em qualquer editor — que é a promessa inteira do produto.
+     */
+    exportado: 'Vault exportado. O arquivo é seu: guarde onde quiser e abra em qualquer editor.',
+    restaurado: 'Backup restaurado. Seu plano e seu histórico voltaram.',
+    nadaParaExportar: 'Ainda não há nada seu para exportar.',
+
+    semanaTitulo: 'Sua semana',
+    descanso: 'Descanso',
+    aerobico: '{{modalidade}} · {{minutos}} min',
+
+    treinosTitulo: 'Treinos',
+    /** "Cai em Segunda-feira e Quarta-feira": o mesmo treino, os dias todos. */
+    treinoDias: 'Cai em {{dias}}',
+    treinoSemDia: 'Sem dia marcado nesta semana',
+    exercicios_one: '{{count}} exercício',
+    exercicios_other: '{{count}} exercícios',
+    cargaAlvo: '{{carga}} kg',
+
+    dietaTitulo: 'Dieta',
+    alvoDoDia:
+      'Alvo do dia: {{proteina}} g de proteína · {{carboidrato}} g de carboidrato · {{gordura}} g de gordura',
+    agua: '{{litros}} L de água por dia',
+    vegetais: 'Vegetais à vontade: {{lista}}',
+    itens_one: '{{count}} item',
+    itens_other: '{{count}} itens',
+
+    suplementosTitulo: 'Suplementos',
+    /**
+     * O artigo concorda com "refeição", não com o nome que o profissional deu
+     * a ela: "Depois da refeição 3 · Ceia" está certo em qualquer plano, e
+     * "Depois do Ceia" estaria errado na metade deles.
+     */
+    doseAposRefeicao: 'Depois da refeição {{numero}} · {{refeicao}}',
+    doseAntesDoTreino: 'Antes de treinar',
+    doseLivre: 'Em qualquer horário',
+    vezesPorDia_one: '{{count}}× ao dia',
+    vezesPorDia_other: '{{count}}× ao dia',
+    duracaoDias: 'por {{count}} dias',
   },
   erroImport: {
     titulo: 'Não consegui ler este arquivo',

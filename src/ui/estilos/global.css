@@ -177,6 +177,23 @@ body {
   white-space: nowrap;
 }
 
+/* Importar e exportar lado a lado, quebrando em duas linhas onde não couber:
+   são as duas metades da mesma promessa, e moram juntas. */
+.plano__arquivo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.plano__aviso {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio);
+  background: rgb(74 222 128 / 12%);
+  color: var(--acento);
+  font-size: 0.875rem;
+}
+
 .plano__nota {
   margin: 0;
   font-size: 0.8125rem;
@@ -992,4 +1009,331 @@ body {
 
 .historico__valores {
   font-variant-numeric: tabular-nums;
+}
+
+/* --- Evolução -------------------------------------------------------------
+   A hierarquia da tela é a do princípio 4: a manchete é o único texto grande,
+   e tudo abaixo dela é evidência de apoio, em corpo menor. */
+
+.evolucao {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.evolucao__titulo {
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+.evolucao__manchete {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--acento);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  font-size: 1.1875rem;
+  line-height: 1.35;
+}
+
+.evolucao__aindaNao {
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.evolucao__aindaNaoTitulo {
+  margin: 0 0 0.25rem;
+  font-size: 1.0625rem;
+}
+
+.evolucao__aindaNaoDescricao {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+}
+
+.evolucao__secao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.evolucao__secaoTitulo {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-suave);
+}
+
+.evolucao__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.evolucao__exercicio,
+.evolucao__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.evolucao__exercicioNome {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.evolucao__sessoes,
+.evolucao__partida {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.variacao {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.125rem 0 0;
+}
+
+.variacao__rotulo {
+  min-width: 4.5rem;
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+}
+
+.variacao__numeros {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A queda não ganha vermelho: é informação, não erro. Só a subida se destaca. */
+.variacao__delta {
+  margin-left: auto;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--texto-suave);
+}
+
+.variacao__delta--subiu {
+  color: var(--acento);
+}
+
+/* O único bloco de Hoje que não é compromisso: é a prova de que valeu. */
+.recorde {
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--acento);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.recorde__titulo {
+  margin: 0 0 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--acento);
+}
+
+.recorde__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.recorde__item {
+  font-size: 0.9375rem;
+}
+
+/* --- Plano: a prescrição inteira -------------------------------------------
+   O único lugar do app onde a estrutura da planilha é a estrutura certa, porque
+   aqui o aluno está consultando. A semana fica à vista; treinos e refeições
+   ficam atrás de um toque, senão a tela vira a planilha rolando de novo. */
+
+.prescricao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.prescricao__titulo {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-suave);
+}
+
+.prescricao__linha {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--texto-suave);
+}
+
+.semana {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.semana__dia {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  font-size: 0.9375rem;
+}
+
+.semana__dia + .semana__dia {
+  border-top: 1px solid var(--borda);
+}
+
+.semana__conteudo {
+  text-align: right;
+}
+
+/* Descanso é informação, não ausência de informação: fica mais discreto que um
+   dia de treino e ainda assim legível. */
+.semana__dia--descanso .semana__conteudo {
+  color: var(--texto-suave);
+}
+
+.treino,
+.refeicaoPlano,
+.formula {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.treino__resumo,
+.refeicaoPlano__resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  /* Alvo de toque de mão inteira, como todo o resto do app. */
+  min-height: var(--toque-minimo);
+  justify-content: center;
+  cursor: pointer;
+}
+
+.treino__rotulo,
+.refeicaoPlano__nome {
+  font-weight: 600;
+}
+
+.treino__foco {
+  font-weight: 400;
+  color: var(--texto-suave);
+}
+
+.treino__detalhe,
+.refeicaoPlano__detalhe {
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.treino__exercicios,
+.refeicaoPlano__itens {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.treino__exercicio,
+.refeicaoPlano__item {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--borda);
+  font-size: 0.9375rem;
+}
+
+.treino__nome {
+  font-weight: 600;
+}
+
+.treino__prescricao,
+.refeicaoPlano__macros,
+.refeicaoPlano__quantidade {
+  color: var(--texto-suave);
+}
+
+.treino__observacao,
+.formula__observacao {
+  font-size: 0.8125rem;
+  color: #d8c48a;
+}
+
+.refeicaoPlano__opcoes {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+}
+
+/* Mesmo "ou" da tela de refeição, e pelo mesmo motivo: sem ele a lista se lê
+   como coisas a comer todas. Aqui é texto, não botão — consultar não é comer. */
+.refeicaoPlano__ou {
+  display: block;
+  padding: 0.125rem 0;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--texto-suave);
+}
+
+.formula__nome {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.formula__itens {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formula__item {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9375rem;
+}
+
+.formula__suplemento {
+  font-weight: 600;
+}
+
+.formula__dose,
+.formula__posologia {
+  color: var(--texto-suave);
+}
+
+.formula__posologia {
+  font-size: 0.8125rem;
 }

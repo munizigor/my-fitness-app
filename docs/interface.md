@@ -109,11 +109,34 @@ Ao concluir, **o cronômetro dispara sozinho**, largura total, impossível de ig
 
 Não é painel de gráficos. Responde a uma pergunta: **eu evoluí?**
 
-- **Primeiro a frase.** "Supino: +12% de carga em 4 semanas." "Você treinou 5 de 5 dias."
-- Depois a evidência: progressão de carga por exercício, volume semanal, aderência, delta das medidas.
-- Gerar imagem compartilhável a partir de um marco real, não de gráfico de vaidade.
+```
+ Sua evolução
 
-**O marco vai até o aluno.** Um recorde pessoal aparece em Hoje no instante em que acontece. O eu afetivo não vai procurar prova de progresso; a prova tem que chegar.
+ ┃ Você levantou 20% mais na Remada Cavalinho
+ ┃ em 4 semanas.                                  ← a manchete, e só uma
+
+ EXERCÍCIO POR EXERCÍCIO
+ ┃ Remada Cavalinho com Triângulo    4 sessões
+ ┃   Carga    30 → 36 kg                  +20%
+ ┃   Volume  300 → 432 kg                 +44%
+
+ ┃ Agachamento Livre                 1 sessão
+ ┃   Seu ponto de partida                        ← não some por ser um ponto só
+
+ SEU CORPO
+ ┃   Peso      85 → 81,6 kg                −4%
+ ┃   Cintura     92 → 89 cm                −3,3%
+```
+
+- **Primeiro a frase**, uma só. Escolher qual é escolher **o melhor fato verdadeiro**: a maior subida de carga em percentual — mais 10 kg no agachamento pesado é menos evolução que mais 6 kg na rosca — e, quando nada subiu na barra, a maior mudança do corpo. Se nada mudou, a manchete some: dizer "+0%" em letra grande é fingir uma evidência que ainda não existe.
+- Depois a evidência: carga e volume por exercício, delta das medidas. Aderência e volume semanal ficam para depois.
+- **A queda aparece como é.** Esconder seria mentir para quem está voltando de uma lesão. Só a subida ganha cor — a queda é informação, não erro.
+- No corpo, a maior mudança em **qualquer direção**: sem saber o objetivo do aluno — e o plano não diz qual é —, perder 3 cm de cintura e ganhar 3 cm de braço são igualmente evolução.
+- Gerar imagem compartilhável a partir de um marco real, não de gráfico de vaidade, continua no backlog.
+
+**O marco vai até o aluno.** Um recorde pessoal aparece em Hoje no dia em que acontece, acima da linha do tempo — é o único bloco do dia que não é compromisso, e sim prova de que valeu. O eu afetivo não vai procurar prova de progresso; a prova tem que chegar.
+
+Três regras protegem o marco de virar confete: **empatar não é recorde** (marco que acontece toda semana deixa de ser marco), **a primeira vez não é recorde** (sem passado não há o que superar, e o primeiro treino marcaria todos os exercícios de uma vez), e a comparação é com **a melhor marca de todas** — voltar de uma pausa e superar a semana passada ainda é estar abaixo de si mesmo.
 
 ### 4. Perfil
 
@@ -141,9 +164,33 @@ Três decisões desta tela:
 
 Aqui não há gráfico. A frase de evidência ("você perdeu 3 cm de cintura desde junho") é a tela de Evolução; esta mostra os pontos datados que a alimentam — e é o único lugar do app onde a prescrição não aparece, porque nada disto é do profissional.
 
-### Consultar o plano completo
+### 5. Plano — a prescrição inteira, read-only
 
-Acessível a partir de Hoje e do Perfil. Prescrição inteira read-only: treinos A–F, protocolo alimentar completo, fórmulas de suplemento **agrupadas como o profissional as pensou** (Colesterol, Sono, Testosterona), agenda semanal. É o único lugar onde a estrutura da planilha é a estrutura certa, porque aqui o aluno está em modo reflexivo, consultando. Import e export do vault vivem aqui.
+A quarta aba. Prescrição inteira: agenda semanal, treinos A–F, protocolo alimentar completo, fórmulas de suplemento **agrupadas como o profissional as pensou** (Colesterol, Sono, Testosterona). É o único lugar onde a estrutura da planilha é a estrutura certa, porque aqui o aluno está em modo reflexivo, consultando. Import e export do vault vivem aqui.
+
+```
+ Sua semana
+ ┃ Segunda-feira      Treino A · Superior + HIIT na esteira · 20 min
+ ┃ Quinta-feira       Descanso
+ ┃ Sábado             HIIT na esteira · 20 min
+
+ Treinos
+ ▸ Treino A · Superior
+   Cai em Segunda-feira e Quarta-feira · 4 exercícios
+ ▸ Treino B · Inferior
+   Cai em Terça-feira e Sexta-feira · 2 exercícios
+```
+
+É a exceção deliberada ao princípio 1 — e a exceção é **ver o plano todo, não ter que rolar por ele**. Por isso a semana fica à vista, que é o mapa e cabe na primeira dobra, e cada treino e cada refeição ficam atrás de um toque. Seis treinos de dez exercícios abertos de uma vez são a planilha rolando na tela, que é o artefato que o app existe para substituir.
+
+- **O dia sem nada diz "Descanso".** Uma linha vazia se lê como informação que faltou. E sábado, que tem aeróbico sem musculação, não é descanso: chamá-lo assim mandaria o aluno para casa num dia de trabalho.
+- **Cada treino aparece uma vez, com os dias em que cai.** O arquivo diz "segunda tem o treino A"; quem consulta pergunta "quando eu faço o treino A?". Repetir a lista de exercícios embaixo de segunda e de quarta seria a planilha de volta. Treino escrito e não agendado continua na lista — é comum em plano de semana A/B, e omiti-lo seria esconder prescrição.
+- **O suplemento diz quando tomar pelo nome da refeição**, não pelo número. O artigo concorda com "refeição" e não com o nome que o profissional deu a ela: "Depois da refeição 3 · Ceia" está certo em qualquer plano, e "Depois do Ceia" estaria errado na metade deles.
+- **É o único lugar do app onde a fórmula aparece.** No dia, o suplemento é dissolvido dentro da refeição a que pertence, porque de manhã o que importa é o que tomar agora; aqui o agrupamento é o raciocínio clínico de quem prescreveu.
+- **Nada é editável** (princípio 5). Em Hoje, tocar numa alternativa registra o consumo, e por isso ela é um botão. Aqui a mesma alternativa é texto: consultar o plano não é comer.
+- **Importar e exportar ficam lado a lado**, no rodapé da aba, porque são as duas metades da mesma promessa: o arquivo entra por aqui e sai por aqui. Exportar só aparece com plano importado — antes disso o botão ofereceria uma pasta vazia.
+- **Um botão de importar, não dois.** O aluno tem um arquivo na mão e nem sempre sabe se é a prescrição que o profissional mandou ou o backup que ele mesmo exportou. Quem sabe é o arquivo, que traz o próprio `formato`; obrigá-lo a escolher entre dois botões parecidos seria transferir a dúvida do app para ele.
+- **A confirmação diz o que o aluno ganhou**, não o que o app fez: "o arquivo é seu: guarde onde quiser e abra em qualquer editor". "Exportação concluída" seria o app se elogiando.
 
 ## Decisões visuais
 
