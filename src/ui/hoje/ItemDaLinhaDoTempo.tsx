@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import type { ItemDoDia, SuplementoNoDia } from '../../domain/dia/montarDia'
-import type { Execucao } from '../../domain/schema/arquivoDePlano'
+import { formatarExecucao } from '../comum/formatarExecucao'
 import { formatarMedida } from '../comum/formatarMedida'
 
 /**
@@ -144,16 +144,4 @@ function ListaDeSuplementos({
       </ul>
     </div>
   )
-}
-
-type Traduzir = ReturnType<typeof useTranslation>['t']
-
-/** `4 × 10–12` ou `2 × 60''`. A leitura que o aluno faz de relance na academia. */
-function formatarExecucao(series: number, execucao: Execucao, t: Traduzir): string {
-  if (execucao.tipo === 'tempo') {
-    return t('hoje.serieTempo', { series, segundos: execucao.segundos })
-  }
-  return execucao.min === execucao.max
-    ? t('hoje.serieRepeticoesFixas', { series, repeticoes: execucao.min })
-    : t('hoje.serieRepeticoes', { series, min: execucao.min, max: execucao.max })
 }

@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { hojeLocal } from '../../domain/dia/dataLocal'
-import { montarDia, type ExercicioNoDia } from '../../domain/dia/montarDia'
+import { montarDia } from '../../domain/dia/montarDia'
 import { sugerirCarga } from '../../domain/treino/sugerirCarga'
 import { EstadoSemPlano } from '../comum/EstadoSemPlano'
+import { formatarExecucao } from '../comum/formatarExecucao'
 import { useRegistro } from '../estado/registroStore'
 import { useVault } from '../estado/vaultStore'
 import { CronometroDeDescanso } from './CronometroDeDescanso'
@@ -91,7 +92,9 @@ export function ExecucaoTreino({ hoje = hojeLocal() }: { hoje?: string }) {
       </header>
 
       <h1 className="execucao__exercicio">{atual.exercicio.nome}</h1>
-      <p className="execucao__prescricao">{descreverPrescricao(atual, t)}</p>
+      <p className="execucao__prescricao">
+        {formatarExecucao(atual.prescrito.series, atual.prescrito.execucao, t)}
+      </p>
 
       {atual.prescrito.observacao && (
         <p className="execucao__observacao">{atual.prescrito.observacao}</p>
@@ -150,16 +153,4 @@ export function ExecucaoTreino({ hoje = hojeLocal() }: { hoje?: string }) {
       )}
     </section>
   )
-}
-
-type Traduzir = ReturnType<typeof useTranslation>['t']
-
-function descreverPrescricao({ prescrito }: ExercicioNoDia, t: Traduzir): string {
-  const { series, execucao } = prescrito
-  if (execucao.tipo === 'tempo') {
-    return t('hoje.serieTempo', { series, segundos: execucao.segundos })
-  }
-  return execucao.min === execucao.max
-    ? t('hoje.serieRepeticoesFixas', { series, repeticoes: execucao.min })
-    : t('hoje.serieRepeticoes', { series, min: execucao.min, max: execucao.max })
 }

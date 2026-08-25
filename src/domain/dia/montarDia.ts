@@ -2,6 +2,7 @@ import type {
   Aerobico,
   ArquivoDePlano,
   DiaDaSemana,
+  Execucao,
   Exercicio,
   ItemDeTreino,
   Macros,
@@ -45,6 +46,17 @@ export interface SuplementoNoDia {
   /** De qual fórmula veio. O dia não é organizado por fórmula, mas a origem importa. */
   readonly formula: string
 }
+
+/**
+ * Como a série é executada, na forma em que a **tela** precisa dela.
+ *
+ * Tem nome próprio, separado do `Execucao` do schema, porque montarDia é o
+ * adaptador entre o arquivo e a UI: o formato do arquivo pode mudar sem que
+ * cada componente saiba disso. Hoje as duas formas coincidem, e por isso isto
+ * é um apelido em vez de uma cópia — duplicar a estrutura agora só criaria
+ * duas coisas para manter sincronizadas.
+ */
+export type ExecucaoNoDia = Execucao
 
 export interface ExercicioNoDia {
   readonly prescrito: ItemDeTreino
