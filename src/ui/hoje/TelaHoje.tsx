@@ -1,8 +1,9 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { hojeLocal } from '../../domain/dia/dataLocal'
 import { montarDia } from '../../domain/dia/montarDia'
 import { EstadoSemPlano } from '../comum/EstadoSemPlano'
+import { useRegistro } from '../estado/registroStore'
 import { useVault } from '../estado/vaultStore'
 import { ContadorDeAgua } from './ContadorDeAgua'
 import { ItemDaLinhaDoTempo } from './ItemDaLinhaDoTempo'
@@ -18,6 +19,11 @@ import { ItemDaLinhaDoTempo } from './ItemDaLinhaDoTempo'
 export function TelaHoje({ hoje = hojeLocal() }: { hoje?: string }) {
   const { t } = useTranslation()
   const arquivo = useVault((e) => e.arquivo)
+  const { hoje: registro, carregar, registrarAgua } = useRegistro()
+
+  useEffect(() => {
+    void carregar(hoje)
+  }, [carregar, hoje])
 
   // O dia é derivado, nunca persistido (ADR 0006). Memorizar evita recalcular a
   // cada render sem gravar nada.
@@ -29,7 +35,11 @@ export function TelaHoje({ hoje = hojeLocal() }: { hoje?: string }) {
     <section className="hoje">
       <header className="hoje__cabecalho">
         <h1 className="hoje__dia">{t(`hoje.diaDaSemana.${dia.diaDaSemana}`)}</h1>
-        <ContadorDeAgua alvoLitros={dia.hidratacaoDiariaLitros} />
+        <ContadorDeAgua
+          alvoLitros={dia.hidratacaoDiariaLitros}
+          consumidoLitros={registro?.aguaLitros ?? 0}
+          onAjustar={(litros) => void registrarAgua(hoje, litros)}
+        />
       </header>
 
       {dia.descanso && (
@@ -41,7 +51,16 @@ export function TelaHoje({ hoje = hojeLocal() }: { hoje?: string }) {
 
       <ol className="linha">
         {dia.itens.map((item) => (
-          <ItemDaLinhaDoTempo key={item.id} item={item} />
+          <ItemDaLinhaDoTempo
+            key={item.id}
+            item={item}
+            escolhidos={
+              item.tipo === 'refeicao'
+                ? (registro?.refeicoes.find((r) => r.numero === item.refeicao.numero)?.itens
+                    .length ?? 0)
+                : 0
+            }
+          />
         ))}
       </ol>
     </section>

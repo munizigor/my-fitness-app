@@ -37,9 +37,20 @@ test.describe('Hoje', () => {
     await expect(page.getByText('Almoço')).toBeVisible()
   })
 
-  test('o contador de água responde ao toque', async ({ page }) => {
-    const botao = page.getByRole('button', { name: 'Registrar mais um copo de água' })
-    await botao.click()
+  test('o contador de água sobe, desce e sobrevive a recarregar', async ({ page }) => {
+    const mais = page.getByRole('button', { name: 'Registrar mais um copo de água' })
+    const menos = page.getByRole('button', { name: 'Tirar um copo de água' })
+
+    await expect(menos).toBeDisabled()
+    await mais.click()
+    await mais.click()
+    await expect(page.getByText('0,5 de 4 L')).toBeVisible()
+
+    await menos.click()
+    await expect(page.getByText('0,25 de 4 L')).toBeVisible()
+
+    // Estava só na memória da tela: trocar de aba apagava o dia inteiro.
+    await page.reload()
     await expect(page.getByText('0,25 de 4 L')).toBeVisible()
   })
 
@@ -67,18 +78,68 @@ test.describe('Hoje', () => {
       expect(temDescanso).toBe(1)
     } else if (titulo === 'Sábado') {
       expect(temTreino).toBe(0)
-      await expect(page.getByText('Aeróbico')).toBeVisible()
+      // Sem musculação, o aeróbico ganha cartão próprio em vez de sumir.
+      await expect(page.locator('.linha__item--aerobico')).toBeVisible()
     } else {
       expect(temTreino).toBe(1)
       expect(temDescanso).toBe(0)
-      // O suplemento ancorado "antes do treino" só existe em dia de treino.
-      await expect(page.getByText('Suplementos · antes do treino')).toBeVisible()
+
+      // O pré-treino e o aeróbico fazem parte da mesma ida à academia: moram
+      // dentro do cartão do treino, não em cartões irmãos.
+      const treino = page.locator('.linha__item--treino')
+      await expect(treino.getByText('Antes de treinar')).toBeVisible()
+      await expect(treino.getByText(/HIIT na esteira/)).toBeVisible()
     }
   })
 
-  test('o suplemento aparece grudado na refeição a que pertence', async ({ page }) => {
-    const titulos = await page.locator('.linha__titulo').allTextContents()
-    const indiceCafe = titulos.indexOf('Café da manhã')
-    expect(titulos[indiceCafe + 1]).toBe('Suplementos · depois da refeição 1')
+  test('o suplemento aparece dentro da refeição a que pertence', async ({ page }) => {
+    const cafe = page.locator('.linha__item--refeicao').first()
+    await expect(cafe.getByText('Magnésio dimalato')).toBeVisible()
+    await expect(cafe.getByText('Ômega 3')).toBeVisible()
+  })
+
+  test('a refeição abre o detalhe, escolhe a alternativa e soma os macros', async ({ page }) => {
+    await page.getByText('Almoço').click()
+    await expect(page.getByRole('heading', { name: 'Almoço' })).toBeVisible()
+
+    // Na planilha isto era uma célula com "Filé de frango 150g OU Tilápia
+    // 150g", que o aluno tinha que decifrar.
+    await expect(page.getByText('0 de 170 g')).toBeVisible()
+    await page.getByRole('button', { name: /Tilápia/ }).click()
+    await expect(page.getByRole('button', { name: /Tilápia/ })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+    await expect(page.getByText('45 de 170 g')).toBeVisible()
+
+    await page.reload()
+    await expect(page.getByRole('button', { name: /Tilápia/ })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+
+    await page.getByRole('button', { name: 'Voltar para Hoje' }).click()
+    await expect(page.getByText('1 de 3 escolhidos')).toBeVisible()
+  })
+
+  test('escolher a refeição funciona offline — a cozinha também tem sinal ruim', async ({
+    page,
+    context,
+  }) => {
+    await page.getByText('Almoço').click()
+    await expect(page.getByRole('heading', { name: 'Almoço' })).toBeVisible()
+    await context.setOffline(true)
+
+    await page.getByRole('button', { name: /Batata cozida/ }).click()
+    await expect(page.getByRole('button', { name: /Batata cozida/ })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+
+    await page.reload()
+    await expect(page.getByRole('button', { name: /Batata cozida/ })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
   })
 })

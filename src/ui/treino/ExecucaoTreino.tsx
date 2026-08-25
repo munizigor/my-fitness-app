@@ -5,7 +5,7 @@ import { hojeLocal } from '../../domain/dia/dataLocal'
 import { montarDia, type ExercicioNoDia } from '../../domain/dia/montarDia'
 import { sugerirCarga } from '../../domain/treino/sugerirCarga'
 import { EstadoSemPlano } from '../comum/EstadoSemPlano'
-import { useTreino } from '../estado/treinoStore'
+import { useRegistro } from '../estado/registroStore'
 import { useVault } from '../estado/vaultStore'
 import { CronometroDeDescanso } from './CronometroDeDescanso'
 import { LinhaDeSerie } from './LinhaDeSerie'
@@ -23,7 +23,7 @@ export function ExecucaoTreino({ hoje = hojeLocal() }: { hoje?: string }) {
   const { t } = useTranslation()
   const navegar = useNavigate()
   const arquivo = useVault((e) => e.arquivo)
-  const { historico, hoje: registroDeHoje, carregando, carregar, registrar } = useTreino()
+  const { historico, hoje: registroDeHoje, carregando, carregar, registrarSerie } = useRegistro()
   const cronometro = useCronometro()
   const [indiceExercicio, setIndice] = useState(0)
 
@@ -60,7 +60,7 @@ export function ExecucaoTreino({ hoje = hojeLocal() }: { hoje?: string }) {
 
   async function concluirSerie(indice: number, cargaKg?: number, repeticoes?: number) {
     const item = atual!
-    await registrar(hoje, {
+    await registrarSerie(hoje, {
       itemDeTreinoId: item.prescrito.id,
       indice,
       ...(cargaKg !== undefined && { cargaKg }),

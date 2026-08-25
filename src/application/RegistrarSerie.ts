@@ -1,11 +1,6 @@
 import type { VaultStorage } from '../domain/ports/VaultStorage'
-import {
-  lerRegistroDiario,
-  registroVazio,
-  type RegistroDiario,
-  type SerieRegistrada,
-} from '../domain/registro/registroDiario'
-import { CAMINHOS } from '../domain/vault/caminhos'
+import type { RegistroDiario, SerieRegistrada } from '../domain/registro/registroDiario'
+import { carregarRegistro, gravarRegistro } from './registroDoDia'
 
 export type Agora = () => string
 
@@ -36,7 +31,7 @@ export class RegistrarSerie {
   ) {}
 
   async executar(data: string, serie: SerieConcluida): Promise<RegistroDiario> {
-    const registro = (await this.carregar(data)) ?? registroVazio(data)
+    const registro = await carregarRegistro(this.vault, data)
 
     const nova: SerieRegistrada = {
       itemDeTreinoId: serie.itemDeTreinoId,
@@ -52,18 +47,6 @@ export class RegistrarSerie {
     )
     const atualizado: RegistroDiario = { ...registro, series: [...semADuplicada, nova] }
 
-    await this.vault.escrever(CAMINHOS.registro(data), JSON.stringify(atualizado, null, 2))
-    return atualizado
-  }
-
-  private async carregar(data: string): Promise<RegistroDiario | null> {
-    const bruto = await this.vault.ler(CAMINHOS.registro(data))
-    if (bruto === null) return null
-    try {
-      return lerRegistroDiario(JSON.parse(bruto))
-    } catch {
-      // Registro corrompido não pode impedir o aluno de treinar hoje.
-      return null
-    }
+    return gravarRegistro(this.vault, atualizado)
   }
 }
