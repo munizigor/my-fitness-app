@@ -30,7 +30,7 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - [x] **3. Hoje** — como aluno, quero abrir o app e ver só o que tenho que fazer hoje.
       _Aceite:_ linha do tempo cronológica com refeições, treino, aeróbico e suplementos ancorados por posologia; dia de DESCANSO tem estado próprio; contador de água fixo; a montagem é função pura testável sem UI.
 
-- [ ] **4. Modo execução de treino** — a tela que decide o produto.
+- [x] **4. Modo execução de treino** — a tela que decide o produto.
       _Aceite:_ um exercício por vez; séries pré-preenchidas com a última sessão registrada; cronômetro de descanso dispara sozinho com o intervalo do plano; técnica avançada sempre visível; registro sobrevive a recarregar e a ficar offline.
 
 - [ ] **5. Refeição com alternativas** — escolher entre as opções "OU" do item.
@@ -65,6 +65,12 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
   `setup-node@v4` e `upload-artifact@v4` declaram Node 20, que o GitHub depreciou e já
   força para Node 24. Hoje é aviso; vira falha quando a compatibilidade for removida.
   Subir as versões quando as `@v5`/`@v6` correspondentes estabilizarem.
+
+- **Separador decimal no campo de carga.** `<input type="number">` exibe `82.5`
+  e não `82,5`, porque o valor de um input numérico é independente de idioma.
+  Trocar por campo de texto daria a vírgula, mas custaria o teclado numérico no
+  celular — que importa mais para quem digita com uma mão na academia. Revisitar
+  se aparecer reclamação de uso real.
 
 ## Decisões pendentes
 

@@ -2,6 +2,29 @@
 
 ## [Não lançado]
 
+### Story 4 — Modo execução de treino
+
+A tela que decide o produto, e a primeira que **escreve** no vault.
+
+- Um exercício por vez, tipografia grande, alvos de toque de 48 px: o aluno está
+  de pé, com uma mão livre, com 60 s entre séries
+- **Carga pré-preenchida** por cascata — última que ele levantou → carga que o
+  profissional prescreveu → vazio. O histórico vence a prescrição: se ele já
+  levanta mais do que foi prescrito há dois meses, o número honesto é o dele
+- **Cronômetro dispara sozinho** ao concluir a série, com o intervalo do plano.
+  Conta a partir de um instante gravado e não somando ticks, porque o navegador
+  estrangula `setInterval` em aba de fundo — somar daria 40 s onde se passaram 70
+- **Grava a cada série**, não ao fim do treino: um treino dura 50 minutos e o app
+  pode ser fechado a qualquer momento
+- Reregistrar a mesma série substitui em vez de duplicar — quem toca de novo está
+  corrigindo a carga, não fazendo outra série
+- A carga da série 1 se propaga para as seguintes ainda não feitas: quem sobe de
+  60 para 80 não pode ter que corrigir três linhas à mão, entre séries
+- Técnica avançada sempre visível, nunca atrás de um toque
+- Registro ilegível devolve `null` em vez de lançar — diferente do plano, que é
+  erro do profissional e precisa ser reportado. Aqui o aluno está segurando a
+  barra, e recomeçar o dia é melhor que ver o app quebrar
+
 ### Story 3 — Hoje
 
 A tela inicial deixa de ser o convite a importar e passa a ser o dia.

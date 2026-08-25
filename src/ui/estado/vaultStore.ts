@@ -28,6 +28,11 @@ export function usarVault(outro: VaultStorage): void {
   vault = outro
 }
 
+/** O vault em uso, para outros stores não precisarem duplicar a escolha. */
+export function vaultAtual(): VaultStorage {
+  return vault
+}
+
 export const useVault = create<EstadoDoVault>((set) => ({
   arquivo: null,
   carregando: true,

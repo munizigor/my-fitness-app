@@ -5,6 +5,7 @@ import { EmConstrucao } from './comum/EmConstrucao'
 import { EstadoSemPlano } from './comum/EstadoSemPlano'
 import { TelaHoje } from './hoje/TelaHoje'
 import { TelaPlano } from './plano/TelaPlano'
+import { ExecucaoTreino } from './treino/ExecucaoTreino'
 import { useVault } from './estado/vaultStore'
 
 /**
@@ -40,6 +41,7 @@ export function App() {
             <Route path="/hoje" element={<TelaHoje />} />
             <Route path="/evolucao" element={<DependeDoPlano />} />
             <Route path="/perfil" element={<DependeDoPlano />} />
+            <Route path="/treino" element={<ExecucaoTreino />} />
             <Route path="/plano" element={<TelaPlano />} />
             <Route path="*" element={<Navigate to="/hoje" replace />} />
           </Routes>
