@@ -1,0 +1,23 @@
+node_modules
+dist
+dev-dist
+coverage
+playwright-report
+test-results
+*.local
+.DS_Store
+.env
+.env.*
+.claude/settings.local.json
+
+# ADR 0005 — dado pessoal de saúde nunca entra no repositório.
+# Repo e GitHub Pages são públicos. Planilhas e exports reais ficam aqui,
+# fora do versionamento. Fixtures de teste são sintéticos.
+dados-reais/
+*.fitvault.json
+*.xlsx
+*.pdf
+
+# Exceção: fixtures de teste são sintéticos e versionados de propósito.
+!src/test/fixtures/**
+!e2e/fixtures/**
