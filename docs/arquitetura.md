@@ -40,6 +40,10 @@ Os documentos do aluno — perfil e medidas — têm caso de uso e store própri
 
 `CarregarAluno` lê o histórico **inteiro**, sem a janela de 90 dias de `CarregarHistorico`: aquela alimenta a sugestão de carga da próxima série, esta é a evidência de longo prazo — e são poucos arquivos por ano.
 
+**`domain/progresso/`** não tem caso de uso próprio, e é de propósito: tudo ali é função pura sobre o que os outros já carregaram. A tela de Evolução e o recorde em Hoje leem `historico` e `medidas` dos stores que já existem, e derivam trajetória, delta e marco em memória. Um `CarregarProgresso` só acrescentaria uma leitura de disco para calcular o que já estava na mão.
+
+Duas agregações convivem ali, com critérios opostos e ambos corretos: `sugerirCarga` casa pelo **item prescrito** (os dois lados da Prancha Lateral não podem se contaminar, porque a sugestão vai para o campo de um lado só), e `progressoPorExercicio` agrega pelo **exercício** (o supino do Treino A e o do Treino B são a mesma trajetória). É o motivo de o registro guardar o item, e não o exercício: dá para ir de um ao outro, mas não de volta.
+
 **`infrastructure/`** — as implementações concretas: OPFS, File System Access API, i18n, service worker. Verificada por Playwright em Chromium real, porque OPFS não existe em jsdom.
 
 **`ui/`** — React. Não contém regra de negócio: chama caso de uso e renderiza. Toda string sai do dicionário `pt-BR`.

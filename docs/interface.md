@@ -109,11 +109,34 @@ Ao concluir, **o cronômetro dispara sozinho**, largura total, impossível de ig
 
 Não é painel de gráficos. Responde a uma pergunta: **eu evoluí?**
 
-- **Primeiro a frase.** "Supino: +12% de carga em 4 semanas." "Você treinou 5 de 5 dias."
-- Depois a evidência: progressão de carga por exercício, volume semanal, aderência, delta das medidas.
-- Gerar imagem compartilhável a partir de um marco real, não de gráfico de vaidade.
+```
+ Sua evolução
 
-**O marco vai até o aluno.** Um recorde pessoal aparece em Hoje no instante em que acontece. O eu afetivo não vai procurar prova de progresso; a prova tem que chegar.
+ ┃ Você levantou 20% mais na Remada Cavalinho
+ ┃ em 4 semanas.                                  ← a manchete, e só uma
+
+ EXERCÍCIO POR EXERCÍCIO
+ ┃ Remada Cavalinho com Triângulo    4 sessões
+ ┃   Carga    30 → 36 kg                  +20%
+ ┃   Volume  300 → 432 kg                 +44%
+
+ ┃ Agachamento Livre                 1 sessão
+ ┃   Seu ponto de partida                        ← não some por ser um ponto só
+
+ SEU CORPO
+ ┃   Peso      85 → 81,6 kg                −4%
+ ┃   Cintura     92 → 89 cm                −3,3%
+```
+
+- **Primeiro a frase**, uma só. Escolher qual é escolher **o melhor fato verdadeiro**: a maior subida de carga em percentual — mais 10 kg no agachamento pesado é menos evolução que mais 6 kg na rosca — e, quando nada subiu na barra, a maior mudança do corpo. Se nada mudou, a manchete some: dizer "+0%" em letra grande é fingir uma evidência que ainda não existe.
+- Depois a evidência: carga e volume por exercício, delta das medidas. Aderência e volume semanal ficam para depois.
+- **A queda aparece como é.** Esconder seria mentir para quem está voltando de uma lesão. Só a subida ganha cor — a queda é informação, não erro.
+- No corpo, a maior mudança em **qualquer direção**: sem saber o objetivo do aluno — e o plano não diz qual é —, perder 3 cm de cintura e ganhar 3 cm de braço são igualmente evolução.
+- Gerar imagem compartilhável a partir de um marco real, não de gráfico de vaidade, continua no backlog.
+
+**O marco vai até o aluno.** Um recorde pessoal aparece em Hoje no dia em que acontece, acima da linha do tempo — é o único bloco do dia que não é compromisso, e sim prova de que valeu. O eu afetivo não vai procurar prova de progresso; a prova tem que chegar.
+
+Três regras protegem o marco de virar confete: **empatar não é recorde** (marco que acontece toda semana deixa de ser marco), **a primeira vez não é recorde** (sem passado não há o que superar, e o primeiro treino marcaria todos os exercícios de uma vez), e a comparação é com **a melhor marca de todas** — voltar de uma pausa e superar a semana passada ainda é estar abaixo de si mesmo.
 
 ### 4. Perfil
 

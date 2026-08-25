@@ -2,6 +2,40 @@
 
 ## [Não lançado]
 
+### Story 7 — Evolução
+
+A tela que ataca a causa-raiz: o aluno abandona porque **não sente evolução**.
+
+- **Primeiro a frase, o gráfico depois** (princípio 4). A aba abre com uma
+  manchete em português — "Você levantou 20% mais na Remada Cavalinho em 4
+  semanas" — e só abaixo dela vem a evidência que a sustenta
+- A manchete é **o melhor fato verdadeiro**, nunca um inventado: a maior subida
+  de carga em percentual (mais 10 kg no agachamento é menos evolução que mais
+  6 kg na rosca) e, quando nada subiu na barra, a maior mudança do corpo. Se
+  nada mudou, a manchete some — "+0%" em letra grande é o oposto de evidência
+- **Carga e volume por exercício**, com duas ou mais sessões registradas. A
+  unidade é a sessão, não a série: comparar séries soltas mediria fadiga dentro
+  do treino, não evolução entre treinos
+- **A queda aparece como é.** Esconder seria mentir para quem está voltando de
+  uma lesão. Só a subida ganha cor; a queda é informação, não erro
+- **Delta corporal** entre a primeira e a última aferição de cada medida, cada
+  uma como série independente: quem pesou três vezes e mediu a cintura uma tem
+  trajetória de peso e não tem de cintura
+- **O recorde pessoal aparece em Hoje, no dia em que acontece** (princípio 3).
+  O eu afetivo não vai abrir a aba Evolução para procurar prova de progresso; a
+  prova tem que chegar até ele. Empatar não é recorde, a primeira vez não é
+  recorde, e a comparação é com a melhor marca de todas — marco que acontece
+  toda semana deixa de ser marco
+- Exercício com uma sessão só aparece como **ponto de partida**, não some: ver
+  onde se começou já é mais do que a planilha mostrava
+- Nada disso vai ao disco (ADR 0006): trajetória, delta, manchete e recorde são
+  funções puras sobre os registros e as aferições que já estavam no vault
+- O aceite roda de ponta a ponta em Chromium, com passado gravado no OPFS: o
+  aluno treina por cima de uma sessão de quatro semanas atrás, vê o recorde em
+  Hoje e a frase na Evolução, e tudo sobrevive a recarregar
+- A tela provisória `EmConstrucao` sai do app: os quatro destinos da
+  arquitetura de informação existem de verdade
+
 ### Story 6 — Perfil e medidas
 
 O corpo do aluno deixa de ser uma célula que se sobrescreve.
