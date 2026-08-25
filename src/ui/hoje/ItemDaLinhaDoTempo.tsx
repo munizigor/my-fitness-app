@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import type { ItemDoDia, MomentoDeSuplemento } from '../../domain/dia/montarDia'
 import type { Execucao } from '../../domain/schema/arquivoDePlano'
 import { formatarMedida } from '../comum/formatarMedida'
@@ -75,6 +76,9 @@ export function ItemDaLinhaDoTempo({ item }: { item: ItemDoDia }) {
               </li>
             ))}
           </ul>
+          <Link to="/treino" className="botao linha__acao">
+            {t('hoje.comecarTreino')}
+          </Link>
         </li>
       )
 

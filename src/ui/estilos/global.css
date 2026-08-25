@@ -438,3 +438,209 @@ body {
   font-size: 0.8125rem;
   color: #d8c48a;
 }
+
+/* --- Execução de treino ---------------------------------------------------
+   Alvo real: de pé, uma mão livre, suando, 60 s entre séries. Tudo aqui é
+   maior do que pareceria necessário numa mesa. */
+
+.linha__acao {
+  margin-top: 0.75rem;
+}
+
+.execucao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 40rem;
+  margin: 0 auto;
+  /* Espaço para o cronômetro não cobrir o último botão. */
+  padding-bottom: 7rem;
+}
+
+.execucao__cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+}
+
+.execucao__sair {
+  min-width: var(--toque-minimo);
+  min-height: var(--toque-minimo);
+  border: 0;
+  border-radius: var(--raio);
+  background: var(--superficie);
+  color: var(--texto);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.execucao__sessao {
+  flex: 1;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.execucao__exercicio {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.15;
+}
+
+.execucao__prescricao {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--texto-suave);
+}
+
+/* A técnica avançada é a instrução que o profissional deu para a execução:
+   fica sempre visível, nunca atrás de um toque. */
+.execucao__observacao {
+  margin: 0;
+  padding: 0.625rem 0.875rem;
+  border-left: 3px solid #d8c48a;
+  border-radius: 0 var(--raio) var(--raio) 0;
+  background: #1d1a12;
+  color: #e8dcb0;
+  font-size: 0.9375rem;
+}
+
+.series {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.serie {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  align-items: end;
+  gap: 0.625rem;
+  padding: 0.75rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.serie--concluida {
+  border-color: var(--acento);
+  opacity: 0.7;
+}
+
+.serie__indice {
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+  padding-bottom: 0.75rem;
+}
+
+.serie__campo {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.serie__rotulo {
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+
+.serie__campo input {
+  width: 100%;
+  min-height: var(--toque-minimo);
+  padding: 0.5rem;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--fundo);
+  color: var(--texto);
+  font: inherit;
+  font-size: 1.125rem;
+  text-align: center;
+}
+
+.serie__tempo {
+  align-self: center;
+  text-align: center;
+  font-size: 1.125rem;
+  color: var(--texto-suave);
+}
+
+.serie__concluir {
+  min-height: var(--toque-minimo);
+  padding: 0 1rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--acento);
+  color: #08130c;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.serie--concluida .serie__concluir {
+  background: transparent;
+  border: 1px solid var(--acento);
+  color: var(--acento);
+}
+
+.execucao__navegacao {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+}
+
+/* O cronômetro cobre a largura toda e fica acima da barra de abas: o celular
+   costuma estar no bolso ou no banco, e o aluno não está olhando. */
+.cronometro {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(49px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #1b2430;
+  border-top: 2px solid var(--borda);
+}
+
+.cronometro--pronto {
+  background: #12301f;
+  border-top-color: var(--acento);
+}
+
+.cronometro__tempo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cronometro__estado {
+  flex: 1;
+  font-size: 0.9375rem;
+  color: var(--texto-suave);
+}
+
+.cronometro--pronto .cronometro__estado {
+  color: var(--acento);
+}
+
+.cronometro__dispensar {
+  min-height: var(--toque-minimo);
+  padding: 0 0.875rem;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+}
+
+.execucao__carregando {
+  margin: 1rem 0;
+  color: var(--texto-suave);
+}
