@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { CarregarHistorico } from '../../application/CarregarHistorico'
 import { RegistrarAgua } from '../../application/RegistrarAgua'
+import { RegistrarConsumo, type Consumo } from '../../application/RegistrarConsumo'
 import { RegistrarSerie, type SerieConcluida } from '../../application/RegistrarSerie'
 import type { RegistroDiario } from '../../domain/registro/registroDiario'
 import { vaultAtual } from './vaultStore'
@@ -12,6 +13,7 @@ export interface EstadoDoRegistro {
   carregar: (data: string) => Promise<void>
   registrarSerie: (data: string, serie: SerieConcluida) => Promise<void>
   registrarAgua: (data: string, litros: number) => Promise<void>
+  registrarConsumo: (data: string, consumo: Consumo) => Promise<void>
 }
 
 /**
@@ -43,6 +45,10 @@ export const useRegistro = create<EstadoDoRegistro>((set, get) => ({
 
   registrarAgua: async (data: string, litros: number) => {
     aplicar(set, get, data, await new RegistrarAgua(vaultAtual()).executar(data, litros))
+  },
+
+  registrarConsumo: async (data: string, consumo: Consumo) => {
+    aplicar(set, get, data, await new RegistrarConsumo(vaultAtual()).executar(data, consumo))
   },
 }))
 

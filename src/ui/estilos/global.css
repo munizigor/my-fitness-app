@@ -694,3 +694,155 @@ body {
   margin: 1rem 0;
   color: var(--texto-suave);
 }
+
+/* --- Refeição -------------------------------------------------------------
+   Na planilha, um item era uma célula com "Pão integral 2 fatias OU Cuscuz
+   130g OU Pão francês 1 un". Aqui cada alternativa é um alvo de toque. */
+
+.linha__alvo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.refeicao {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.refeicao__cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.refeicao__sair {
+  min-inline-size: var(--toque-minimo);
+  min-block-size: var(--toque-minimo);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: transparent;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.refeicao__titulo {
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+.itens {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.item {
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+/* Item já escolhido muda de cor: o dia se preenchendo é a barra de progresso. */
+.item--comido {
+  border-left-color: var(--acento);
+}
+
+.item__macros {
+  display: block;
+  margin-bottom: 0.625rem;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.opcoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* O "ou" fica visível: sem ele a lista se lê como coisas a comer todas, que é
+   o oposto do que o profissional prescreveu. */
+.opcoes__ou {
+  display: block;
+  padding: 0.125rem 0;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--texto-suave);
+}
+
+.opcao {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  inline-size: 100%;
+  min-block-size: var(--toque-minimo);
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.opcao[aria-pressed='true'] {
+  border-color: var(--acento);
+  background: color-mix(in srgb, var(--acento) 14%, transparent);
+}
+
+.opcao__quantidade {
+  flex: 0 0 auto;
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+.total {
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.total__titulo {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-suave);
+}
+
+.total__lista {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.total__linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.total__linha dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}

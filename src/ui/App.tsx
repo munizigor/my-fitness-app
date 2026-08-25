@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { EmConstrucao } from './comum/EmConstrucao'
 import { EstadoSemPlano } from './comum/EstadoSemPlano'
 import { TelaHoje } from './hoje/TelaHoje'
+import { TelaRefeicao } from './nutricao/TelaRefeicao'
 import { TelaPlano } from './plano/TelaPlano'
 import { ExecucaoTreino } from './treino/ExecucaoTreino'
 import { useVault } from './estado/vaultStore'
@@ -42,6 +43,7 @@ export function App() {
             <Route path="/evolucao" element={<DependeDoPlano />} />
             <Route path="/perfil" element={<DependeDoPlano />} />
             <Route path="/treino" element={<ExecucaoTreino />} />
+            <Route path="/refeicao/:numero" element={<TelaRefeicao />} />
             <Route path="/plano" element={<TelaPlano />} />
             <Route path="*" element={<Navigate to="/hoje" replace />} />
           </Routes>

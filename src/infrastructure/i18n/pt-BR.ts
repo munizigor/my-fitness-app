@@ -80,6 +80,19 @@ export const ptBR = {
     serieTempo: "{{series}} × {{segundos}}''",
     cargaAlvo: '{{carga}} kg',
   },
+  refeicao: {
+    sair: 'Voltar para Hoje',
+    verRefeicao: 'Ver refeição',
+    ou: 'ou',
+    macrosDoItem:
+      '{{proteina}} g de proteína · {{carboidrato}} g de carboidrato · {{gordura}} g de gordura',
+    totalDoDia: 'Total do dia',
+    proteina: 'Proteína',
+    carboidrato: 'Carboidrato',
+    gordura: 'Gordura',
+    consumidoDeAlvo: '{{consumido}} de {{alvo}} g',
+    itensComidos: '{{comidos}} de {{total}} escolhidos',
+  },
   execucao: {
     sair: 'Voltar para Hoje',
     voltarParaHoje: 'Voltar para Hoje',

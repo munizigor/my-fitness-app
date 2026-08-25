@@ -51,7 +51,16 @@ export function TelaHoje({ hoje = hojeLocal() }: { hoje?: string }) {
 
       <ol className="linha">
         {dia.itens.map((item) => (
-          <ItemDaLinhaDoTempo key={item.id} item={item} />
+          <ItemDaLinhaDoTempo
+            key={item.id}
+            item={item}
+            escolhidos={
+              item.tipo === 'refeicao'
+                ? (registro?.refeicoes.find((r) => r.numero === item.refeicao.numero)?.itens
+                    .length ?? 0)
+                : 0
+            }
+          />
         ))}
       </ol>
     </section>

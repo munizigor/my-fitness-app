@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import '../../infrastructure/i18n'
+import { SCHEMA_VERSION_REGISTRO } from '../../domain/registro/migracoes'
 import { lerArquivoDePlano } from '../../domain/schema/arquivoDePlano'
 import { CAMINHOS } from '../../domain/vault/caminhos'
 import { InMemoryVaultStorage } from '../../infrastructure/armazenamento/InMemoryVaultStorage'
@@ -85,6 +86,35 @@ describe('TelaHoje', () => {
       renderizar(SEGUNDA)
       const treino = screen.getByText('Treino A').closest('li')!
       expect(within(treino).getByText('Pré-treino')).toBeInTheDocument()
+    })
+
+    it('a refeição leva ao detalhe, com o cartão inteiro como alvo de toque', () => {
+      renderizar(SEGUNDA)
+      const cafe = screen.getByText('Café da manhã').closest('a')!
+      expect(cafe).toHaveAttribute('href', '/refeicao/1')
+    })
+
+    it('mostra quantos itens da refeição o aluno já escolheu', async () => {
+      useRegistro.setState({
+        carregando: false,
+        hoje: {
+          schemaVersion: SCHEMA_VERSION_REGISTRO,
+          data: SEGUNDA,
+          aguaLitros: 0,
+          series: [],
+          refeicoes: [
+            {
+              numero: 1,
+              itens: [{ itemDeRefeicaoId: 'r1i1', alimento: 'Cuscuz' }],
+              registradaEm: '2026-08-24T08:00:00.000Z',
+            },
+          ],
+        },
+      })
+      renderizar(SEGUNDA)
+
+      // Antes de escolher, "2 itens". Depois, o progresso do momento.
+      expect(await screen.findByText('1 de 2 escolhidos')).toBeInTheDocument()
     })
 
     it('mostra o treino de hoje, com exercícios e prescrição legível', () => {

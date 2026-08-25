@@ -37,24 +37,55 @@ Quatro destinos. **Suplementos e Dieta não são abas** — são eventos ancorad
 
 ### 1. Hoje — a linha do tempo do dia
 
-Tela inicial, ~90% do uso. Uma coluna cronológica que funde as três abas da planilha em eventos:
+Tela inicial, ~90% do uso. Uma coluna cronológica que funde as três abas da planilha em **blocos**:
 
 ```
-[ Água  1,2 / 4 L ]                    ← contador fixo, sempre visível
+[ −   Água  1,25 de 4 L   + ]          ← contador fixo, ajusta para os dois lados
 
- ☐ Refeição 1        3 itens · escolher
- ☐ Suplementos       Ginkgo, Ômega 3, Multi      ← "após o café", ancorado aqui
- ☐ Treino A · UPPER  9 exercícios · ~50 min      → abre modo execução
- ☐ Aeróbico          20 min HIIT
- ☐ Refeição 2        1 item
- …
- ☐ Refeição 5
- ☐ Suplementos       Melatonina, chá             ← "após o jantar"
+ ┃ Café da manhã                  2 itens
+ ┃   SUPLEMENTOS                          ← "após o café", dentro do bloco
+ ┃   Magnésio dimalato  200 mg
+ ┃   Ômega 3            4 cápsulas
+
+ ┃ Treino A · Superior            9 exercícios · descanso de 60 a 70 s
+ ┃   ANTES DE TREINAR
+ ┃   Pré-treino         2 scoops
+ ┃   Puxada Frontal Pronada   4 × 10–12
+ ┃   …
+ ┃   Aeróbico  HIIT na esteira · 20 min    ← mesma ida à academia
+ ┃   [ Começar treino ]
+
+ ┃ Lanche da manhã                1 de 1 escolhido
+ ┃ Almoço                         3 itens
 ```
+
+**Poucos blocos grandes, não muitos cartões pequenos.** Suplemento não é compromisso próprio — é parte de tomar o café da manhã. Aeróbico não é uma segunda ida à academia — é parte de ir treinar. Ambos moram _dentro_ do momento a que pertencem; o aluno não deveria ter que perceber que três cartões seguidos são a mesma hora. Aeróbico em dia sem musculação é a exceção: ganha cartão próprio, senão sumiria do dia.
 
 O dia tem forma e fecha. A barra de progresso é a própria lista se preenchendo — espírito do Duolingo sem gamificação postiça.
 
-**Refeição** abre uma folha com um slot por item: `Arroz 100 g ⟷ Batata 200 g`, escolha única, um toque. Os macros do dia somam sozinhos e aparecem como linha discreta, não como planilha.
+### 1b. Refeição — a escolha, não a tabela
+
+O cartão inteiro é o alvo de toque; mirar num "ver mais" de 12 px com uma mão só é atrito que faz não abrir.
+
+```
+←  Almoço
+
+  45 g de proteína · 0 g de carboidrato · 5 g de gordura
+  [ Filé de frango grelhado          150 g ]
+     ou
+  [ Tilápia grelhada                 150 g ]   ← marcada
+
+  TOTAL DO DIA
+  Proteína      47,5 de 170 g
+  Carboidrato     28 de 180 g
+  Gordura        5,2 de 55 g
+```
+
+**Escolher a alternativa é registrar o consumo** — um toque, não dois. Perguntar "qual das opções?" e depois "você comeu?" cobraria duas decisões onde existe uma, e o dobro de atrito mata o registro na segunda semana. Tocar de novo desmarca; trocar de alternativa substitui.
+
+O **"ou"** fica visível entre as opções: sem ele a lista se lê como coisas a comer todas, que é o oposto do que o profissional prescreveu. Os macros aparecem **uma vez, acima das alternativas**, porque valem para qualquer uma — as quantidades foram escolhidas para serem equivalentes.
+
+O total é do **dia**, não desta refeição: a pergunta que o aluno faz de verdade é "quanto ainda falta hoje?".
 
 ### 2. Modo execução de treino
 
@@ -98,3 +129,5 @@ Acessível a partir de Hoje e do Perfil. Prescrição inteira read-only: treinos
 - **Área de toque mínima de 48 px.** Mão suada, movimento sob esforço.
 - **`overscroll-behavior-y: contain`.** Impede que um "puxar para atualizar" acidental apague um registro em andamento no meio da série.
 - **Safe area respeitada.** O app é instalado na tela inicial e roda em `standalone`.
+- **Todo contador ajusta para os dois lados.** A primeira versão da água só somava, e um toque a mais deixava o número errado até a meia-noite. Registrar é diferente de contar para cima: se dá para pôr, tem que dar para tirar.
+- **Nenhum contador trava no alvo.** Gravar 4 L quando o aluno bebeu 4,5 seria mentir no arquivo que o profissional vai ler. Quem enche até 100% é a barra, não o número.

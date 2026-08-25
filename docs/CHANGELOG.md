@@ -2,6 +2,50 @@
 
 ## [Não lançado]
 
+### Story 5 — Refeição com alternativas
+
+A dieta deixa de ser um número de itens e passa a ser uma escolha.
+
+- Tela própria por refeição (`/refeicao/:numero`), aberta pelo cartão inteiro em
+  Hoje — mirar num "ver mais" de 12 px com uma mão só é atrito que faz não abrir
+- **Escolher a alternativa é registrar o consumo**: um toque, não dois. Perguntar
+  "qual das opções" e depois "você comeu?" cobraria duas decisões onde existe uma
+- O "ou" entre as alternativas fica visível: sem ele a lista se lê como coisas a
+  comer todas, que é o oposto do que o profissional prescreveu
+- Tocar de novo desmarca; trocar de alternativa substitui — ninguém comeu as duas
+- Macros do item aparecem uma vez, acima das opções, porque valem para qualquer
+  uma: as quantidades foram escolhidas para serem equivalentes
+- **Total do dia** soma conforme o aluno marca, contra o alvo do plano
+  (`macrosDoDia`, função pura, nunca persistida)
+- A escolha é guardada pelo **nome do alimento**, não pelo índice da opção:
+  reordenar as alternativas no plano seguinte não pode mudar o que o aluno comeu
+  ontem — e quem abrir o arquivo num editor lê "Arroz", não "1"
+
+### Ajustes vindos do uso
+
+Quatro coisas que só aparecem quando se usa o app de verdade.
+
+- **Água ajusta para os dois lados.** Só havia um botão, e ele somava: um toque a
+  mais e o número ficava errado até a meia-noite. E o total ia para `useState`,
+  então trocar de aba apagava o dia. Agora são dois alvos grandes e o total vai
+  para o registro do dia
+- Passar do alvo deixou de ser travado: gravar 4 L quando o aluno bebeu 4,5 seria
+  mentir no arquivo que o profissional vai ler. Quem enche até 100% é a barra
+- **Suplementos moram dentro da refeição** e **o aeróbico dentro do treino.**
+  Suplemento não é compromisso próprio — é parte de tomar o café. Aeróbico não é
+  uma segunda ida à academia. A segunda-feira do fixture caiu de 8 cartões para 4
+- O aeróbico avulso (dia sem musculação) mantém cartão próprio: dentro de um
+  treino que não existe, ele sumiria do dia
+
+### Formato do vault
+
+- **O registro do aluno ganhou versão própria** (`SCHEMA_VERSION_REGISTRO`),
+  separada da do plano. As duas coisas mudam por motivos diferentes: compartilhar
+  o número obrigaria todo profissional a reemitir o arquivo porque o app aprendeu
+  a contar copos de água. Migração da v2 escrita e testada — o treino de ontem
+  sobrevive. A numeração continua de onde a compartilhada parou, para que nenhum
+  número em disco tenha dois sentidos
+
 ### Story 4 — Modo execução de treino
 
 A tela que decide o produto, e a primeira que **escreve** no vault.

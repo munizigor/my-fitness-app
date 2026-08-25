@@ -10,7 +10,8 @@ PWA estático, servido pelo GitHub Pages, sem backend. Todo o estado do aluno vi
 │               Perfil · Plano          (React, i18n)     │
 ├────────────────────────────────────────────────────────┤
 │  application/ casos de uso: ImportarPlano,              │
-│               RegistrarSerie, MontarDia, …              │
+│               RegistrarSerie, RegistrarAgua,            │
+│               RegistrarConsumo, CarregarHistorico, …    │
 ├────────────────────────────────────────────────────────┤
 │  domain/      regras puras + portas (interfaces)        │
 └────────────────────────────────────────────────────────┘
@@ -30,6 +31,8 @@ Dependências apontam para dentro: `ui → application → domain`. `domain` nã
 **`domain/ports/`** — interfaces que o domínio precisa mas não implementa: `VaultStorage`, `FileTransfer`. É a inversão que permite testar `application` sem tocar em OPFS.
 
 **`application/`** — casos de uso que orquestram domínio e portas. Um caso de uso por intenção do aluno. Testado com `InMemoryVaultStorage`. Meta: 90%.
+
+Três deles escrevem no **mesmo arquivo do dia** — séries, água e refeições — e por isso compartilham `registroDoDia.ts`: carregar o que já existe antes de mexer, ou registrar água apagaria o treino da manhã. Do lado da UI, o mesmo motivo faz existir um `registroStore` só: dois stores sobre o mesmo arquivo se sobrescreveriam.
 
 **`infrastructure/`** — as implementações concretas: OPFS, File System Access API, i18n, service worker. Verificada por Playwright em Chromium real, porque OPFS não existe em jsdom.
 

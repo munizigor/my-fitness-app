@@ -93,11 +93,35 @@ A tela de erro serve a duas pessoas: o **aluno**, que não montou o arquivo e pr
 
 Quando o arquivo está tão quebrado que nem os nomes existem, a localização cai para a posição (`Treino 2 · item 1`) em vez de sumir ou imprimir `undefined`. Isso tem testes próprios, porque é justamente aí que a mensagem mais importa.
 
+## O registro do aluno
+
+O que o aluno fez num dia, um arquivo por data:
+
+```
+{ schemaVersion, data,
+  aguaLitros,        // total do dia, não um evento por copo
+  series:    [{ itemDeTreinoId, indice, cargaKg?, repeticoes?, segundos?, concluidaEm }],
+  refeicoes: [{ numero, itens: [{ itemDeRefeicaoId, alimento }], registradaEm }] }
+```
+
+**Água é contador, não linha do tempo.** Quem se enganou corrige o total; ninguém quer ler um histórico de goles. É também o que permite ajustar para menos.
+
+**A alternativa escolhida é guardada pelo nome do alimento, não pelo índice da opção.** O profissional pode reordenar as alternativas no plano seguinte, e o que o aluno comeu ontem não pode mudar de significado por causa disso. De quebra, quem abrir o arquivo num editor lê `"Arroz"` e não `1` — que é o ponto do formato aberto.
+
+Ler um registro nunca lança: devolve `null` para o que não reconhece. É deliberadamente diferente do plano — plano inválido é erro do profissional e precisa ser reportado; registro ilegível é problema nosso, e o aluno está no meio da série segurando a barra.
+
 ## Versionamento
 
-`schemaVersion` vive no manifest e no arquivo do plano. Migrações são funções puras em `domain/schema/migrations`, cada uma com teste. Versão desconhecida falha explicitamente.
+**Plano e registro têm versões independentes.** As duas coisas mudam por motivos diferentes: o formato do plano muda quando o profissional ganha um campo novo para prescrever; o do registro, quando o aluno ganha algo novo para registrar. Compartilhar um número obrigaria todo profissional a reemitir o arquivo porque o app aprendeu a contar copos de água.
 
-**Versão atual: 2.** A versão 1 esteve publicada por menos de uma hora, sem nenhum usuário, e guardava a notação da planilha em vez do significado. Não foi escrita migração de 1 para 2: parte da conversão (separar `"2 fatias de pão integral"` em alimento, quantidade e unidade) só teria como ser adivinhada, e uma migração frágil para um formato sem nenhuma instância seria pior engenharia que a substituição. Um vault v1, se existisse, cai no estado vazio e é reimportado — sem corrupção.
+| Documento | Constante                 | Versão atual |
+| --------- | ------------------------- | ------------ |
+| Plano     | `SCHEMA_VERSION_ATUAL`    | 2            |
+| Registro  | `SCHEMA_VERSION_REGISTRO` | 3            |
+
+A numeração do registro **continua** de onde a compartilhada parou (2 → 3) em vez de recomeçar do 1: assim nenhum número guardado em disco tem dois significados. Migrações são funções puras com teste (`domain/registro/migracoes.ts`); a de v2 preenche `aguaLitros: 0` e `refeicoes: []`, e o treino já registrado sobrevive intacto. O que a migração não reconhece — lixo, versão do futuro — ela devolve intacto: julgar validade é trabalho do schema, e remendar até "parecer legível" transformaria dado corrompido em dado aceito em silêncio.
+
+**Sobre a v1 do plano.** Esteve publicada por menos de uma hora, sem nenhum usuário, e guardava a notação da planilha em vez do significado. Não foi escrita migração de 1 para 2: parte da conversão (separar `"2 fatias de pão integral"` em alimento, quantidade e unidade) só teria como ser adivinhada, e uma migração frágil para um formato sem nenhuma instância seria pior engenharia que a substituição. Um vault v1, se existisse, cai no estado vazio e é reimportado — sem corrupção.
 
 ## Formato de intercâmbio
 

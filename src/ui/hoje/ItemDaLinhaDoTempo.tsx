@@ -15,19 +15,35 @@ import { formatarMedida } from '../comum/formatarMedida'
  * O detalhe fica na tela que executa aquele momento — princípio 1: um momento
  * por vez, nunca o documento inteiro.
  */
-export function ItemDaLinhaDoTempo({ item }: { item: ItemDoDia }) {
+export function ItemDaLinhaDoTempo({
+  item,
+  escolhidos = 0,
+}: {
+  item: ItemDoDia
+  /** Quantos itens da refeição o aluno já marcou. Só faz sentido para refeição. */
+  escolhidos?: number
+}) {
   const { t } = useTranslation()
 
   switch (item.tipo) {
     case 'refeicao':
       return (
         <li className="linha__item linha__item--refeicao">
-          <span className="linha__titulo">
-            {item.refeicao.nome ?? t('hoje.refeicao', { numero: item.refeicao.numero })}
-          </span>
-          <span className="linha__detalhe">
-            {t('hoje.refeicaoItens', { count: item.refeicao.itens.length })}
-          </span>
+          {/* O cartão inteiro é o alvo de toque: mirar num "ver mais" de 12 px
+              com uma mão só é o tipo de atrito que faz o aluno não abrir. */}
+          <Link to={`/refeicao/${item.refeicao.numero}`} className="linha__alvo">
+            <span className="linha__titulo">
+              {item.refeicao.nome ?? t('hoje.refeicao', { numero: item.refeicao.numero })}
+            </span>
+            <span className="linha__detalhe">
+              {escolhidos > 0
+                ? t('refeicao.itensComidos', {
+                    comidos: escolhidos,
+                    total: item.refeicao.itens.length,
+                  })
+                : t('hoje.refeicaoItens', { count: item.refeicao.itens.length })}
+            </span>
+          </Link>
           <ListaDeSuplementos suplementos={item.suplementos} />
         </li>
       )

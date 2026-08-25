@@ -33,8 +33,9 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - [x] **4. Modo execução de treino** — a tela que decide o produto.
       _Aceite:_ um exercício por vez; séries pré-preenchidas com a última sessão registrada; cronômetro de descanso dispara sozinho com o intervalo do plano; técnica avançada sempre visível; registro sobrevive a recarregar e a ficar offline.
 
-- [ ] **5. Refeição com alternativas** — escolher entre as opções "OU" do item.
+- [x] **5. Refeição com alternativas** — escolher entre as opções "OU" do item.
       _Aceite:_ um slot por item, escolha única; macros do dia somam conforme a escolha; sobrevive a recarregar e offline.
+      _Escolher a alternativa é registrar o consumo: um toque, não dois._
 
 - [ ] **6. Perfil e medidas** — aba própria, histórico como série temporal.
       _Aceite:_ cada aferição é ponto datado que não sobrescreve o anterior; trocar o plano importado preserva todo o histórico (teste explícito).
@@ -71,6 +72,16 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
   Trocar por campo de texto daria a vírgula, mas custaria o teclado numérico no
   celular — que importa mais para quem digita com uma mão na academia. Revisitar
   se aparecer reclamação de uso real.
+
+## Ajustes vindos do uso (fora das stories)
+
+Coisas que só aparecem quando se usa o app de verdade, e que entraram entre a
+story 4 e a 5:
+
+- [x] Água ajusta para mais **e para menos**, e persiste no registro do dia
+- [x] Suplementos passam a morar dentro do bloco da refeição
+- [x] Aeróbico passa a morar dentro do bloco de treino
+- [x] Registro do aluno com versão própria, separada da do plano
 
 ## Decisões pendentes
 
