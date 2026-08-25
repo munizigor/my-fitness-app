@@ -2,6 +2,44 @@
 
 ## [Não lançado]
 
+### Story 8 — Consultar o plano completo
+
+A prescrição inteira, read-only, na aba que já era dela.
+
+- **A exceção deliberada ao princípio 1**, e a exceção é ver o plano todo, não
+  ter que rolar por ele: a semana fica à vista, porque é o mapa e cabe na
+  primeira dobra; cada treino e cada refeição ficam atrás de um toque. Seis
+  treinos de dez exercícios abertos de uma vez são a planilha rolando na tela —
+  o artefato que o app existe para substituir
+- **O dia sem nada diz "Descanso".** Linha vazia se lê como informação que
+  faltou. E sábado, que tem aeróbico sem musculação, não é descanso: chamá-lo
+  assim mandaria o aluno para casa num dia de trabalho
+- **Cada treino aparece uma vez, com os dias em que cai** ("Cai em Segunda-feira
+  e Quarta-feira"). O arquivo diz "segunda tem o treino A"; quem consulta
+  pergunta "quando eu faço o treino A?". Repetir a lista de exercícios por dia
+  seria a planilha de volta
+- **Treino escrito e não agendado continua na lista.** É comum em plano de
+  semana A/B — o profissional deixa o treino C pronto para quando o aluno puder
+  ir três vezes — e omiti-lo seria esconder prescrição do aluno
+- **O suplemento diz quando tomar pelo nome da refeição.** O artigo concorda com
+  "refeição" e não com o nome que o profissional deu a ela: "Depois da refeição
+  3 · Ceia" está certo em qualquer plano, "Depois do Ceia" estaria errado na
+  metade deles
+- **É o único lugar do app onde a fórmula aparece.** No dia, o suplemento é
+  dissolvido dentro da refeição a que pertence, porque de manhã o que importa é
+  o que tomar agora; aqui o agrupamento é o raciocínio clínico de quem prescreveu
+- **A observação do profissional viaja junto.** É ela que distingue os dois usos
+  da Prancha Lateral no mesmo treino; sem ela o aluno faria um lado e acharia
+  que terminou
+- **Nada é editável** (princípio 5). Em Hoje, tocar numa alternativa registra o
+  consumo, e por isso ela é um botão. Aqui a mesma alternativa é texto —
+  consultar o plano não é comer, e há um teste ponta a ponta que fica vermelho
+  se um botão aparecer nesta tela
+- Nada disto vai ao disco (ADR 0006): é o mesmo arquivo do profissional lido de
+  outro ângulo, com as referências por id resolvidas em `prescricaoCompleta` —
+  a contrapartida de `montarDia`
+- O export do vault, que também mora nesta aba, é a story 9
+
 ### Story 7 — Evolução
 
 A tela que ataca a causa-raiz: o aluno abandona porque **não sente evolução**.

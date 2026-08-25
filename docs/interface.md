@@ -164,9 +164,30 @@ Três decisões desta tela:
 
 Aqui não há gráfico. A frase de evidência ("você perdeu 3 cm de cintura desde junho") é a tela de Evolução; esta mostra os pontos datados que a alimentam — e é o único lugar do app onde a prescrição não aparece, porque nada disto é do profissional.
 
-### Consultar o plano completo
+### 5. Plano — a prescrição inteira, read-only
 
-Acessível a partir de Hoje e do Perfil. Prescrição inteira read-only: treinos A–F, protocolo alimentar completo, fórmulas de suplemento **agrupadas como o profissional as pensou** (Colesterol, Sono, Testosterona), agenda semanal. É o único lugar onde a estrutura da planilha é a estrutura certa, porque aqui o aluno está em modo reflexivo, consultando. Import e export do vault vivem aqui.
+A quarta aba. Prescrição inteira: agenda semanal, treinos A–F, protocolo alimentar completo, fórmulas de suplemento **agrupadas como o profissional as pensou** (Colesterol, Sono, Testosterona). É o único lugar onde a estrutura da planilha é a estrutura certa, porque aqui o aluno está em modo reflexivo, consultando. Import e export do vault vivem aqui.
+
+```
+ Sua semana
+ ┃ Segunda-feira      Treino A · Superior + HIIT na esteira · 20 min
+ ┃ Quinta-feira       Descanso
+ ┃ Sábado             HIIT na esteira · 20 min
+
+ Treinos
+ ▸ Treino A · Superior
+   Cai em Segunda-feira e Quarta-feira · 4 exercícios
+ ▸ Treino B · Inferior
+   Cai em Terça-feira e Sexta-feira · 2 exercícios
+```
+
+É a exceção deliberada ao princípio 1 — e a exceção é **ver o plano todo, não ter que rolar por ele**. Por isso a semana fica à vista, que é o mapa e cabe na primeira dobra, e cada treino e cada refeição ficam atrás de um toque. Seis treinos de dez exercícios abertos de uma vez são a planilha rolando na tela, que é o artefato que o app existe para substituir.
+
+- **O dia sem nada diz "Descanso".** Uma linha vazia se lê como informação que faltou. E sábado, que tem aeróbico sem musculação, não é descanso: chamá-lo assim mandaria o aluno para casa num dia de trabalho.
+- **Cada treino aparece uma vez, com os dias em que cai.** O arquivo diz "segunda tem o treino A"; quem consulta pergunta "quando eu faço o treino A?". Repetir a lista de exercícios embaixo de segunda e de quarta seria a planilha de volta. Treino escrito e não agendado continua na lista — é comum em plano de semana A/B, e omiti-lo seria esconder prescrição.
+- **O suplemento diz quando tomar pelo nome da refeição**, não pelo número. O artigo concorda com "refeição" e não com o nome que o profissional deu a ela: "Depois da refeição 3 · Ceia" está certo em qualquer plano, e "Depois do Ceia" estaria errado na metade deles.
+- **É o único lugar do app onde a fórmula aparece.** No dia, o suplemento é dissolvido dentro da refeição a que pertence, porque de manhã o que importa é o que tomar agora; aqui o agrupamento é o raciocínio clínico de quem prescreveu.
+- **Nada é editável** (princípio 5). Em Hoje, tocar numa alternativa registra o consumo, e por isso ela é um botão. Aqui a mesma alternativa é texto: consultar o plano não é comer.
 
 ## Decisões visuais
 

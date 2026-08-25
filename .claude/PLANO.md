@@ -43,8 +43,9 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - [x] **7. Evolução** — a story que ataca a causa-raiz.
       _Aceite:_ frase em linguagem natural antes de qualquer gráfico; com ≥2 sessões do mesmo exercício mostra variação de carga e volume; com ≥2 aferições mostra delta corporal; recorde pessoal aparece em Hoje no momento em que acontece, sem o aluno visitar a aba.
 
-- [ ] **8. Consultar o plano completo** — prescrição inteira read-only.
+- [x] **8. Consultar o plano completo** — prescrição inteira read-only.
       _Aceite:_ suplementos agrupados por fórmula como o profissional prescreveu; import e export vivem aqui.
+      _O export é a story 9, e nasce nesta mesma aba._
 
 - [ ] **9. Exportar vault** — data ownership na prática.
       _Aceite:_ o arquivo gerado reimporta em instalação limpa e reproduz o mesmo estado, histórico de medidas incluído (round-trip).

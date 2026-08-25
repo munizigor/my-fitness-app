@@ -44,6 +44,8 @@ Os documentos do aluno — perfil e medidas — têm caso de uso e store própri
 
 Duas agregações convivem ali, com critérios opostos e ambos corretos: `sugerirCarga` casa pelo **item prescrito** (os dois lados da Prancha Lateral não podem se contaminar, porque a sugestão vai para o campo de um lado só), e `progressoPorExercicio` agrega pelo **exercício** (o supino do Treino A e o do Treino B são a mesma trajetória). É o motivo de o registro guardar o item, e não o exercício: dá para ir de um ao outro, mas não de volta.
 
+**`domain/plano/`** também não tem caso de uso: `resumoDoPlano` e `prescricaoCompleta` são dois ângulos do arquivo que o `vaultStore` já carregou. `prescricaoCompleta` é a contrapartida de `montarDia` — lá o plano é fatiado no momento de agir, aqui é apresentado por inteiro para quem veio consultar — e é onde **todo join por id acontece**: agenda→treino, item→exercício, posologia→refeição. Se o JSX fizesse essas buscas, o formato do arquivo estaria espalhado por quatro componentes, e mudá-lo custaria quatro lugares para lembrar.
+
 **`infrastructure/`** — as implementações concretas: OPFS, File System Access API, i18n, service worker. Verificada por Playwright em Chromium real, porque OPFS não existe em jsdom.
 
 **`ui/`** — React. Não contém regra de negócio: chama caso de uso e renderiza. Toda string sai do dicionário `pt-BR`.
