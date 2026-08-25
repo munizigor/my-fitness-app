@@ -30,9 +30,13 @@ test.describe('Hoje', () => {
   })
 
   test('mostra as refeições do plano em ordem', async ({ page }) => {
-    await expect(page.getByText('Café da manhã')).toBeVisible()
-    await expect(page.getByText('Lanche da manhã')).toBeVisible()
-    await expect(page.getByText('Almoço')).toBeVisible()
+    // Escopo na linha do tempo, não na página: "Café da manhã" também aparece
+    // na consulta ao plano, e uma asserção de página inteira dependia de a tela
+    // anterior já ter saído do DOM — verde por sorte de temporização.
+    const linha = page.locator('.linha')
+    await expect(linha.getByText('Café da manhã')).toBeVisible()
+    await expect(linha.getByText('Lanche da manhã')).toBeVisible()
+    await expect(linha.getByText('Almoço')).toBeVisible()
   })
 
   test('o contador de água sobe, desce e sobrevive a recarregar', async ({ page }) => {
@@ -54,13 +58,13 @@ test.describe('Hoje', () => {
 
   test('a linha do tempo sobrevive a recarregar', async ({ page }) => {
     await page.reload()
-    await expect(page.getByText('Café da manhã')).toBeVisible()
+    await expect(page.locator('.linha').getByText('Café da manhã')).toBeVisible()
   })
 
   test('o dia continua montado offline — a academia tem sinal ruim', async ({ page, context }) => {
     await context.setOffline(true)
     await page.reload()
-    await expect(page.getByText('Café da manhã')).toBeVisible()
+    await expect(page.locator('.linha').getByText('Café da manhã')).toBeVisible()
   })
 
   test('o dia da semana e o conteúdo batem com a agenda do plano', async ({ page }) => {
