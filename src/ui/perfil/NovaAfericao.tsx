@@ -94,7 +94,7 @@ export function NovaAfericao({
           {CIRCUNFERENCIAS.map((parte) => (
             <Numero
               key={parte}
-              rotulo={t('perfil.circunferencia', { parte: t(`perfil.partes.${parte}`) })}
+              rotulo={t('perfil.circunferencia', { parte: t(`corpo.${parte}`) })}
               valor={campos.circunferenciasCm[parte] ?? ''}
               passo="0.5"
               onMudar={(valor) => ajustar(parte, valor)}

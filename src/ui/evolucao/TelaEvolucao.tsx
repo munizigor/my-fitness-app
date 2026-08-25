@@ -165,7 +165,7 @@ function Corpo({ deltas }: { deltas: readonly DeltaCorporal[] }) {
         {deltas.map((delta) => (
           <li key={delta.metrica} className="evolucao__corpo">
             <LinhaDeVariacao
-              rotulo={t(`evolucao.metricaRotulo.${delta.metrica}`)}
+              rotulo={t(`corpo.${delta.metrica}`)}
               variacao={delta.variacao}
               unidade={delta.unidade}
             />

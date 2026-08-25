@@ -118,6 +118,22 @@ export const ptBR = {
     dispensarDescanso: 'Dispensar',
     carregando: 'Carregando seu histórico…',
   },
+  /**
+   * Os rótulos do corpo, de uma vez só: o Perfil pede a medida e a Evolução
+   * mostra o delta dela. Duas listas dariam "Abdômen" numa tela e "Abdome" na
+   * outra no dia em que alguém corrigisse uma delas.
+   */
+  corpo: {
+    peso: 'Peso',
+    gordura: 'Gordura',
+    torax: 'Tórax',
+    cintura: 'Cintura',
+    abdomen: 'Abdômen',
+    quadril: 'Quadril',
+    braco: 'Braço',
+    coxa: 'Coxa',
+    panturrilha: 'Panturrilha',
+  },
   perfil: {
     titulo: 'Perfil',
     identificacao: '{{nome}} · {{idade}} anos · {{altura}} m',
@@ -140,15 +156,6 @@ export const ptBR = {
     pesoValor: '{{valor}} kg',
     gorduraValor: '{{valor}}% de gordura',
     circunferenciaValor: '{{parte}} {{valor}} cm',
-    partes: {
-      torax: 'Tórax',
-      cintura: 'Cintura',
-      abdomen: 'Abdômen',
-      quadril: 'Quadril',
-      braco: 'Braço',
-      coxa: 'Coxa',
-      panturrilha: 'Panturrilha',
-    },
     seusDados: 'Seu histórico é seu e fica no seu aparelho — trocar de plano não apaga nada.',
   },
   /**
@@ -192,17 +199,6 @@ export const ptBR = {
       braco: 'braço',
       coxa: 'coxa',
       panturrilha: 'panturrilha',
-    },
-    metricaRotulo: {
-      peso: 'Peso',
-      gordura: 'Gordura',
-      torax: 'Tórax',
-      cintura: 'Cintura',
-      abdomen: 'Abdômen',
-      quadril: 'Quadril',
-      braco: 'Braço',
-      coxa: 'Coxa',
-      panturrilha: 'Panturrilha',
     },
   },
   plano: {
