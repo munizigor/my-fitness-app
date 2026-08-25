@@ -1,4 +1,10 @@
 {
+  // As referências existem para as ferramentas de editor enxergarem os dois
+  // projetos. A verificação de tipos NÃO usa build mode (`tsc -b`): `npm run
+  // typecheck` roda cada projeto explicitamente com --noEmit. Build mode com
+  // project references exige `composite: true`, que por sua vez implica emissão
+  // de declarações — e aqui nada é emitido, o Vite faz o build. Checar cada
+  // projeto direto é determinístico e não depende dessa tolerância.
   "files": [],
   "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

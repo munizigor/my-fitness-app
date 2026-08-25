@@ -2,6 +2,20 @@
 
 ## [Não lançado]
 
+### Correções da revisão do PR #1
+
+- `typecheck` deixa de ser um comando contraditório (`--noEmit false` sobre tsconfigs
+  com `noEmit: true`, mais um fallback `|| tsc -b`) e passa a checar cada projeto
+  explicitamente com `--noEmit`
+- Build mode (`tsc -b`) sai de `check` e `build`. Ele exige `composite: true`, que
+  implica emissão de declarações — e aqui nada é emitido, quem faz o build é o Vite.
+  Funcionava por tolerância do TypeScript 5.9; agora não depende disso
+- `playwright.config.ts` não fixa mais o caminho do Chromium. O padrão é o Playwright
+  resolver o próprio browser; `PLAYWRIGHT_CHROMIUM_PATH` sobrepõe para contêineres que
+  trazem o browser pré-instalado fora do cache
+- CI ganha job de E2E com `playwright install`, fechando a distância entre a estratégia
+  de testes documentada e o que o pipeline de fato executava
+
 ### Story 1 — Parser de prescrição
 
 - `analisarPrescricao` em `domain/treino` entende as duas formas da coluna `SxR`:

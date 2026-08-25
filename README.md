@@ -21,6 +21,12 @@ npm run build      # build de produção
 
 `npm run check` é o gate antes de qualquer commit. Falha em qualquer etapa bloqueia.
 
+O Playwright resolve o próprio Chromium — em CI e na sua máquina, `npx playwright install chromium` uma vez e pronto. Em contêiner de desenvolvimento remoto que já traz o browser fora do cache do Playwright, aponte o caminho:
+
+```bash
+PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium npm run test:e2e
+```
+
 ## Documentação
 
 | Documento                                              | O que responde                                |
