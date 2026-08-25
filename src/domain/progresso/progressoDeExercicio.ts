@@ -1,6 +1,6 @@
-import { diferencaEmDias } from '../dia/dataLocal'
 import type { RegistroDiario } from '../registro/registroDiario'
 import type { ArquivoDePlano } from '../schema/arquivoDePlano'
+import { variacaoEntre, type Variacao } from './variacao'
 
 /**
  * A trajetória de cada exercício ao longo do tempo.
@@ -30,17 +30,6 @@ export interface SessaoDoExercicio {
   /** Σ carga × repetições do dia. É o que cresce quando a carga fica igual. */
   readonly volumeKg: number
   readonly series: number
-}
-
-export interface Variacao {
-  readonly de: number
-  readonly para: number
-  /** Negativa quando o aluno caiu: esconder a queda seria mentir para quem se lesionou. */
-  readonly diferenca: number
-  /** `null` quando a origem é zero — não existe percentual sobre nada. */
-  readonly percentual: number | null
-  readonly desde: string
-  readonly semanas: number
 }
 
 export interface ProgressoDeExercicio {
@@ -110,7 +99,7 @@ function montar(
 }
 
 /**
- * A comparação entre a primeira e a última sessão **em que houve o que medir**.
+ * Os pontos da série, contando só as sessões **em que houve o que medir**.
  *
  * Um dia sem carga registrada — a série de prancha, o treino que o aluno só
  * marcou como feito — não pode entrar como zero e virar "você caiu 100%".
@@ -119,30 +108,12 @@ function variacao(
   sessoes: readonly SessaoDoExercicio[],
   valorDe: (sessao: SessaoDoExercicio) => number | undefined
 ): Variacao | null {
-  const medidas = sessoes.flatMap((sessao) => {
-    const valor = valorDe(sessao)
-    return valor === undefined ? [] : [{ data: sessao.data, valor }]
-  })
-
-  const primeira = medidas[0]
-  const ultima = medidas[medidas.length - 1]
-  // Um ponto não é evolução: é o começo de uma.
-  if (!primeira || !ultima || medidas.length < 2) return null
-
-  const diferenca = ultima.valor - primeira.valor
-  return {
-    de: primeira.valor,
-    para: ultima.valor,
-    diferenca: arredondar(diferenca),
-    percentual: primeira.valor === 0 ? null : arredondar((diferenca / primeira.valor) * 100),
-    desde: primeira.data,
-    semanas: Math.round(diferencaEmDias(primeira.data, ultima.data) / 7),
-  }
-}
-
-/** Uma casa decimal: 8,333…% na tela é ruído, não precisão. */
-function arredondar(valor: number): number {
-  return Math.round(valor * 10) / 10
+  return variacaoEntre(
+    sessoes.flatMap((sessao) => {
+      const valor = valorDe(sessao)
+      return valor === undefined ? [] : [{ data: sessao.data, valor }]
+    })
+  )
 }
 
 /**
