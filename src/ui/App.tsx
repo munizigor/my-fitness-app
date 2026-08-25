@@ -3,6 +3,7 @@ import { HashRouter, NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { EmConstrucao } from './comum/EmConstrucao'
 import { EstadoSemPlano } from './comum/EstadoSemPlano'
+import { TelaHoje } from './hoje/TelaHoje'
 import { TelaPlano } from './plano/TelaPlano'
 import { useVault } from './estado/vaultStore'
 
@@ -36,7 +37,7 @@ export function App() {
         <main className="app__conteudo">
           <Routes>
             <Route path="/" element={<Navigate to="/hoje" replace />} />
-            <Route path="/hoje" element={<DependeDoPlano />} />
+            <Route path="/hoje" element={<TelaHoje />} />
             <Route path="/evolucao" element={<DependeDoPlano />} />
             <Route path="/perfil" element={<DependeDoPlano />} />
             <Route path="/plano" element={<TelaPlano />} />

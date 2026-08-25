@@ -27,7 +27,7 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 - [x] **2. Importar plano** — o aluno carrega o arquivo que o profissional enviou.
       _Aceite:_ arquivo válido persiste no vault; inválido mostra erro apontando o campo, sem corromper o vault existente.
 
-- [ ] **3. Hoje** — como aluno, quero abrir o app e ver só o que tenho que fazer hoje.
+- [x] **3. Hoje** — como aluno, quero abrir o app e ver só o que tenho que fazer hoje.
       _Aceite:_ linha do tempo cronológica com refeições, treino, aeróbico e suplementos ancorados por posologia; dia de DESCANSO tem estado próprio; contador de água fixo; a montagem é função pura testável sem UI.
 
 - [ ] **4. Modo execução de treino** — a tela que decide o produto.
@@ -68,4 +68,10 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
 
 ## Decisões pendentes
 
-- Nenhuma até o momento.
+- **Onde o treino cai na linha do tempo.** O plano diz em que _dia_ o aluno
+  treina, nunca a que _horas_. `montarDia` recebe isso como preferência
+  (`treinoDepoisDaRefeicao`, padrão 1), mas ainda não há controle na tela para o
+  aluno ajustar. Entra quando houver preferências de UI em `localStorage`.
+- **Modalidade do aeróbico** é rótulo livre (`"HIIT na esteira"`). Cruzar
+  aeróbico com evolução ("80 minutos de HIIT esta semana") exigiria separar
+  modalidade de método. Confirmar com o Thiago antes da story 7.
