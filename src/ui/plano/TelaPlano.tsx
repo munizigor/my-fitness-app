@@ -1,14 +1,25 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { prescricaoCompleta } from '../../domain/plano/prescricaoCompleta'
 import { resumoDoPlano } from '../../domain/plano/resumoDoPlano'
 import { useVault } from '../estado/vaultStore'
+import { DietaPrescrita } from './DietaPrescrita'
 import { ErroDeImport } from './ErroDeImport'
+import { SemanaPrescrita } from './SemanaPrescrita'
+import { SuplementosPrescritos } from './SuplementosPrescritos'
+import { TreinosPrescritos } from './TreinosPrescritos'
 
 /**
- * Onde o aluno carrega o arquivo que o profissional enviou.
+ * A prescrição inteira, read-only, e o import que a trouxe.
  *
- * A prescrição aparece em resumo, read-only: o aluno confere que recebeu o
- * plano certo, de quem espera. A consulta completa é de outra story.
+ * É a exceção deliberada ao princípio 1 ("um momento por vez, nunca o documento
+ * inteiro"): o aluno chega aqui em modo reflexivo, consultando — e é o único
+ * lugar do app onde a estrutura da planilha é a estrutura certa. Por isso a
+ * semana fica à vista e o resto atrás de um toque: a exceção é ver o plano
+ * todo, não ter que rolar por ele.
+ *
+ * Nada aqui é editável (princípio 5). Em Hoje, tocar numa alternativa registra
+ * o consumo; aqui a mesma alternativa é texto.
  */
 export function TelaPlano() {
   const { t } = useTranslation()
@@ -18,6 +29,9 @@ export function TelaPlano() {
   // Contar e somar é regra, não apresentação: a tela não conhece o formato do
   // arquivo, só o resumo que o domínio produz dele.
   const resumo = arquivo ? resumoDoPlano(arquivo) : null
+  // Derivado do plano, nunca persistido (ADR 0006): é o mesmo arquivo lido de
+  // outro ângulo, com as referências por id já resolvidas.
+  const prescricao = useMemo(() => (arquivo ? prescricaoCompleta(arquivo) : null), [arquivo])
 
   async function aoEscolherArquivo(evento: React.ChangeEvent<HTMLInputElement>) {
     const escolhido = evento.target.files?.[0]
@@ -59,6 +73,20 @@ export function TelaPlano() {
             })}
           </p>
         </div>
+      )}
+
+      {prescricao && (
+        <>
+          <SemanaPrescrita agenda={prescricao.agenda} />
+          <TreinosPrescritos treinos={prescricao.treinos} />
+          <DietaPrescrita
+            refeicoes={prescricao.refeicoes}
+            macrosAlvoDiario={prescricao.macrosAlvoDiario}
+            hidratacaoDiariaLitros={prescricao.hidratacaoDiariaLitros}
+            vegetaisSugeridos={prescricao.vegetaisSugeridos}
+          />
+          <SuplementosPrescritos formulas={prescricao.formulas} />
+        </>
       )}
 
       {problemas && <ErroDeImport problemas={problemas} />}

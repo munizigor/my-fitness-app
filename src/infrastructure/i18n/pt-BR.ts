@@ -220,6 +220,39 @@ export const ptBR = {
     resumoNutricao: '{{refeicoes}} refeições por dia · {{litros}} L de água',
     resumoSuplementos: '{{suplementos}} suplementos em {{formulas}} fórmulas',
     seusDadosFicam: 'Seus dados ficam no seu aparelho. Você pode exportá-los quando quiser.',
+
+    semanaTitulo: 'Sua semana',
+    descanso: 'Descanso',
+    aerobico: '{{modalidade}} · {{minutos}} min',
+
+    treinosTitulo: 'Treinos',
+    /** "Cai em Segunda-feira e Quarta-feira": o mesmo treino, os dias todos. */
+    treinoDias: 'Cai em {{dias}}',
+    treinoSemDia: 'Sem dia marcado nesta semana',
+    exercicios_one: '{{count}} exercício',
+    exercicios_other: '{{count}} exercícios',
+    cargaAlvo: '{{carga}} kg',
+
+    dietaTitulo: 'Dieta',
+    alvoDoDia:
+      'Alvo do dia: {{proteina}} g de proteína · {{carboidrato}} g de carboidrato · {{gordura}} g de gordura',
+    agua: '{{litros}} L de água por dia',
+    vegetais: 'Vegetais à vontade: {{lista}}',
+    itens_one: '{{count}} item',
+    itens_other: '{{count}} itens',
+
+    suplementosTitulo: 'Suplementos',
+    /**
+     * O artigo concorda com "refeição", não com o nome que o profissional deu
+     * a ela: "Depois da refeição 3 · Ceia" está certo em qualquer plano, e
+     * "Depois do Ceia" estaria errado na metade deles.
+     */
+    doseAposRefeicao: 'Depois da refeição {{numero}} · {{refeicao}}',
+    doseAntesDoTreino: 'Antes de treinar',
+    doseLivre: 'Em qualquer horário',
+    vezesPorDia_one: '{{count}}× ao dia',
+    vezesPorDia_other: '{{count}}× ao dia',
+    duracaoDias: 'por {{count}} dias',
   },
   erroImport: {
     titulo: 'Não consegui ler este arquivo',

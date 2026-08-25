@@ -19,8 +19,8 @@ describe('prescricaoCompleta', () => {
 
       expect(agenda.map((d) => d.dia)).toEqual(['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'])
       // A agenda guarda `sessaoId: 'A'`; quem consulta o plano quer o rótulo.
-      expect(agenda[0].sessao?.rotulo).toBe('Treino A')
-      expect(agenda[1].sessao?.rotulo).toBe('Treino B')
+      expect(agenda[0]!.sessao?.rotulo).toBe('Treino A')
+      expect(agenda[1]!.sessao?.rotulo).toBe('Treino B')
     })
 
     it('separa o descanso de verdade do dia que só tem aeróbico', () => {
@@ -54,7 +54,7 @@ describe('prescricaoCompleta', () => {
     })
 
     it('resolve os exercícios do id para o nome, na ordem prescrita', () => {
-      const [treinoA] = prescricaoCompleta(ARQUIVO).treinos
+      const treinoA = prescricaoCompleta(ARQUIVO).treinos[0]!
 
       expect(treinoA.exercicios.map((e) => e.exercicio.nome)).toEqual([
         'Puxada Frontal Pronada',
@@ -71,7 +71,7 @@ describe('prescricaoCompleta', () => {
       ])
       // O item prescrito viaja junto: séries, execução e a observação do
       // profissional são o conteúdo da consulta.
-      expect(treinoA.exercicios[0].prescrito.series).toBe(4)
+      expect(treinoA.exercicios[0]!.prescrito.series).toBe(4)
     })
 
     it('mantém na lista o treino que a agenda não marca em dia nenhum', () => {
@@ -118,8 +118,8 @@ describe('prescricaoCompleta', () => {
     })
 
     it('resolve a âncora da posologia na refeição, não no número dela', () => {
-      const [bemEstar] = prescricaoCompleta(ARQUIVO).formulas
-      const magnesio = bemEstar.itens[0]
+      const bemEstar = prescricaoCompleta(ARQUIVO).formulas[0]!
+      const magnesio = bemEstar.itens[0]!
 
       expect(magnesio.suplemento.nome).toBe('Magnésio dimalato')
       // "Após a refeição 1" é o arquivo falando; "após o Café da manhã" é o
@@ -132,7 +132,7 @@ describe('prescricaoCompleta', () => {
     })
 
     it('mantém os outros momentos como são, sem refeição para resolver', () => {
-      const [, treino] = prescricaoCompleta(ARQUIVO).formulas
+      const treino = prescricaoCompleta(ARQUIVO).formulas[1]!
 
       expect(treino.itens.map((i) => i.momento.tipo)).toEqual(['livre', 'antes-do-treino'])
     })
