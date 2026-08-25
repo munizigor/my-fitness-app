@@ -9,7 +9,7 @@ import { carregarRegistro, gravarRegistro } from './registroDoDia'
 export type Agora = () => string
 
 export interface Consumo {
-  readonly refeicao: number
+  readonly refeicaoId: string
   readonly itemDeRefeicaoId: string
   /** O alimento escolhido entre as alternativas, ou `null` para desmarcar. */
   readonly alimento: string | null
@@ -35,22 +35,21 @@ export class RegistrarConsumo {
 
   async executar(data: string, consumo: Consumo): Promise<RegistroDiario> {
     const registro = await carregarRegistro(this.vault, data)
-    const anterior = registro.refeicoes.find((r) => r.numero === consumo.refeicao)
+    const anterior = registro.refeicoes.find((r) => r.refeicaoId === consumo.refeicaoId)
 
     const itens = atualizarItens(anterior?.itens ?? [], consumo)
-    const outras = registro.refeicoes.filter((r) => r.numero !== consumo.refeicao)
+    const outras = registro.refeicoes.filter((r) => r.refeicaoId !== consumo.refeicaoId)
 
-    const refeicoes =
+    const refeicoes: RefeicaoRegistrada[] =
       itens.length === 0
-        ? outras
-        : [
-            ...outras,
-            { numero: consumo.refeicao, itens, registradaEm: this.agora() } as RefeicaoRegistrada,
-          ]
+        ? [...outras]
+        : [...outras, { refeicaoId: consumo.refeicaoId, itens, registradaEm: this.agora() }]
 
+    // Ordem estável pelo id: o arquivo do dia não pode embaralhar a cada toque,
+    // porque quem abrir num editor precisa reconhecer o que mudou.
     return gravarRegistro(this.vault, {
       ...registro,
-      refeicoes: [...refeicoes].sort((a, b) => a.numero - b.numero),
+      refeicoes: refeicoes.sort((a, b) => a.refeicaoId.localeCompare(b.refeicaoId)),
     })
   }
 }

@@ -66,7 +66,14 @@ export interface ExercicioNoDia {
 export type ItemDoDia =
   | {
       readonly tipo: 'refeicao'
+      /** Identificador do item na linha do tempo — chave de render, não de dado. */
       readonly id: string
+      /**
+       * Identificador da refeição no plano, que é por onde o registro do aluno
+       * e a rota se referem a ela. Separado do `id` acima de propósito: um é da
+       * tela, o outro é do dado.
+       */
+      readonly refeicaoId: string
       readonly refeicao: Refeicao
       /** Os que a posologia ancorou nesta refeição. Vazio é o caso comum. */
       readonly suplementos: readonly SuplementoNoDia[]
@@ -136,6 +143,7 @@ export function montarDia(
     itens.push({
       tipo: 'refeicao',
       id: `refeicao-${refeicao.numero}`,
+      refeicaoId: String(refeicao.numero),
       refeicao,
       suplementos: [...daRefeicao, ...livres],
     })

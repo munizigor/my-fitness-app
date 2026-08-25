@@ -43,7 +43,7 @@ export function App() {
             <Route path="/evolucao" element={<DependeDoPlano />} />
             <Route path="/perfil" element={<DependeDoPlano />} />
             <Route path="/treino" element={<ExecucaoTreino />} />
-            <Route path="/refeicao/:numero" element={<TelaRefeicao />} />
+            <Route path="/refeicao/:refeicaoId" element={<TelaRefeicao />} />
             <Route path="/plano" element={<TelaPlano />} />
             <Route path="*" element={<Navigate to="/hoje" replace />} />
           </Routes>

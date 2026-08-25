@@ -56,7 +56,7 @@ export function TelaHoje({ hoje = hojeLocal() }: { hoje?: string }) {
             item={item}
             escolhidos={
               item.tipo === 'refeicao'
-                ? (registro?.refeicoes.find((r) => r.numero === item.refeicao.numero)?.itens
+                ? (registro?.refeicoes.find((r) => r.refeicaoId === item.refeicaoId)?.itens
                     .length ?? 0)
                 : 0
             }

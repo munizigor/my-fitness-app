@@ -40,7 +40,18 @@ const itemConsumido = z.object({
 })
 
 const refeicaoRegistrada = z.object({
-  numero: z.number().int().positive(),
+  /**
+   * Aponta para a refeição do plano pelo identificador dela, não pela posição.
+   * Inserir uma refeição no plano não pode deslocar o que já foi registrado.
+   */
+  refeicaoId: texto,
+  /**
+   * O número de ordem que a versão anterior usava, quando veio de lá.
+   *
+   * Não é usado para gravar nada novo: existe para reconectar um registro
+   * antigo a um plano reemitido, na leitura. Guardar é reversível; apagar não.
+   */
+  refeicaoNumeroLegado: z.number().int().positive().optional(),
   itens: z.array(itemConsumido),
   registradaEm: z.string().min(1),
 })

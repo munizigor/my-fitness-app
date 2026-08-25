@@ -26,7 +26,7 @@ import { useVault } from '../estado/vaultStore'
 export function TelaRefeicao({ hoje = hojeLocal() }: { hoje?: string }) {
   const { t } = useTranslation()
   const navegar = useNavigate()
-  const { numero } = useParams()
+  const { refeicaoId } = useParams()
   const arquivo = useVault((e) => e.arquivo)
   const { hoje: registro, carregar, registrarConsumo } = useRegistro()
 
@@ -38,15 +38,15 @@ export function TelaRefeicao({ hoje = hojeLocal() }: { hoje?: string }) {
 
   if (!dia) return <EstadoSemPlano />
 
-  const alvo = Number(numero)
-  const item = dia.itens.find((i) => i.tipo === 'refeicao' && i.refeicao.numero === alvo)
+  const item = dia.itens.find((i) => i.tipo === 'refeicao' && i.refeicaoId === refeicaoId)
 
   // Link antigo, plano trocado, URL digitada à mão: voltar para o dia é melhor
   // que uma tela de erro para algo que o aluno não pode consertar.
   if (item?.tipo !== 'refeicao') return <Navigate to="/hoje" replace />
 
   const { refeicao } = item
-  const escolhidos = registro?.refeicoes.find((r) => r.numero === alvo)?.itens ?? []
+  const alvo = item.refeicaoId
+  const escolhidos = registro?.refeicoes.find((r) => r.refeicaoId === alvo)?.itens ?? []
   const macros = macrosDoDia(dia, registro)
 
   function alternar(itemDeRefeicaoId: string, alimento: string) {
@@ -54,7 +54,7 @@ export function TelaRefeicao({ hoje = hojeLocal() }: { hoje?: string }) {
       (e) => e.itemDeRefeicaoId === itemDeRefeicaoId && e.alimento === alimento
     )
     void registrarConsumo(hoje, {
-      refeicao: alvo,
+      refeicaoId: alvo,
       itemDeRefeicaoId,
       // Tocar de novo na mesma desmarca: é como se desfaz um engano.
       alimento: jaEstava ? null : alimento,

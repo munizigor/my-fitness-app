@@ -31,7 +31,7 @@ export function ItemDaLinhaDoTempo({
         <li className="linha__item linha__item--refeicao">
           {/* O cartão inteiro é o alvo de toque: mirar num "ver mais" de 12 px
               com uma mão só é o tipo de atrito que faz o aluno não abrir. */}
-          <Link to={`/refeicao/${item.refeicao.numero}`} className="linha__alvo">
+          <Link to={`/refeicao/${item.refeicaoId}`} className="linha__alvo">
             <span className="linha__titulo">
               {item.refeicao.nome ?? t('hoje.refeicao', { numero: item.refeicao.numero })}
             </span>
