@@ -1,8 +1,5 @@
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import { expect, test } from '@playwright/test'
-
-const FIXTURE = fileURLToPath(new URL('./fixtures/plano-valido.fitvault.json', import.meta.url))
+import { importarPlano, planoValido } from './fixture'
 
 /**
  * O caminho real do aluno: recebe o arquivo, carrega, e o plano continua lá
@@ -24,7 +21,7 @@ test.describe('importar o plano do profissional', () => {
 
   test('carrega o arquivo e mostra de quem veio a prescrição', async ({ page }) => {
     await page.getByRole('link', { name: 'Plano', exact: true }).click()
-    await page.getByLabel('Importar arquivo do profissional').setInputFiles(FIXTURE)
+    await importarPlano(page)
 
     await expect(page.getByText('Prescrito por Ana Ribeiro')).toBeVisible()
     await expect(page.getByText(/2 treinos · 5 exercícios · descanso de 60 a 70 s/)).toBeVisible()
@@ -34,7 +31,7 @@ test.describe('importar o plano do profissional', () => {
     page,
   }) => {
     await page.getByRole('link', { name: 'Plano', exact: true }).click()
-    await page.getByLabel('Importar arquivo do profissional').setInputFiles(FIXTURE)
+    await importarPlano(page)
     await expect(page.getByText('Prescrito por Ana Ribeiro')).toBeVisible()
 
     await page.reload()
@@ -45,7 +42,7 @@ test.describe('importar o plano do profissional', () => {
 
   test('grava o vault como JSON legível em qualquer editor — data ownership', async ({ page }) => {
     await page.getByRole('link', { name: 'Plano', exact: true }).click()
-    await page.getByLabel('Importar arquivo do profissional').setInputFiles(FIXTURE)
+    await importarPlano(page)
     await expect(page.getByText('Prescrito por Ana Ribeiro')).toBeVisible()
 
     const conteudo = await page.evaluate(async () => {
@@ -70,19 +67,15 @@ test.describe('importar o plano do profissional', () => {
 
   test('arquivo inválido aponta o campo e não corrompe o vault', async ({ page }) => {
     await page.getByRole('link', { name: 'Plano', exact: true }).click()
-    await page.getByLabel('Importar arquivo do profissional').setInputFiles(FIXTURE)
+    await importarPlano(page)
     await expect(page.getByText('Prescrito por Ana Ribeiro')).toBeVisible()
 
-    const corrompido = JSON.parse(readFileSync(FIXTURE, 'utf8')) as {
+    const corrompido = planoValido<{
       plano: { treino: { sessoes: { itens: { series?: number }[] }[] } }
-    }
+    }>()
     delete corrompido.plano.treino.sessoes[0]!.itens[0]!.series
 
-    await page.getByLabel('Importar arquivo do profissional').setInputFiles({
-      name: 'corrompido.fitvault.json',
-      mimeType: 'application/json',
-      buffer: Buffer.from(JSON.stringify(corrompido)),
-    })
+    await importarPlano(page, corrompido)
 
     // O que o profissional lê está em termos que ele reconhece na própria
     // prescrição: qual treino, qual exercício, qual campo.
@@ -113,7 +106,7 @@ test.describe('importar o plano do profissional', () => {
     await page.getByRole('link', { name: 'Plano', exact: true }).click()
     await context.setOffline(true)
 
-    await page.getByLabel('Importar arquivo do profissional').setInputFiles(FIXTURE)
+    await importarPlano(page)
 
     await expect(page.getByText('Prescrito por Ana Ribeiro')).toBeVisible()
   })

@@ -1,7 +1,5 @@
-import { fileURLToPath } from 'node:url'
 import { expect, test, type Page } from '@playwright/test'
-
-const FIXTURE = fileURLToPath(new URL('./fixtures/plano-valido.fitvault.json', import.meta.url))
+import { importarPlano } from './fixture'
 
 /**
  * O modo execução, no navegador de verdade.
@@ -21,7 +19,7 @@ test.describe('executar o treino', () => {
     })
     await page.reload()
     await page.getByRole('link', { name: 'Plano', exact: true }).click()
-    await page.getByLabel('Importar arquivo do profissional').setInputFiles(FIXTURE)
+    await importarPlano(page)
     await expect(page.getByText('Prescrito por Ana Ribeiro')).toBeVisible()
     await page.getByRole('link', { name: 'Hoje', exact: true }).click()
     // A linha do tempo precisa estar montada antes de qualquer contagem:
