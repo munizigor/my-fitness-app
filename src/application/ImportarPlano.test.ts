@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { ArquivoInvalidoError } from '../domain/errors/ArquivoInvalidoError'
 import { InMemoryVaultStorage } from '../infrastructure/armazenamento/InMemoryVaultStorage'
 import planoValido from '../test/fixtures/plano-valido.json'
+import { lerArquivoDePlano } from '../domain/schema/arquivoDePlano'
 import { CAMINHOS } from '../domain/vault/caminhos'
 import { ImportarPlano } from './ImportarPlano'
 
@@ -46,6 +47,21 @@ describe('ImportarPlano', () => {
     it('devolve o plano lido, para a UI não precisar reler o vault', async () => {
       const resultado = await importar.executar(texto(planoValido))
       expect(resultado.plano.treino.sessoes).toHaveLength(2)
+    })
+
+    it('grava algo que o próprio schema consegue reler', async () => {
+      // O schema interpreta a prescrição ("4x10a12" vira objeto). Gravar o
+      // resultado transformado tornaria o vault ilegível para o próprio
+      // schema, e o plano sumiria no primeiro recarregamento da página.
+      await importar.executar(texto(planoValido))
+      const gravado = JSON.parse((await vault.ler(CAMINHOS.planoAtual))!)
+      expect(() => lerArquivoDePlano(gravado)).not.toThrow()
+    })
+
+    it('grava o documento do profissional, não a nossa interpretação dele', async () => {
+      await importar.executar(texto(planoValido))
+      const gravado = JSON.parse((await vault.ler(CAMINHOS.planoAtual))!)
+      expect(gravado).toEqual(planoValido)
     })
 
     it('usa o relógio real quando nenhum é injetado', async () => {

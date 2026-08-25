@@ -26,12 +26,21 @@ export class ImportarPlano {
   ) {}
 
   async executar(conteudo: string): Promise<ArquivoDePlano> {
-    const arquivo = lerArquivoDePlano(this.desserializar(conteudo))
+    const documento = this.desserializar(conteudo)
+    const arquivo = lerArquivoDePlano(documento)
 
     const instante = this.agora()
     const manifestAnterior = await this.vault.ler(CAMINHOS.manifest)
 
-    await this.vault.escrever(CAMINHOS.planoAtual, formatar(arquivo))
+    // Grava o documento do profissional, não a leitura que fizemos dele.
+    //
+    // O schema interpreta a prescrição ("4x10a12" vira estrutura), então gravar
+    // o resultado transformado deixaria o vault ilegível para o próprio schema
+    // — o plano sumiria no primeiro recarregamento da página. Guardar o
+    // documento original também é a forma mais forte de data ownership: o que
+    // está no disco é exatamente o que o profissional emitiu, e a interpretação
+    // é refeita a cada leitura, de graça, por função pura.
+    await this.vault.escrever(CAMINHOS.planoAtual, formatar(documento))
     await this.vault.escrever(
       CAMINHOS.manifest,
       formatar({

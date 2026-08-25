@@ -2,6 +2,23 @@
 
 ## [Não lançado]
 
+### Story 2 — Importar plano
+
+- Schema Zod do arquivo do profissional em `domain/schema`, com mensagens em pt-BR
+  (`z.config(z.locales.pt())`) — quem lê o diagnóstico é quem vai corrigir o arquivo
+- Integridade referencial entre campos: agenda apontando para sessão inexistente,
+  suplemento ancorado em refeição ausente, identificador de sessão repetido
+- Porta `VaultStorage` em `domain/ports`, com `InMemoryVaultStorage` para testes e
+  `OpfsVaultStorage` para produção
+- Caso de uso `ImportarPlano`: valida antes de escrever, e preserva medidas, registros
+  diários e o perfil já existente na troca de plano
+- Tela de plano com import e erro que aponta o caminho exato de cada campo
+- **Correção durante o desenvolvimento:** o vault gravava a leitura transformada do
+  plano, que o próprio schema não conseguia reler — o plano sumia ao recarregar a
+  página. Passa a gravar o documento original do profissional, o que também é a forma
+  mais forte de _data ownership_. Achado pelo E2E, agora coberto por teste unitário
+- `DOM.AsyncIterable` na lib do TypeScript, para `FileSystemDirectoryHandle.entries()`
+
 ### Correções da revisão do PR #1
 
 - `typecheck` deixa de ser um comando contraditório (`--noEmit false` sobre tsconfigs

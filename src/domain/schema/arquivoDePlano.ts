@@ -3,6 +3,11 @@ import { ArquivoInvalidoError, type ProblemaNoArquivo } from '../errors/ArquivoI
 import { PrescricaoInvalidaError } from '../errors/PrescricaoInvalidaError'
 import { analisarPrescricao, type Prescricao } from '../treino/prescricao'
 
+// Quem lê estas mensagens é o profissional que montou o plano, para saber o que
+// corrigir. Sem isto, metade do diagnóstico chega em inglês ("Invalid input")
+// dentro de um app em português — e a tela de erro deixa de cumprir sua função.
+z.config(z.locales.pt())
+
 export const FORMATO = 'fitvault-plano'
 export const SCHEMA_VERSION_ATUAL = 1
 

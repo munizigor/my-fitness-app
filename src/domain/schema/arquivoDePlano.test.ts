@@ -135,6 +135,22 @@ describe('lerArquivoDePlano', () => {
       expect(() => lerArquivoDePlano(entrada)).toThrow(ArquivoInvalidoError)
     })
 
+    it('escreve as mensagens em português, não nas do Zod em inglês', () => {
+      // Quem lê é o profissional que vai corrigir o arquivo. Um diagnóstico
+      // metade em inglês não serve para ele.
+      const arquivo = comPlanoValido()
+      // @ts-expect-error navegação em JSON solto, só no teste
+      delete arquivo.plano.nutricao.hidratacaoLitros
+      let capturado: ArquivoInvalidoError | undefined
+      try {
+        lerArquivoDePlano(arquivo)
+      } catch (erro) {
+        capturado = erro as ArquivoInvalidoError
+      }
+      const mensagens = capturado!.problemas.map((p) => p.mensagem).join(' ')
+      expect(mensagens).not.toMatch(/Invalid|Required|Expected|Unrecognized/i)
+    })
+
     it('rejeita refeição sem nenhum item', () => {
       const arquivo = comPlanoValido()
       // @ts-expect-error navegação em JSON solto, só no teste

@@ -1,0 +1,169 @@
+{
+  "formato": "fitvault-plano",
+  "schemaVersion": 1,
+  "emitidoEm": "2026-08-24",
+  "profissional": {
+    "nome": "Ana Ribeiro",
+    "registro": "CRN-0 00000"
+  },
+  "aluno": {
+    "nome": "Aluno Exemplo",
+    "idade": 30,
+    "alturaMetros": 1.75
+  },
+  "plano": {
+    "treino": {
+      "intervaloEntreSeriesSegundos": { "min": 60, "max": 70 },
+      "sessoes": [
+        {
+          "id": "A",
+          "rotulo": "Treino A",
+          "foco": "superior",
+          "exercicios": [
+            { "id": "a1", "nome": "Puxada Frontal Pronada", "prescricao": "4x10a12" },
+            {
+              "id": "a2",
+              "nome": "Remada Cavalinho com Triângulo",
+              "prescricao": "4x10a12",
+              "tecnicaAvancada": "Corpo totalmente em 90 graus"
+            },
+            { "id": "a3", "nome": "Prancha", "prescricao": "3x60'" }
+          ]
+        },
+        {
+          "id": "B",
+          "rotulo": "Treino B",
+          "foco": "inferior",
+          "exercicios": [
+            {
+              "id": "b1",
+              "nome": "Agachamento Livre",
+              "prescricao": "4x10a12",
+              "tecnicaAvancada": "Descer até o talo"
+            },
+            { "id": "b2", "nome": "Mesa Flexora", "prescricao": "4x10a12" },
+            {
+              "id": "b3",
+              "nome": "Prancha Lateral",
+              "prescricao": "2x60'",
+              "tecnicaAvancada": "2 cada lado"
+            }
+          ]
+        }
+      ],
+      "agendaSemanal": {
+        "seg": { "musculacao": "A", "aerobico": { "tipo": "HIIT", "minutos": 20 } },
+        "ter": { "musculacao": "B", "aerobico": { "tipo": "HIIT", "minutos": 20 } },
+        "qua": { "musculacao": "A", "aerobico": { "tipo": "HIIT", "minutos": 20 } },
+        "qui": { "musculacao": null, "aerobico": null },
+        "sex": { "musculacao": "B", "aerobico": { "tipo": "HIIT", "minutos": 20 } },
+        "sab": { "musculacao": null, "aerobico": { "tipo": "HIIT", "minutos": 20 } },
+        "dom": { "musculacao": null, "aerobico": null }
+      }
+    },
+    "nutricao": {
+      "macrosAlvoDiario": { "proteinaG": 170, "carboidratoG": 180, "gorduraG": 55 },
+      "hidratacaoLitros": 4,
+      "refeicoes": [
+        {
+          "numero": 1,
+          "itens": [
+            {
+              "id": "r1i1",
+              "alternativas": ["2 fatias de pão integral", "130 g de cuscuz", "1 pão francês"],
+              "macros": { "proteinaG": 4, "carboidratoG": 28, "gorduraG": 2 }
+            },
+            {
+              "id": "r1i2",
+              "alternativas": ["50 g de queijo cottage", "1 fatia de queijo branco"],
+              "macros": { "proteinaG": 6, "carboidratoG": 0, "gorduraG": 6 }
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "itens": [
+            {
+              "id": "r2i1",
+              "alternativas": ["20 g de castanha de caju", "20 g de castanha do Pará"],
+              "macros": { "proteinaG": 3, "carboidratoG": 6, "gorduraG": 10 }
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "itens": [
+            {
+              "id": "r3i1",
+              "alternativas": ["150 g de frango grelhado", "150 g de tilápia"],
+              "macros": { "proteinaG": 45, "carboidratoG": 0, "gorduraG": 5 }
+            },
+            {
+              "id": "r3i2",
+              "alternativas": ["100 g de arroz", "200 g de batata"],
+              "macros": { "proteinaG": 2.5, "carboidratoG": 28, "gorduraG": 0.2 }
+            },
+            {
+              "id": "r3i3",
+              "alternativas": ["120 g de vegetais"],
+              "macros": { "proteinaG": 2, "carboidratoG": 8, "gorduraG": 0 }
+            }
+          ]
+        }
+      ],
+      "vegetaisSugeridos": ["Brócolis", "Couve", "Abobrinha", "Chuchu", "Espinafre"]
+    },
+    "suplementacao": {
+      "formulas": [
+        {
+          "nome": "Bem-estar geral",
+          "itens": [
+            {
+              "id": "s1",
+              "nome": "Magnésio dimalato",
+              "dose": "200 mg",
+              "posologia": {
+                "ancora": { "tipo": "apos-refeicao", "refeicao": 1 },
+                "dosesPorDia": 1
+              }
+            },
+            {
+              "id": "s2",
+              "nome": "Ômega 3",
+              "dose": "4 cápsulas",
+              "posologia": {
+                "ancora": { "tipo": "apos-refeicao", "refeicao": 1 },
+                "dosesPorDia": 1
+              }
+            }
+          ]
+        },
+        {
+          "nome": "Treino",
+          "itens": [
+            {
+              "id": "s3",
+              "nome": "Creatina",
+              "dose": "5 g",
+              "posologia": {
+                "ancora": { "tipo": "livre" },
+                "dosesPorDia": 1,
+                "observacao": "Após qualquer refeição, a que for mais prática"
+              }
+            },
+            {
+              "id": "s4",
+              "nome": "Pré-treino",
+              "dose": "2 scoops",
+              "posologia": {
+                "ancora": { "tipo": "antes-do-treino" },
+                "dosesPorDia": 1,
+                "duracaoDias": 60
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

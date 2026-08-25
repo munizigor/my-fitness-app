@@ -24,7 +24,7 @@ Uma story por vez: completar, verificar, só então iniciar a próxima.
       _Aceite:_ casos reais da planilha parseados; entrada desconhecida falha com erro tipado, nunca em silêncio.
       _Puro `domain`, TDD sem infraestrutura. Primeira story do projeto._
 
-- [ ] **2. Importar plano** — o aluno carrega o arquivo que o profissional enviou.
+- [x] **2. Importar plano** — o aluno carrega o arquivo que o profissional enviou.
       _Aceite:_ arquivo válido persiste no vault; inválido mostra erro apontando o campo, sem corromper o vault existente.
 
 - [ ] **3. Hoje** — como aluno, quero abrir o app e ver só o que tenho que fazer hoje.

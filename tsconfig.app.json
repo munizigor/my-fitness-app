@@ -2,7 +2,10 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    // DOM.AsyncIterable traz `FileSystemDirectoryHandle.entries()`, que o OPFS
+    // usa para percorrer o vault. Existe no Chromium desde sempre; o que faltava
+    // era declarar a lib, não escrever tipos à mão.
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",

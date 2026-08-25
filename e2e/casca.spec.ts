@@ -14,9 +14,9 @@ test.describe('casca publicada', () => {
   test('oferece os quatro destinos e navega entre eles', async ({ page }) => {
     await page.goto('./')
     for (const destino of ['Hoje', 'Evolução', 'Perfil', 'Plano']) {
-      await expect(page.getByRole('link', { name: destino })).toBeVisible()
+      await expect(page.getByRole('link', { name: destino, exact: true })).toBeVisible()
     }
-    await page.getByRole('link', { name: 'Perfil' }).click()
+    await page.getByRole('link', { name: 'Perfil', exact: true }).click()
     await expect(page).toHaveURL(/#\/perfil$/)
   })
 
