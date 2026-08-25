@@ -43,7 +43,7 @@ export function TelaHoje({ hoje = hojeLocal() }: { hoje?: string }) {
   return (
     <section className="hoje">
       <header className="hoje__cabecalho">
-        <h1 className="hoje__dia">{t(`hoje.diaDaSemana.${dia.diaDaSemana}`)}</h1>
+        <h1 className="hoje__dia">{t(`diaDaSemana.${dia.diaDaSemana}`)}</h1>
         <ContadorDeAgua
           alvoLitros={dia.hidratacaoDiariaLitros}
           consumidoLitros={registro?.aguaLitros ?? 0}

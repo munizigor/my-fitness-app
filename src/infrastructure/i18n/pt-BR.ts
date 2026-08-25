@@ -48,16 +48,23 @@ export const ptBR = {
     gota_one: '{{quantidade}} gota',
     gota_other: '{{quantidade}} gotas',
   },
+  /**
+   * Os dias da semana têm um dono só, fora de qualquer tela.
+   *
+   * Moravam dentro de `hoje`, e a consulta ao plano precisa dos mesmos nomes —
+   * copiá-los para lá deixaria duas listas de sete palavras para manter em
+   * sincronia, que é como um dia vira "Sábado" numa tela e "sábado" na outra.
+   */
+  diaDaSemana: {
+    seg: 'Segunda-feira',
+    ter: 'Terça-feira',
+    qua: 'Quarta-feira',
+    qui: 'Quinta-feira',
+    sex: 'Sexta-feira',
+    sab: 'Sábado',
+    dom: 'Domingo',
+  },
   hoje: {
-    diaDaSemana: {
-      seg: 'Segunda-feira',
-      ter: 'Terça-feira',
-      qua: 'Quarta-feira',
-      qui: 'Quinta-feira',
-      sex: 'Sexta-feira',
-      sab: 'Sábado',
-      dom: 'Domingo',
-    },
     descansoTitulo: 'Hoje é dia de descanso',
     descansoDescricao: 'Sem treino nem aeróbico. As refeições continuam.',
     agua: 'Água',
