@@ -28,6 +28,18 @@ import { diaDaSemanaDe } from './dataLocal'
  * persistido (ADR 0006). Testável sem browser e sem montar tela.
  */
 
+/**
+ * A janela de descanso entre séries.
+ *
+ * Mora aqui, e não na UI, porque é o domínio que decide qual descanso vale para
+ * cada exercício. O cronômetro só conta — redeclarar a forma lá dentro deixaria
+ * as duas dessincronizarem em silêncio, compilando.
+ */
+export interface Descanso {
+  readonly minSegundos: number
+  readonly maxSegundos: number
+}
+
 export interface SuplementoNoDia {
   readonly suplemento: Suplemento
   /** De qual fórmula veio. O dia não é organizado por fórmula, mas a origem importa. */
@@ -52,7 +64,7 @@ export type ItemDoDia =
       readonly id: string
       readonly sessao: SessaoTreino
       readonly exercicios: readonly ExercicioNoDia[]
-      readonly descansoEntreSeries: { readonly minSegundos: number; readonly maxSegundos: number }
+      readonly descansoEntreSeries: Descanso
       /** Faz parte da mesma ida à academia; `null` quando a agenda não marca. */
       readonly aerobico: Aerobico | null
       /** Os de tomar antes de treinar. */
