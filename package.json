@@ -6,16 +6,16 @@
   "description": "PWA de execução de treino e dieta com data ownership no espírito do Obsidian",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc -b --noEmit false --emitDeclarationOnly false || tsc -b",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "check": "npm run lint && npm run format:check && tsc -b && npm run test"
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run test"
   },
   "dependencies": {
     "i18next": "^25.6.2",
