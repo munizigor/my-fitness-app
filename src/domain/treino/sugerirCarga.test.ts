@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { SCHEMA_VERSION_REGISTRO } from '../registro/migracoes'
 import type { RegistroDiario } from '../registro/registroDiario'
 import type { ItemDeTreino } from '../schema/arquivoDePlano'
 import { sugerirCarga } from './sugerirCarga'
@@ -13,7 +14,13 @@ const ITEM: ItemDeTreino = {
 const ITEM_COM_ALVO: ItemDeTreino = { ...ITEM, id: 'a2', cargaAlvoKg: 40 }
 
 function registro(data: string, series: RegistroDiario['series']): RegistroDiario {
-  return { schemaVersion: 2, data, series }
+  return {
+    schemaVersion: SCHEMA_VERSION_REGISTRO,
+    data,
+    aguaLitros: 0,
+    series,
+    refeicoes: [],
+  }
 }
 
 function serie(itemDeTreinoId: string, indice: number, cargaKg?: number) {
