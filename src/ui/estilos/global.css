@@ -107,3 +107,172 @@ body {
   font-size: 0.8125rem;
   color: var(--texto-suave);
 }
+
+/* --- Ações --------------------------------------------------------------- */
+
+.botao {
+  display: inline-grid;
+  place-items: center;
+  min-height: var(--toque-minimo);
+  padding: 0.75rem 1.25rem;
+  border: 0;
+  border-radius: var(--raio);
+  background: var(--acento);
+  color: #08130c;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.botao:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* --- Plano --------------------------------------------------------------- */
+
+.plano {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.plano__titulo {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.plano__resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.plano__prescritor {
+  margin: 0;
+  font-weight: 600;
+}
+
+.plano__linha {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+}
+
+/* O input nativo é feio e pequeno demais para uso com uma mão; o botão o
+   aciona. Fica acessível ao leitor de tela, apenas fora da vista. */
+.plano__entrada {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.plano__nota {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+/* --- Erro de importação -------------------------------------------------- */
+
+.erro {
+  padding: 1rem;
+  border: 1px solid #7f3b3b;
+  border-radius: var(--raio);
+  background: #1d1214;
+}
+
+.erro__titulo {
+  margin: 0 0 0.5rem;
+  font-size: 1.0625rem;
+}
+
+.erro__explicacao {
+  margin: 0 0 0.75rem;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.erro__lista {
+  margin: 0;
+  padding-left: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.erro__item {
+  font-size: 0.875rem;
+}
+
+.erro__campo {
+  display: block;
+  color: #f0a3a3;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8125rem;
+  /* Caminhos de campo são longos e não podem estourar a largura do celular. */
+  overflow-wrap: anywhere;
+}
+
+.erro__mensagem {
+  color: var(--texto-suave);
+}
+
+/* --- Erro de importação: legível para o aluno e para o profissional -------- */
+
+.botao--discreto {
+  background: transparent;
+  border: 1px solid var(--borda);
+  color: var(--texto);
+  font-weight: 500;
+}
+
+.erro__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: 0.9375rem;
+}
+
+/* O "onde" é o que o profissional procura primeiro ao abrir a planilha para
+   corrigir: precisa saltar antes da mensagem. */
+.erro__onde {
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.erro__tecnico {
+  margin-top: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.erro__tecnico summary {
+  cursor: pointer;
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.erro__tecnico code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+/* O botão de copiar não pode encostar na lista de problemas: são duas coisas
+   diferentes — o diagnóstico e a ação de passá-lo adiante. */
+.erro .botao--discreto {
+  margin-top: 1rem;
+  width: 100%;
+}

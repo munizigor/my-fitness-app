@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 /**
@@ -11,6 +12,9 @@ export function EstadoSemPlano() {
     <section className="vazio">
       <h1 className="vazio__titulo">{t('vazio.semPlanoTitulo')}</h1>
       <p className="vazio__descricao">{t('vazio.semPlanoDescricao')}</p>
+      <Link to="/plano" className="botao">
+        {t('vazio.irParaImportar')}
+      </Link>
       <p className="vazio__rodape">{t('rodape.seusDados')}</p>
     </section>
   )

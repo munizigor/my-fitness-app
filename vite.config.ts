@@ -68,6 +68,12 @@ export default defineConfig({
         'src/main.tsx',
         'src/vite-env.d.ts',
         'src/**/*.d.ts',
+        // OPFS não existe em jsdom. Esta classe é verificada por Playwright em
+        // Chromium de verdade (e2e/importar-plano.spec.ts), incluindo escrita,
+        // releitura após recarregar a página e uso offline. Contá-la aqui só
+        // criaria pressão para escrever um teste com OPFS falso, que provaria
+        // menos que o teste que já existe.
+        'src/infrastructure/armazenamento/OpfsVaultStorage.ts',
       ],
       // Metas do CLAUDE.md. domain e application têm limiares próprios, mais altos.
       thresholds: {

@@ -1,26 +1,22 @@
 import { PrescricaoInvalidaError } from '../errors/PrescricaoInvalidaError'
+import type { Execucao } from '../schema/arquivoDePlano'
 
 /**
- * A coluna "SxR" da planilha do profissional, entendida.
+ * Atalho de digitação para prescrever um exercício.
  *
- * Duas formas existem na prescrição real: faixa de repetições (`3x10a12`) e
- * tempo sob tensão (`2x60'`, onde o apóstrofo marca segundos). O texto original
- * viaja junto porque a prescrição é do profissional — o app mostra a nossa
- * leitura, mas nunca perde o que ele escreveu.
+ * `4x10a12` é a notação com que profissionais já escrevem "4 séries de 10 a 12
+ * repetições" nas suas planilhas. **Não é o formato de armazenamento** — o
+ * arquivo do plano guarda o significado, em campos estruturados. Este módulo
+ * existe para o editor do profissional (Ciclo 2) aceitar a digitação rápida a
+ * que ele está acostumado e preencher os campos sozinho: ele digita `4x10a12`
+ * e vê "4 séries · 10 a 12 repetições", com os campos já certos.
+ *
+ * Ou seja: acelera a entrada sem fossilizar a saída.
  */
-export type Prescricao = PrescricaoPorRepeticoes | PrescricaoPorTempo
-
-export interface PrescricaoPorRepeticoes {
-  readonly tipo: 'repeticoes'
+export interface Prescricao {
   readonly series: number
-  readonly repeticoes: { readonly min: number; readonly max: number }
-  readonly textoOriginal: string
-}
-
-export interface PrescricaoPorTempo {
-  readonly tipo: 'tempo'
-  readonly series: number
-  readonly segundos: number
+  readonly execucao: Execucao
+  /** O que foi digitado, para o editor conseguir devolver ao campo. */
   readonly textoOriginal: string
 }
 
@@ -29,15 +25,16 @@ const FAIXA = /^(\d+)\s*x\s*(\d+)\s*a\s*(\d+)$/
 const FIXA = /^(\d+)\s*x\s*(\d+)$/
 
 /**
- * Normaliza só o que um humano varia sem querer ao digitar numa planilha:
- * espaços, caixa e o apóstrofo tipográfico que corretores automáticos inserem.
- * Nada além disso — inventar formas que a prescrição não tem esconderia erro.
+ * Normaliza só o que um humano varia sem querer ao digitar: espaços, caixa e o
+ * apóstrofo tipográfico que corretores automáticos inserem. Nada além disso —
+ * aceitar formas que a notação não tem esconderia erro de digitação em vez de
+ * denunciá-lo enquanto o profissional ainda está com o dedo no teclado.
  */
 function normalizar(texto: string): string {
   return texto.trim().toLowerCase().replace(/[’´`]/g, "'")
 }
 
-export function analisarPrescricao(texto: string): Prescricao {
+export function interpretarAtalhoDePrescricao(texto: string): Prescricao {
   const normalizado = normalizar(texto)
 
   if (normalizado === '') {
@@ -50,7 +47,7 @@ export function analisarPrescricao(texto: string): Prescricao {
     const segundos = Number(tempo[2])
     exigirPositivo(texto, series, 'o número de séries')
     exigirPositivo(texto, segundos, 'a duração em segundos')
-    return { tipo: 'tempo', series, segundos, textoOriginal: texto }
+    return { series, execucao: { tipo: 'tempo', segundos }, textoOriginal: texto }
   }
 
   const faixa = FAIXA.exec(normalizado)
@@ -66,7 +63,7 @@ export function analisarPrescricao(texto: string): Prescricao {
         `a faixa está invertida (${min} a ${max}) — provável erro de digitação`
       )
     }
-    return { tipo: 'repeticoes', series, repeticoes: { min, max }, textoOriginal: texto }
+    return { series, execucao: { tipo: 'repeticoes', min, max }, textoOriginal: texto }
   }
 
   const fixa = FIXA.exec(normalizado)
@@ -76,9 +73,8 @@ export function analisarPrescricao(texto: string): Prescricao {
     exigirPositivo(texto, series, 'o número de séries')
     exigirPositivo(texto, repeticoes, 'o número de repetições')
     return {
-      tipo: 'repeticoes',
       series,
-      repeticoes: { min: repeticoes, max: repeticoes },
+      execucao: { tipo: 'repeticoes', min: repeticoes, max: repeticoes },
       textoOriginal: texto,
     }
   }

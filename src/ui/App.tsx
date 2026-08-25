@@ -1,11 +1,13 @@
+import { useEffect } from 'react'
 import { HashRouter, NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { EmConstrucao } from './comum/EmConstrucao'
 import { EstadoSemPlano } from './comum/EstadoSemPlano'
+import { TelaPlano } from './plano/TelaPlano'
+import { useVault } from './estado/vaultStore'
 
 /**
  * Casca do app: as quatro rotas da arquitetura de informação (docs/interface.md).
- * Sem plano importado, todas caem no mesmo estado vazio — é o que o aluno vê
- * antes de receber a prescrição do profissional.
  */
 const ROTAS = [
   { caminho: '/hoje', chave: 'navegacao.hoje' },
@@ -14,8 +16,19 @@ const ROTAS = [
   { caminho: '/plano', chave: 'navegacao.plano' },
 ] as const
 
+/** Sem plano importado, toda tela que depende dele cai no mesmo estado vazio. */
+function DependeDoPlano() {
+  const arquivo = useVault((e) => e.arquivo)
+  return arquivo ? <EmConstrucao /> : <EstadoSemPlano />
+}
+
 export function App() {
   const { t } = useTranslation()
+  const carregarDoVault = useVault((e) => e.carregarDoVault)
+
+  useEffect(() => {
+    void carregarDoVault()
+  }, [carregarDoVault])
 
   return (
     <HashRouter>
@@ -23,9 +36,10 @@ export function App() {
         <main className="app__conteudo">
           <Routes>
             <Route path="/" element={<Navigate to="/hoje" replace />} />
-            {ROTAS.map(({ caminho }) => (
-              <Route key={caminho} path={caminho} element={<EstadoSemPlano />} />
-            ))}
+            <Route path="/hoje" element={<DependeDoPlano />} />
+            <Route path="/evolucao" element={<DependeDoPlano />} />
+            <Route path="/perfil" element={<DependeDoPlano />} />
+            <Route path="/plano" element={<TelaPlano />} />
             <Route path="*" element={<Navigate to="/hoje" replace />} />
           </Routes>
         </main>
