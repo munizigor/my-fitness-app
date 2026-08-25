@@ -75,6 +75,8 @@ export const ptBR = {
     aerobico: 'Aeróbico',
     aerobicoDuracao: '{{minutos}} min',
     comecarTreino: 'Começar treino',
+    recordeTitulo: 'Recorde pessoal',
+    recorde: '{{exercicio}}: {{carga}} kg. Sua melhor marca era {{anterior}} kg.',
     serieRepeticoes: '{{series}} × {{min}}–{{max}}',
     serieRepeticoesFixas: '{{series}} × {{repeticoes}}',
     serieTempo: "{{series}} × {{segundos}}''",
