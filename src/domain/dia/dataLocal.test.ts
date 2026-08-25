@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DataInvalidaError } from '../errors/DataInvalidaError'
-import { diaDaSemanaDe, ehDataLocal, hojeLocal } from './dataLocal'
+import { diaDaSemanaDe, diferencaEmDias, ehDataLocal, hojeLocal } from './dataLocal'
 
 describe('diaDaSemanaDe', () => {
   it.each([
@@ -62,6 +62,34 @@ describe('hojeLocal', () => {
 
   it('preenche zero à esquerda em mês e dia', () => {
     expect(hojeLocal(new Date(2026, 0, 5))).toBe('2026-01-05')
+  })
+})
+
+describe('diferencaEmDias', () => {
+  it('conta os dias entre duas datas', () => {
+    expect(diferencaEmDias('2026-08-04', '2026-09-01')).toBe(28)
+  })
+
+  it('é zero no mesmo dia', () => {
+    expect(diferencaEmDias('2026-08-25', '2026-08-25')).toBe(0)
+  })
+
+  it('atravessa mês, ano e fevereiro bissexto', () => {
+    expect(diferencaEmDias('2025-12-30', '2026-01-02')).toBe(3)
+    expect(diferencaEmDias('2028-02-28', '2028-03-01')).toBe(2)
+  })
+
+  it('não perde nem ganha um dia na virada do horário de verão', () => {
+    // O motivo de a conta ser feita em UTC: onde há horário de verão, um dos
+    // dias do intervalo tem 23 ou 25 horas. Dividir milissegundos por 86.400.000
+    // sobre datas locais devolveria 27,96 dias — e "4 semanas" viraria "3".
+    expect(diferencaEmDias('2026-10-14', '2026-11-11')).toBe(28)
+    expect(diferencaEmDias('2027-02-10', '2027-03-10')).toBe(28)
+  })
+
+  it('recusa data que não existe no calendário', () => {
+    expect(() => diferencaEmDias('2026-02-30', '2026-03-01')).toThrow(DataInvalidaError)
+    expect(() => diferencaEmDias('2026-03-01', 'ontem')).toThrow(DataInvalidaError)
   })
 })
 
