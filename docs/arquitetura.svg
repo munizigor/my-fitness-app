@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 -14 1188 773" width="1188" height="773" role="img" aria-label="Arquitetura da solução: profissional envia plano.json, PWA do aluno com camadas ui, application e domain, infrastructure implementa as portas e persiste o vault em OPFS">
+  <defs>
+    <marker id="p1e1e1e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1e1e1e"/></marker>
+    <marker id="p22c55e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#22c55e"/></marker>
+    <marker id="p4a9eed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4a9eed"/></marker>
+    <marker id="p757575" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#757575"/></marker>
+    <marker id="p06b6d4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#06b6d4"/></marker>
+  </defs>
+  <rect x="6" y="-14" width="1188" height="773" fill="#ffffff"/>
+  <rect x="290" y="100" width="560" height="470" rx="12" ry="12" fill="#dbe4ff" stroke="#4a9eed" stroke-width="1" opacity="0.35"/>
+  <text x="305" y="123.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#2563eb" text-anchor="start">Aplicativo do aluno (PWA)</text>
+  <rect x="320" y="140" width="500" height="90" rx="12" ry="12" fill="#a5d8ff" stroke="#4a9eed" stroke-width="2"/>
+  <text x="340" y="174" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="20" fill="#1e1e1e" text-anchor="start">ui/ — React + i18n</text>
+  <text x="340" y="203.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">Hoje · Execução · Evolução · Perfil · Plano</text>
+  <polyline points="570,230 570,260" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#p1e1e1e)"/>
+  <text x="590" y="245.3" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" fill="#757575" text-anchor="start">chama caso de uso</text>
+  <rect x="320" y="260" width="500" height="110" rx="12" ry="12" fill="#d0bfff" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="340" y="293" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="20" fill="#1e1e1e" text-anchor="start">application/ — casos de uso</text>
+  <text x="340" y="321.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">ImportarPlano · RegistrarSerie · RegistrarAgua</text>
+  <text x="340" y="347.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">RegistrarMedida · SalvarPerfil · Exportar/RestaurarVault</text>
+  <polyline points="570,370 570,398" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#p1e1e1e)"/>
+  <text x="590" y="385.3" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" fill="#757575" text-anchor="start">regras puras</text>
+  <rect x="320" y="398" width="500" height="155" rx="12" ry="12" fill="#b2f2bb" stroke="#22c55e" stroke-width="2"/>
+  <text x="340" y="431" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="20" fill="#1e1e1e" text-anchor="start">domain/ — puro, sem I/O</text>
+  <text x="340" y="459.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">treino · nutricao · dia · progresso · plano · schema (Zod)</text>
+  <rect x="340" y="476" width="460" height="60" rx="12" ry="12" fill="#c3fae8" stroke="#06b6d4" stroke-width="2"/>
+  <text x="570" y="511.6" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="middle">ports: VaultStorage · FileTransfer</text>
+  <rect x="40" y="250" width="210" height="90" rx="12" ry="12" fill="#ffd8a8" stroke="#f59e0b" stroke-width="2"/>
+  <text x="145" y="301.3" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="18" fill="#1e1e1e" text-anchor="middle">Profissional</text>
+  <text x="55" y="364.25" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#757575" text-anchor="start">prescreve e envia</text>
+  <text x="250" y="269.3" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" fill="#15803d" text-anchor="start">plano.json</text>
+  <polyline points="250,282 320,282" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#p22c55e)"/>
+  <polyline points="320,316 250,316" fill="none" stroke="#4a9eed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#p4a9eed)"/>
+  <text x="250" y="339.3" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" fill="#2563eb" text-anchor="start">vault.json</text>
+  <rect x="290" y="610" width="550" height="125" rx="12" ry="12" fill="#ffd8a8" stroke="#f59e0b" stroke-width="2"/>
+  <text x="310" y="643" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="20" fill="#1e1e1e" text-anchor="start">infrastructure/ — implementações</text>
+  <text x="310" y="671.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">OpfsVaultStorage · InMemoryVaultStorage (testes)</text>
+  <text x="310" y="697.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">SalvarArquivo (File System Access) · i18n · Service Worker</text>
+  <polyline points="400,610 400,536" fill="none" stroke="#757575" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 6" marker-end="url(#p757575)"/>
+  <text x="415" y="571.3" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" fill="#757575" text-anchor="start">implementa as portas</text>
+  <rect x="890" y="240" width="280" height="250" rx="12" ry="12" fill="#c3fae8" stroke="#06b6d4" stroke-width="2"/>
+  <text x="905" y="271.1" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="18" fill="#1e1e1e" text-anchor="start">OPFS — vault do aluno</text>
+  <text x="905" y="305.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">manifest.json</text>
+  <text x="905" y="335.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">aluno/perfil.json</text>
+  <text x="905" y="365.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">aluno/medidas/&lt;data&gt;.json</text>
+  <text x="905" y="395.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">planos/atual.json</text>
+  <text x="905" y="425.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">registros/&lt;data&gt;.json</text>
+  <text x="905" y="463.3" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" fill="#757575" text-anchor="start">1 JSON por documento</text>
+  <polyline points="840,660 960,660 960,490" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#p06b6d4)"/>
+  <text x="862" y="641.3" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" fill="#0e7490" text-anchor="start">lê / escreve</text>
+  <rect x="30" y="560" width="250" height="175" rx="12" ry="12" fill="#fff3bf" stroke="#f59e0b" stroke-width="2" opacity="0.7"/>
+  <text x="48" y="591.1" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="18" fill="#b45309" text-anchor="start">Invariantes</text>
+  <text x="48" y="622.25" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#1e1e1e" text-anchor="start">· sem backend</text>
+  <text x="48" y="650.25" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#1e1e1e" text-anchor="start">· derivado nunca persiste</text>
+  <text x="48" y="678.25" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#1e1e1e" text-anchor="start">· dado do aluno só em OPFS</text>
+  <text x="48" y="706.25" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#1e1e1e" text-anchor="start">· prescrição imutável</text>
+  <text x="441" y="36.599999999999994" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="28" fill="#1e1e1e" text-anchor="start">Arquitetura da solução</text>
+  <text x="347" y="67.2" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#757575" text-anchor="start">PWA offline-first · GitHub Pages · sem backend · vault em OPFS</text>
+</svg>

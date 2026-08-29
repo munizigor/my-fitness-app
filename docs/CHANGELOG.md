@@ -2,6 +2,15 @@
 
 ## [Não lançado]
 
+### Documentação — diagrama da arquitetura
+
+- **O desenho substitui o ASCII em `arquitetura.md`.** Mesmas três camadas, mais o que
+  o bloco de texto não cabia: o arquivo indo e voltando do profissional, as portas dentro
+  do domínio e o layout do vault em OPFS
+- **Fonte editável junto do render.** `docs/arquitetura.excalidraw` abre em excalidraw.com e
+  `docs/arquitetura.svg` é o que o Markdown mostra — diagrama versionado em texto, como o
+  resto da documentação
+
 ### Story 9 — Exportar vault
 
 Data ownership deixa de ser posicionamento e vira arquivo: o aluno leva o vault
