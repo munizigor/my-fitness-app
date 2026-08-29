@@ -4,25 +4,9 @@
 
 PWA estático, servido pelo GitHub Pages, sem backend. Todo o estado do aluno vive no aparelho, em OPFS. O intercâmbio com o profissional é por arquivo: o profissional envia um plano, o aluno importa, executa, registra e devolve um `.fitvault.json`.
 
-```
-┌────────────────────────────────────────────────────────┐
-│  ui/          Hoje · ExecuçãoTreino · Evolução ·        │
-│               Perfil · Plano          (React, i18n)     │
-├────────────────────────────────────────────────────────┤
-│  application/ casos de uso: ImportarPlano,              │
-│               RegistrarSerie, RegistrarAgua,            │
-│               RegistrarConsumo, RegistrarMedida,        │
-│               SalvarPerfil, CarregarHistorico,          │
-│               CarregarAluno, …                          │
-├────────────────────────────────────────────────────────┤
-│  domain/      regras puras + portas (interfaces)        │
-└────────────────────────────────────────────────────────┘
-                          ▲ implementa as portas
-┌────────────────────────────────────────────────────────┐
-│  infrastructure/  OpfsVaultStorage · FileSystemAccess   │
-│                   InMemoryVaultStorage (testes) · PWA   │
-└────────────────────────────────────────────────────────┘
-```
+![Da prescrição do profissional ao vault do aluno: o PWA em três camadas (ui, application, domain com as portas), infrastructure implementando as portas e o vault em OPFS](./arquitetura.svg)
+
+O desenho acima é gerado de [`arquitetura.excalidraw`](./arquitetura.excalidraw) — abra o arquivo em [excalidraw.com](https://excalidraw.com) para editar e reexporte o SVG ao mudar.
 
 Dependências apontam para dentro: `ui → application → domain`. `domain` não importa nada das outras camadas. A regra não depende de disciplina: está codificada em `eslint.config.js` como `no-restricted-imports` por diretório, e o lint quebra o build se alguém violar.
 
